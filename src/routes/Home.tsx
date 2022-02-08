@@ -52,7 +52,7 @@ class Home extends React.Component<any, HomeState> {
 					collapsed={this.state.siderCollapsed} 
 					breakpoint={"md"} 
 					collapsedWidth={this.state.siderCollapsedWidth} 
-					onBreakpoint={(broken: boolean) => {this.setState({siderCollapsedWidth: broken ? 0 : 80})}}>
+					onBreakpoint={(broken: boolean) => {this.setState({siderCollapsedWidth: broken ? 0 : 80, siderCollapsed: broken})}}>
 					
 					<div onClick={this.toggle} style={{ cursor: "pointer", display: "flex", flexDirection: "row", justifyItems: "center", alignItems: "center" }}>
 						{!this.state.siderCollapsed && <Typography.Title level={4} style={{ color: "white", paddingLeft: "10px" }}>RPGTracker</Typography.Title>}

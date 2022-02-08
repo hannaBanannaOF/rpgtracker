@@ -13,6 +13,7 @@
     "antd": "^4.16.13",
     "axios": "^0.25.0",
     "bootstrap": "^5.1.0",
+    "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "express-favicon": "^2.0.1",
     "path": "^0.12.7",
@@ -32,7 +33,7 @@
     "node": "14.17.3"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
