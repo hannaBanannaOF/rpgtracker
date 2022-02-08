@@ -6,7 +6,7 @@ export function authenticate(values: string, callbackSuccess: (data: any) => voi
         body: JSON.stringify(values)
     }
     
-    fetch(`http://localhost:8000/api/v1/token/auth/`, rqParams).then((res) => {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}v1/token/auth/`, rqParams).then((res) => {
         res.text().then(text => {
             let data = JSON.parse(text);
             if (!res.ok) {
