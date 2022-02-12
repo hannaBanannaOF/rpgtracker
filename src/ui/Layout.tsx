@@ -29,7 +29,7 @@ class Layout extends React.Component<any, LayoutState> {
 
     render = () => {
         return(
-            <AntdLayout className="h-100 d-flex flex-row">
+            <AntdLayout className="d-flex flex-row">
 				<Sider 
 					trigger={null} 
 					collapsible 
@@ -50,7 +50,7 @@ class Layout extends React.Component<any, LayoutState> {
                             </Menu.Item>
 					</Menu>
 				</Sider>
-				<AntdLayout>
+				<AntdLayout style={{ height: "100vh" }}>
 					<Header style={{ padding: this.state.siderCollapsedWidth === 0 ? "0" : "0, 50px" }}>
 						<HeaderContent siderHidden={this.state.siderCollapsedWidth === 0} siderCollapsed={this.state.siderCollapsed} siderCallback={this.toggle}/>
 					</Header>

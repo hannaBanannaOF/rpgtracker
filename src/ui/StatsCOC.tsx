@@ -50,7 +50,7 @@ class CoCStats extends React.Component<CoCStatsProps, any> {
                         <Col span={8}>
                             <Checkbox checked={this.props.improvedCheck}>{ this.props.stat }</Checkbox>
                         </Col>
-                        <Col span={16}>
+                        <Col xs={{span: 4}} sm={{ span: 4 }} md={{ span: 6 }} lg={{ span: 8 }}>
                             <Space style={{ border: "1px solid black", borderRadius: "0 10px 0 0" }}>
                                 <Col span={12} style={{ paddingLeft: 7 }}>{this.props.value}</Col>
                                 <Col span={12} style={{ borderLeft: "1px solid black" }}>

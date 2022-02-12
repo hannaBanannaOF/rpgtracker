@@ -34,7 +34,7 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
         return (
             <Skeleton active loading={this.state.loading}>
                 <Row justify='space-between' gutter={[16, 16]} align="middle">
-                    <Col lg={{ span: 6, order: 1 }} md={{ span: 15, order: 1 }} xs={{ span: 17, order: 2 }}>
+                    <Col lg={{ span: 6, order: 1 }} md={{ span: 15, order: 1 }} sm={{ span: 17, order: 2 }} xs={{ span: 17, order: 2 }}>
                         <Card title={(this.state.ficha?.pulp_cthulhu ?? false) ? "Herói (PCoC)" : "Investigador"}>
                             <Space direction='vertical'>
                                 <Space>
@@ -67,7 +67,7 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
                             </Space>
                         </Card>
                     </Col>
-                    <Col xl={{ span: 12, order: 2 }} lg={{ span: 13, order: 2 }} md={{ span: 24, order: 3 }} xs={{ span: 24, order: 3 }}>
+                    <Col xl={{ span: 12, order: 2 }} lg={{ span: 13, order: 2 }} md={{ span: 24, order: 3 }} sm={{ span: 24, order: 3 }} xs={{ span: 24, order: 3 }}>
                         <Card title="Características" headStyle={{ textAlign: "center" }}>
                             <Row gutter={[10, 16]} justify="space-between" align='middle'>
                                 <CoCStats value={this.state.ficha?.strength ?? "0"} stat="STR"/>
@@ -82,14 +82,19 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
                             </Row>
                         </Card>
                     </Col>
-                    <Col xl={{ span: 6, order: 3 }} lg={{ span: 5, order: 3 }} md={{ span: 9, order: 2 }} xs={{ span: 7, order: 1 }} style= {{ textAlign: 'center' }}>
-                        <Avatar icon={<UserOutlined />} size={{ xl: 180, lg: 160, md: 180, xs: 100 }} />
+                    <Col xl={{ span: 6, order: 3 }} lg={{ span: 5, order: 3 }} md={{ span: 9, order: 2 }} sm={{ span: 7, order: 1 }} xs={{ span: 7, order: 1 }} style= {{ textAlign: 'center' }}>
+                        <Avatar icon={<UserOutlined />} size={{ xl: 180, lg: 160, md: 180, xs: 100, sm: 100 }} />
                     </Col>
                     <Col  span={24} order={4}>
                         <Card title="Perícias" headStyle={{ textAlign: "center" }}>
                             <List 
                                 dataSource={this.state.ficha?.get_skill_list_as_array ?? []}
-                                grid={{ gutter: 5, column: 4 }}
+                                grid={{ gutter: 5, xs: 1,
+                                    sm: 1,
+                                    md: 2,
+                                    lg: 3,
+                                    xl: 4,
+                                    xxl: 4, }}
                                 renderItem={(item: any) => (
                                         <List.Item>
                                             <CoCStats value={item.value} stat={item.name} improvcheck improvedCheck={item.improv}/>
