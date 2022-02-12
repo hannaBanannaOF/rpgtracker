@@ -1,6 +1,7 @@
-import { Avatar, Col, Divider, List, notification, Row, Skeleton, Tooltip, Typography } from 'antd';
+import { Avatar, Col, Divider, List, notification, Row, Skeleton, Tooltip } from 'antd';
 import React, { CSSProperties } from 'react';
 import { GiOctopus, GiHarryPotterSkull } from "react-icons/gi";
+import { Link } from 'react-router-dom';
 import { AccountService } from '../components/services/AccountService';
 
 export interface MinhasFichasState {
@@ -13,6 +14,7 @@ interface MesaDTO {
 }
 
 interface MinhasFichasDTO {
+    id: number,
     nome_personagem: string,
     get_content_type: string,
     mesa? : MesaDTO
@@ -63,7 +65,9 @@ class MinhasFichas extends React.Component<any, MinhasFichasState> {
                     <Skeleton loading={this.state.loading} active>
                         
                         <List dataSource={this.state.fichas} renderItem={(item: MinhasFichasDTO) => (
-                            <List.Item actions={[<Typography.Link>Ver</Typography.Link>]}>
+                            <List.Item actions={[
+                                <Link to={`fichas/${item.get_content_type}/${item.id}`}>Ver</Link>
+                            ]}>
                                 <List.Item.Meta
                                     avatar={<Tooltip title={this.getContentTypeTooltip(item.get_content_type)}><Avatar icon={this.getContentTypeItem(item.get_content_type)} /></Tooltip>}
                                     title={item.nome_personagem}

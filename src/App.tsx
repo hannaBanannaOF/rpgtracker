@@ -9,6 +9,8 @@ import { Login } from './routes/Login';
 import "./App.css";
 import { SmileOutlined } from '@ant-design/icons';
 import { OAuthCallback } from './routes/callbacks/OAuthCallback';
+import DetalhesFichaCoC from './routes/DetalhesFichaCoC';
+import Layout from './ui/Layout';
 
 class App extends React.Component {
 
@@ -29,9 +31,18 @@ class App extends React.Component {
 							<Route path="/login/oauth/callback" element={<OAuthCallback provider='discord' />}/>
 							<Route path="/" element={
 								<RequireAuth>
-									<Home />
+									<Layout>
+										<Home />
+									</Layout>
 								</RequireAuth>
 							} />
+							<Route path="/fichas/coc/:id" element={
+								<RequireAuth>
+									<Layout>
+										<DetalhesFichaCoC />
+									</Layout>
+								</RequireAuth>
+							}/>
 						</Routes>
 					</Router>
 				</ConfigProvider>
