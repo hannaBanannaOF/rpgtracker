@@ -50,7 +50,7 @@ class Layout extends React.Component<any, LayoutState> {
                             </Menu.Item>
 					</Menu>
 				</Sider>
-				<AntdLayout style={{ height: "100vh" }}>
+				<AntdLayout style={{ minHeight: "100vh" }}>
 					<Header style={{ padding: this.state.siderCollapsedWidth === 0 ? "0" : "0, 50px" }}>
 						<HeaderContent siderHidden={this.state.siderCollapsedWidth === 0} siderCollapsed={this.state.siderCollapsed} siderCallback={this.toggle}/>
 					</Header>
