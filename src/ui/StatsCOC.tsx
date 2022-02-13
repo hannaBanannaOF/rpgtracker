@@ -7,7 +7,8 @@ export interface CoCStatsProps {
     stat: string,
     fullRounded?: boolean,
     improvcheck?: boolean,
-    improvedCheck?: boolean
+    improvedCheck?: boolean,
+    fullWidth?: boolean
 }
 
 class CoCStats extends React.Component<CoCStatsProps, any> {
@@ -15,7 +16,7 @@ class CoCStats extends React.Component<CoCStatsProps, any> {
     render = () => {
         return (
             <React.Fragment>
-                {!this.props.fullRounded && !this.props.improvcheck && <Col xl={{ span: 8 }} lg={{ span: 8 }} md={{ span: 8 }} xs={{ span: 12 }}>
+                {!this.props.fullRounded && !this.props.improvcheck && <Col xl={{ span: this.props.fullWidth ? 24 : 8 }} lg={{ span: this.props.fullWidth ? 24 : 8 }} md={{ span: this.props.fullWidth ? 24 : 8 }} xs={{ span: this.props.fullWidth ?24 : 12 }}>
                     <Row justify='space-around' align='middle'>
                         <Col span={8}>
                             <Typography.Title level={5}>{this.props.stat}</Typography.Title>
@@ -33,7 +34,7 @@ class CoCStats extends React.Component<CoCStatsProps, any> {
                         </Col>
                     </Row>
                 </Col>}
-                {this.props.fullRounded && !this.props.improvcheck && <Col xl={{ span: 8 }} lg={{ span: 8 }} md={{ span: 8 }} xs={{ span: 12 }}>
+                {this.props.fullRounded && !this.props.improvcheck && <Col xl={{ span: this.props.fullWidth ?24 : 8 }} lg={{ span: this.props.fullWidth ? 24 : 8 }} md={{ span: this.props.fullWidth ? 24 : 8 }} xs={{ span: this.props.fullWidth ? 24 : 12 }}>
                     <Row justify='space-around' align='middle'>
                         <Col span={8}>
                             <Typography.Title level={5}>{this.props.stat}</Typography.Title>
