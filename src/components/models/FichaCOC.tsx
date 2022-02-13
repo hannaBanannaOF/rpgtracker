@@ -1,9 +1,36 @@
 import { CurrentUser } from './CurrentUser'
 
+interface Skill {
+    id: number,
+    name: string,
+    value: number,
+    improv: boolean
+}
+
 interface Talentos {
     id: number,
     name: string,
     desc: string
+}
+
+interface Arma {
+    id: number,
+    name: string,
+    range?: string,
+    attacks: number,
+    malfunction: number,
+    is_melee: boolean,
+    damage: string
+}
+
+export interface ArmasEmFicha {
+    id: number,
+    ammo_left?: number,
+    rounds_left?: number,
+    nickname?: string,
+    normal_success_value: number,
+    total_ammo_left?: number
+    weapon: Arma
 }
 
 export interface FichaCOC {
@@ -24,7 +51,7 @@ export interface FichaCOC {
     power: number,
     education: number,
     move_rate: number,
-    get_skill_list_as_array: [],
+    skill_list: Skill[],
     hp: number,
     max_hp: number,
     major_wound: boolean,
@@ -38,7 +65,7 @@ export interface FichaCOC {
     mp: number,
     dodge: number,
     build: number,
-    bonus_dmg: number,
-    weapons: [],
+    bonus_dmg: string,
+    weapons: ArmasEmFicha[],
     pulp_talents: Talentos[]
 } 

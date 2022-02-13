@@ -1,7 +1,7 @@
-import { Card, Col, Collapse, List, notification, Row, Skeleton, Slider, Space, Typography } from 'antd';
+import { Card, Col, Collapse, List, notification, Row, Skeleton, Slider, Space, Table, Typography } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import React from 'react';
-import { FichaCOC } from '../components/models/FichaCOC';
+import { ArmasEmFicha, FichaCOC } from '../components/models/FichaCOC';
 import { withRouter } from '../components/routes/WithRouter';
 import { CoCService } from '../components/services/CoCService';
 import { UserOutlined } from '@ant-design/icons';
@@ -14,6 +14,28 @@ export interface DetalhesFichaCoCState {
 }
 
 class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
+
+    columns = [
+        {
+            title: "Arma",
+            key: "arma_col",
+            render: (record: ArmasEmFicha) => {
+                return record.nickname ?? record.weapon.name
+            }
+        },
+        {
+            title: "Dano",
+            dataIndex: ["weapon","damage"],
+            key: "damage_col"
+        },
+        {
+            title: "Ataques",
+            key: "atk_col",
+            render: (record: ArmasEmFicha) => {
+                return record.weapon.attacks > 1 ? `1(${record.weapon.attacks})` : 1
+            }
+        }
+    ]
 
     state : DetalhesFichaCoCState = {
         loading: true,
@@ -70,16 +92,34 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
                     </Col>
                     <Col xl={{ span: 12, order: 2 }} lg={{ span: 13, order: 2 }} md={{ span: 24, order: 3 }} sm={{ span: 24, order: 3 }} xs={{ span: 24, order: 3 }}>
                         <Card title="Características" headStyle={{ textAlign: "center" }}>
-                            <Row gutter={[10, 16]} justify="space-between" align='middle'>
-                                <CoCStats value={this.state.ficha?.strength ?? "0"} stat="STR"/>
-                                <CoCStats value={this.state.ficha?.dexterity ?? "0"} stat="DEX"/>
-                                <CoCStats value={this.state.ficha?.power ?? "0"} stat="POW"/>
-                                <CoCStats value={this.state.ficha?.constitution ?? "0"} stat="CON"/>
-                                <CoCStats value={this.state.ficha?.appearence ?? "0"} stat="APP"/>
-                                <CoCStats value={this.state.ficha?.education ?? "0"} stat="EDU"/>
-                                <CoCStats value={this.state.ficha?.size ?? "0"} stat="SIZ"/>
-                                <CoCStats value={this.state.ficha?.inteligence ?? "0"} stat="INT"/>
-                                <CoCStats fullRounded value={this.state.ficha?.move_rate ?? "0"} stat="Move Rate"/>
+                            <Row gutter={[5, 5]}>
+                                <Col xl={{ span:8 }} lg={{ span:12 }} md={{ span:12 }} sm={{ span:24 }} xs={{ span:24 }}>
+                                    <CoCStats value={this.state.ficha?.strength ?? "0"} stat="STR"/>
+                                </Col>
+                                <Col xl={{ span:8 }} lg={{ span:12 }} md={{ span:12 }} sm={{ span:24 }} xs={{ span:24 }}>
+                                    <CoCStats value={this.state.ficha?.dexterity ?? "0"} stat="DEX"/>
+                                </Col>
+                                <Col xl={{ span:8 }} lg={{ span:12 }} md={{ span:12 }} sm={{ span:24 }} xs={{ span:24 }}>
+                                    <CoCStats value={this.state.ficha?.power ?? "0"} stat="POW"/>
+                                </Col>
+                                <Col xl={{ span:8 }} lg={{ span:12 }} md={{ span:12 }} sm={{ span:24 }} xs={{ span:24 }}>
+                                    <CoCStats value={this.state.ficha?.constitution ?? "0"} stat="CON"/>
+                                </Col>
+                                <Col xl={{ span:8 }} lg={{ span:12 }} md={{ span:12 }} sm={{ span:24 }} xs={{ span:24 }}>
+                                    <CoCStats value={this.state.ficha?.appearence ?? "0"} stat="APP"/>
+                                </Col>
+                                <Col xl={{ span:8 }} lg={{ span:12 }} md={{ span:12 }} sm={{ span:24 }} xs={{ span:24 }}>
+                                    <CoCStats value={this.state.ficha?.education ?? "0"} stat="EDU"/>
+                                </Col>
+                                <Col xl={{ span:8 }} lg={{ span:12 }} md={{ span:12 }} sm={{ span:24 }} xs={{ span:24 }}>
+                                    <CoCStats value={this.state.ficha?.size ?? "0"} stat="SIZ"/>
+                                </Col>
+                                <Col xl={{ span:8 }} lg={{ span:12 }} md={{ span:12 }} sm={{ span:24 }} xs={{ span:24 }}>
+                                    <CoCStats value={this.state.ficha?.inteligence ?? "0"} stat="INT"/>
+                                </Col>
+                                <Col xl={{ span:8 }} lg={{ span:12 }} md={{ span:12 }} sm={{ span:24 }} xs={{ span:24 }}>
+                                    <CoCStats fullRounded value={this.state.ficha?.move_rate ?? "0"} stat="Move Rate"/>
+                                </Col>
                             </Row>
                         </Card>
                     </Col>
@@ -132,7 +172,7 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
                     <Col span={24} order={8}>
                         <Card title="Perícias" headStyle={{ textAlign: "center" }}>
                             <List 
-                                dataSource={this.state.ficha?.get_skill_list_as_array ?? []}
+                                dataSource={this.state.ficha?.skill_list ?? []}
                                 grid={{ gutter: 5, xs: 1,
                                     sm: 1,
                                     md: 2,
@@ -140,22 +180,40 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
                                     xl: 4,
                                     xxl: 4, }}
                                 renderItem={(item: any) => (
-                                        <List.Item>
+                                        <List.Item key={item.name}>
                                             <CoCStats value={item.value} stat={item.name} improvcheck improvedCheck={item.improv}/>
                                         </List.Item>)
                                 }/>
                         </Card>
                     </Col>
-                    <Col xs={{ span: 24, order: 9 }} sm={{ span: 24, order: 9 }} md={{ span: 24, order: 9 }} lg={{ span: 18, order: 9 }}>
+                    <Col xs={{ span: 24, order: 9 }} sm={{ span: 24, order: 9 }} md={{ span: 24, order: 9 }} lg={{ span: 18, order: 9 }} xl={{ span: 18, order: 9 }}>
                         <Card title="Armas" headStyle={{ textAlign: "center" }}>
-
+                            <Table rowKey={"id"} columns={this.columns} dataSource={this.state.ficha?.weapons ?? []} expandable={{
+                                expandedRowRender: record => <Card title="Detalhes">
+                                    {record.weapon.is_melee && <Space direction='vertical'>
+                                        <Typography.Text>Arma mano-a-mano</Typography.Text>
+                                        <Typography.Text>Acerto normal: {record.normal_success_value}</Typography.Text>
+                                        <Typography.Text>Acerto bom: {Math.floor(record.normal_success_value/2)}</Typography.Text>
+                                        <Typography.Text>Acerto extremo: {Math.floor(record.normal_success_value/5)}</Typography.Text>
+                                    </Space>}
+                                    {!record.weapon.is_melee && <Space direction='vertical'>
+                                        <Typography.Text>Acerto normal: {record.normal_success_value}</Typography.Text>
+                                        <Typography.Text>Acerto bom: {Math.floor(record.normal_success_value/2)}</Typography.Text>
+                                        <Typography.Text>Acerto extremo: {Math.floor(record.normal_success_value/5)}</Typography.Text>
+                                        <Typography.Text>Tiros restantes: {record.rounds_left}</Typography.Text>
+                                        <Typography.Text>Munição disponível: {`${record.ammo_left} (${record.total_ammo_left})`}</Typography.Text>
+                                    </Space>}
+                                </Card>,
+                            }}/>
                         </Card>
                     </Col>
-                    <Col xs={{ span: 24, order: 10 }} sm={{ span: 24, order: 10 }} md={{ span: 24, order: 10 }} lg={{ span: 6, order: 10 }}>
+                    <Col xs={{ span: 24, order: 10 }} sm={{ span: 24, order: 10 }} md={{ span: 24, order: 10 }} lg={{ span: 6, order: 10 }} xl={{ span: 6, order: 10 }}>
                         <Card title="Combate" headStyle={{ textAlign: "center" }}>
-                            <CoCStats fullWidth fullRounded value={this.state.ficha?.bonus_dmg ?? "0"} stat="Bonus Damage"/>
-                            <CoCStats fullWidth fullRounded value={this.state.ficha?.build ?? "0"} stat="Build"/>
-                            <CoCStats fullWidth value={this.state.ficha?.dodge ?? "0"} stat="Dodge"/>
+                            <Space direction='vertical' style={{ width: "100%" }}>
+                                <CoCStats fullRounded value={this.state.ficha?.bonus_dmg ?? "0"} stat="Bonus Damage"/>
+                                <CoCStats fullRounded value={this.state.ficha?.build ?? "0"} stat="Build"/>
+                                <CoCStats value={this.state.ficha?.dodge ?? "0"} stat="Dodge"/>
+                            </Space>
                         </Card>
                     </Col>
                     {this.state.ficha?.pulp_cthulhu && <Col span={24} order={11}>
