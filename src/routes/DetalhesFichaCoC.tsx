@@ -146,12 +146,12 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
                                 }/>
                         </Card>
                     </Col>
-                    <Col span={18} order={9}>
+                    <Col xs={{ span: 24, order: 9 }} sm={{ span: 24, order: 9 }} md={{ span: 24, order: 9 }} lg={{ span: 18, order: 9 }}>
                         <Card title="Armas" headStyle={{ textAlign: "center" }}>
 
                         </Card>
                     </Col>
-                    <Col span={6} order={10}>
+                    <Col xs={{ span: 24, order: 10 }} sm={{ span: 24, order: 10 }} md={{ span: 24, order: 10 }} lg={{ span: 6, order: 10 }}>
                         <Card title="Combate" headStyle={{ textAlign: "center" }}>
                             <CoCStats fullWidth fullRounded value={this.state.ficha?.bonus_dmg ?? "0"} stat="Bonus Damage"/>
                             <CoCStats fullWidth fullRounded value={this.state.ficha?.build ?? "0"} stat="Build"/>
