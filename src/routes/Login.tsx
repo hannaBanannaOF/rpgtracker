@@ -5,6 +5,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Navigate, useLocation, useNavigate } from "react-router";
 import { useAuth } from "../components/providers/AuthProvider";
 import { FaDiscord } from "react-icons/fa";
+import { useState } from "react";
 
 export function Login() {
     let navigate = useNavigate();
@@ -13,10 +14,14 @@ export function Login() {
   
     let from = location.state?.from?.pathname || "/";
   
+    let [authent, setAuthent] = useState(false);
+
     function handleSubmit(values: string) {  
-      auth.signin(values, () => {
+        setAuthent(true);
+        auth.signin(values, () => {
         navigate(from, { replace: true });
       }, (message) => {
+            setAuthent(false);
             notification.error({
                 message: 'Falha ao realizar login!',
                 description: message
@@ -63,7 +68,7 @@ export function Login() {
                             </Form.Item>
 
                             <Form.Item>
-                                <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+                                <Button type="primary" htmlType="submit" style={{ width: "100%" }} loading={authent}>
                                     Entrar
                                 </Button>
                             </Form.Item>
@@ -73,7 +78,7 @@ export function Login() {
                                 </Divider>
                             </Form.Item>
                             <Form.Item>
-                                <Button onClick={redirectDiscordAuth} style={{ width: "100%", color: "white", backgroundColor:"#7289da", border: "none" }}>
+                                <Button onClick={redirectDiscordAuth} style={{ width: "100%", color: "white", backgroundColor:"#7289da", border: "none" }} loading={authent}>
                                     <FaDiscord size={25} style={{ marginRight: "5px" }}/> Login com Discord
                                 </Button>
                             </Form.Item>
