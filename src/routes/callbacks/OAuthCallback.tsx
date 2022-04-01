@@ -34,6 +34,7 @@ export function OAuthCallback(props: OAuthCallbackProps) {
         if (!props.hbauth) {
             Rpgtrackerwebclient.post(`/v1/token/social-auth/social/jwt-pair/${props.provider}/`, {code: code}).then(res => {
                 localStorage.setItem("tokens", JSON.stringify(res.data));
+                auth.setCurrUser();
                 navigate(from, {replace: true});
             }).catch(err => {
                 notification.error({message: `Não foi possível conectar com o ${capitalize(props.provider)}`, description: err.response.data});
@@ -42,6 +43,7 @@ export function OAuthCallback(props: OAuthCallbackProps) {
         } else {
             Rpgtrackerwebclient.post(`/v1/token/social-auth/social/jwt-pair/hannabananna/`, {code: code}).then(res => {
                 localStorage.setItem("tokens", JSON.stringify(res.data));
+                auth.setCurrUser();
                 navigate(from, {replace: true});
             }).catch(err => {
                 notification.error({message: `Não foi possível conectar com o HBAuth`, description: err.response.data});

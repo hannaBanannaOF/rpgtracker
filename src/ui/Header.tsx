@@ -25,7 +25,6 @@ export function HeaderContent(props: HeaderContentProps) {
             </Menu.Item>
         </Menu>
     );
-
     return(
         <Row justify="space-between">
             <Col>
@@ -33,7 +32,7 @@ export function HeaderContent(props: HeaderContentProps) {
             </Col>
             <Col style={{ marginRight: props.siderHidden ?  "5px" : 0 }}>
                 <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
-                    <Avatar icon={<UserOutlined />} style={{ cursor: "pointer" }}/>
+                    <Avatar src={auth.getCurrUser()?.photo ?? undefined} icon={<UserOutlined />} style={{ cursor: "pointer" }}/>
                 </Dropdown>
             </Col>
         </Row>

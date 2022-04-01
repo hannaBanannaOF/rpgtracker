@@ -1,36 +1,19 @@
 import React from "react";
-import { notification, Skeleton, Typography } from "antd";
+import { Skeleton, Typography } from "antd";
 import MinhasFichas from "../ui/MinhasFichas";
-import { AccountService } from "../components/services/AccountService";
-import { CurrentUser } from "../components/models/CurrentUser";
+import AuthContext from "../components/providers/AuthProvider";
 
-export interface HomeState {
-	currentUserObj?: CurrentUser;
-	loading: boolean;
-}
+export interface HomeState {}
 
 class Home extends React.Component<any, HomeState> {
 
-    state : HomeState = {
-		currentUserObj: undefined,
-		loading: true
-	}
-
-	componentDidMount = () => {
-		AccountService.getCurrentUserObj().then((res) => {
-			this.setState({currentUserObj: res.data, loading: false});
-		}).catch(err => {
-			notification.error({
-				message: "Erro ao buscar informações do usuário",
-				description: err.response?.data?.detail ?? ""
-			});
-		});
-	}
+	static contextType = AuthContext;
 
     render() {
+		let context = this.context
         return(
-			<Skeleton active loading={this.state.loading}>
-				<Typography.Title>Welcome back, {this.state.currentUserObj?.first_name ?? this.state.currentUserObj?.nickname ?? "Anon"}</Typography.Title>
+			<Skeleton active loading={false}>
+				<Typography.Title>Welcome back, {context.getCurrUser()?.first_name ?? context.getCurrUser()?.nickname ?? "Anon"}</Typography.Title>
 				<MinhasFichas />
 			</Skeleton>
         );
