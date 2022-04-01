@@ -1,23 +1,20 @@
 import React from "react";
 import { Skeleton, Typography } from "antd";
 import MinhasFichas from "../ui/MinhasFichas";
-import AuthContext from "../components/providers/AuthProvider";
+import AuthContext, { useAuth } from "../components/providers/AuthProvider";
 
 export interface HomeState {}
 
-class Home extends React.Component<any, HomeState> {
+export function Home() {
 
-	static contextType = AuthContext;
+	let auth = useAuth();
 
-    render() {
-		let context = this.context
-        return(
-			<Skeleton active loading={false}>
-				<Typography.Title>Welcome back, {context.getCurrUser()?.first_name ?? context.getCurrUser()?.nickname ?? "Anon"}</Typography.Title>
-				<MinhasFichas />
-			</Skeleton>
-        );
-    }
+    return(
+		<Skeleton active loading={auth.getCurrUser() === undefined}>
+			<Typography.Title>Welcome back, {auth.getCurrUser()?.first_name ?? auth.getCurrUser()?.nickname ?? "Anon"}</Typography.Title>
+			<MinhasFichas />
+		</Skeleton>
+	);
 }
 
 export default Home;
