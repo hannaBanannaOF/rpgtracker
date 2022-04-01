@@ -2,6 +2,7 @@ import { Col, Dropdown, Menu, Row } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/providers/AuthProvider';
 import { BiLogOut } from "react-icons/bi";
+import { FaUser } from 'react-icons/fa';
 import Avatar from 'antd/lib/avatar/avatar';
 import { UserOutlined } from '@ant-design/icons';
 import Logo from "../assets/img/menuIcon.png";
@@ -20,6 +21,9 @@ export function HeaderContent(props: HeaderContentProps) {
 
     const menu = (
         <Menu style={{ marginTop: "10px" }}>
+            <Menu.Item key="perfil_menuItem" onClick={() => { window.location.href = process.env.REACT_APP_PROFILE_PAGE_URL! }}>
+                <IconText icon={<FaUser />} text="Perfil" iconLeft/>
+            </Menu.Item>
             <Menu.Item key="logout_menuItem" onClick={() => {auth.signout(() => {navigate("/login")})}}>
                 <IconText icon={<BiLogOut />} text="Sair" iconLeft/>
             </Menu.Item>
