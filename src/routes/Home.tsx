@@ -1,7 +1,6 @@
-import React from "react";
 import { Skeleton, Typography } from "antd";
 import MinhasFichas from "../ui/MinhasFichas";
-import AuthContext, { useAuth } from "../components/providers/AuthProvider";
+import { useAuth } from "../components/providers/AuthProvider";
 
 export interface HomeState {}
 

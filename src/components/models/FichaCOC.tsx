@@ -23,6 +23,11 @@ interface Arma {
     damage: string
 }
 
+interface Ocupacao {
+    id: number,
+    name: string
+}
+
 export interface ArmasEmFicha {
     id: number,
     ammo_left?: number,
@@ -51,6 +56,7 @@ export interface FichaCOC {
     power: number,
     education: number,
     move_rate: number,
+    ocupation: Ocupacao,
     skill_list: Skill[],
     hp: number,
     max_hp: number,

@@ -52,7 +52,7 @@ class App extends React.Component {
 									</Layout>
 								</RequireAuth>
 							} />
-							<Route path="/fichas/coc/:id" element={
+							<Route path="/fichas/coc/details/" element={
 								<RequireAuth>
 									<Layout>
 										<DetalhesFichaCoC />

@@ -43,7 +43,7 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
     }
 
     componentDidMount = () => {
-        CoCService.getFicha(this.props.params.id).then(res => {
+        CoCService.getFicha(this.props.query.get("pk")).then(res => {
             this.setState({ loading: false, ficha: res.data });
         }).catch(err => {
             notification.error({
@@ -62,7 +62,7 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
                             <Space direction='vertical'>
                                 <Space>
                                     <Typography.Text underline>Nome:</Typography.Text>
-                                    { this.state.ficha?.nome_personagem ?? "" }
+                                    {this.state.ficha?.nome_personagem ?? ""}
                                 </Space>
                                 <Space>
                                     <Typography.Text underline>Jogador:</Typography.Text>
@@ -70,6 +70,7 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
                                 </Space>
                                 <Space>
                                     <Typography.Text underline>Ocupação:</Typography.Text>
+                                    {this.state.ficha?.ocupation.name}
                                 </Space>
                                 <Space>
                                     <Typography.Text underline>Idade:</Typography.Text>
@@ -124,7 +125,7 @@ class DetalhesFichaCoC extends React.Component<any, DetalhesFichaCoCState> {
                         </Card>
                     </Col>
                     <Col xl={{ span: 6, order: 3 }} lg={{ span: 5, order: 3 }} md={{ span: 9, order: 2 }} sm={{ span: 7, order: 1 }} xs={{ span: 7, order: 1 }} style= {{ textAlign: 'center' }}>
-                        <Avatar icon={<UserOutlined />} size={{ xl: 180, lg: 160, md: 180, xs: 100, sm: 100 }} />
+                        <Avatar icon={<UserOutlined />} size={{ xxl: 200, xl: 180, lg: 160, md: 180, xs: 100, sm: 100 }} />
                     </Col>
                     <Col xl={{ span: 8, order: 4 }} lg={{ span: 8, order: 4 }} md={{ span: 24, order: 4 }} sm={{ span: 24, order: 4 }} xs={{ span: 24, order: 4 }}>
                         <Card title="HP">

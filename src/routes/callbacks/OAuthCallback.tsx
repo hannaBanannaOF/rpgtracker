@@ -55,9 +55,7 @@ export function OAuthCallback(props: OAuthCallbackProps) {
 
     return (
         <React.Fragment>
-            {!props.hbauth && <React.Fragment>
-                {props.provider === "discord" && <DiscordCallbackScreen />}
-            </React.Fragment>}
+            {!props.hbauth && props.provider === "discord" && <DiscordCallbackScreen />}
             {props.hbauth && <div style={{ width: "100%", height: "100%", backgroundColor: "purple", display: "flex", flexDirection: "column", justifyContent:"center", alignItems:"center"}}>
                 <FaLock color="azure" size={150} />
                 <Typography.Title style={{ color: "azure" }}>Authenticating</Typography.Title>
