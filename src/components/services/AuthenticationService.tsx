@@ -23,5 +23,6 @@ export function authenticate(values: string, callbackSuccess: (data: any) => voi
 }
 
 export function logout(callback: VoidFunction) {
+    //TODO revoke tokens
     callback();
 }

@@ -16,7 +16,7 @@ export function Login(props: LoginProps) {
     let location = useLocation();
     let auth = useAuth();
   
-    let from = location.state?.from?.pathname || "/";
+    let from = (location.state as any)?.from?.pathname || "/";
   
     let [authent, setAuthent] = useState(false);
 

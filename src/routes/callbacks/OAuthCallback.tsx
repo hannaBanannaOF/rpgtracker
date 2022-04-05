@@ -19,7 +19,7 @@ export function OAuthCallback(props: OAuthCallbackProps) {
     let auth = useAuth();
     let [searchParams] = useSearchParams();
 
-    let from = location.state?.from?.pathname || "/";
+    let from = (location.state as any)?.from?.pathname || "/";
 
     function capitalize(str: string){
         return str.charAt(0).toUpperCase() + str.slice(1);
