@@ -66,7 +66,7 @@ class MinhasFichas extends React.Component<any, MinhasFichasState> {
                         
                         <List dataSource={this.state.fichas} renderItem={(item: MinhasFichasDTO) => (
                             <List.Item actions={[
-                                <Link to={`fichas/${item.get_content_type}/details/?pk=${item.id}`}>Ver</Link>
+                                <Link to={`fichas/${item.get_content_type}/details?pk=${item.id}`}>Ver</Link>
                             ]}>
                                 <List.Item.Meta
                                     avatar={<Tooltip title={this.getContentTypeTooltip(item.get_content_type)}><Avatar icon={this.getContentTypeItem(item.get_content_type)} /></Tooltip>}

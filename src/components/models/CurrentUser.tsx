@@ -3,5 +3,6 @@ export interface CurrentUser {
     nickname?: string,
     first_name?: string,
     last_name?: string,
-    photo?: string
+    photo?: string,
+    is_mestre?: boolean
 }
