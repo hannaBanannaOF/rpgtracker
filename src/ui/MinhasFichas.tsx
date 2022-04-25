@@ -1,44 +1,30 @@
 import { Avatar, Col, Divider, List, notification, Row, Skeleton, Tooltip } from 'antd';
-import React, { CSSProperties } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { GiOctopus, GiHarryPotterSkull } from "react-icons/gi";
 import { Link } from 'react-router-dom';
+import { MinhasFichas as Ficha } from '../components/models/Ficha';
 import { AccountService } from '../components/services/AccountService';
 
-export interface MinhasFichasState {
-    fichas: [],
-    loading: boolean
-}
 
-interface MesaDTO {
-    name: string,
-}
+export function MinhasFichas() {
 
-interface MinhasFichasDTO {
-    id: number,
-    nome_personagem: string,
-    get_content_type: string,
-    mesa? : MesaDTO
-}
+    const [loading, setLoading] = useState(true);
+    const [fichas, setFichas] = useState<Ficha[] | null>(null);
 
-class MinhasFichas extends React.Component<any, MinhasFichasState> {
-
-    state: MinhasFichasState = {
-        fichas: [],
-        loading: true
-    }
-
-    componentDidMount() {
+    useEffect(() => {
+        setLoading(true);
         AccountService.getCurrentUserFichas().then((res) => {
-			this.setState({fichas: res.data, loading: false});
+            setLoading(false);
+            setFichas(res.data)
 		}).catch(err => {
 			notification.error({
 				message: "Erro ao buscar fichas do usuário",
 				description: err.response?.data?.detail ?? ""
 			});
 		});
-    }
+    }, []);
 
-    getContentTypeItem = (content_type: string) => {
+    const getContentTypeItem = (content_type: string) => {
         let defStyle: CSSProperties = { color: "black" }
         if(content_type === 'coc') {
             return <GiOctopus style={defStyle}/>;
@@ -48,7 +34,7 @@ class MinhasFichas extends React.Component<any, MinhasFichasState> {
         }
     }
 
-    getContentTypeTooltip = (content_type: string) => {
+    const getContentTypeTooltip = (content_type: string) => {
         if(content_type === 'coc') {
             return "Call of Cthulhu";
         }
@@ -57,29 +43,25 @@ class MinhasFichas extends React.Component<any, MinhasFichasState> {
         }
     }
 
-    render() {
-        return (
-            <Row justify='center'>
-                <Divider orientation="left">Minhas fichas</Divider>
-                <Col span={24} lg={12}>
-                    <Skeleton loading={this.state.loading} active>
-                        
-                        <List dataSource={this.state.fichas} renderItem={(item: MinhasFichasDTO) => (
-                            <List.Item actions={[
-                                <Link to={`fichas/${item.get_content_type}/details?pk=${item.id}`}>Ver</Link>
-                            ]}>
-                                <List.Item.Meta
-                                    avatar={<Tooltip title={this.getContentTypeTooltip(item.get_content_type)}><Avatar icon={this.getContentTypeItem(item.get_content_type)} /></Tooltip>}
-                                    title={item.nome_personagem}
-                                    description={item.mesa?.name ?? ""}
-                                />
-                            </List.Item>
-                        )}/>
-                    </Skeleton>
-                </Col>
-            </Row>
-        );
-    }
+    return (
+        <Row justify='center'>
+            <Divider orientation="left">Minhas fichas</Divider>
+            <Col span={24} lg={12}>
+                <Skeleton loading={loading} active>
+                    
+                    <List dataSource={fichas!} renderItem={(item: Ficha) => (
+                        <List.Item actions={[
+                            <Link to={`fichas/${item.get_content_type}/details?pk=${item.id}`}>Ver</Link>
+                        ]}>
+                            <List.Item.Meta
+                                avatar={<Tooltip title={getContentTypeTooltip(item.get_content_type)}><Avatar icon={getContentTypeItem(item.get_content_type)} /></Tooltip>}
+                                title={item.nome_personagem}
+                                description={item.mesa?.name ?? ""}
+                            />
+                        </List.Item>
+                    )}/>
+                </Skeleton>
+            </Col>
+        </Row>
+    );
 }
-
-export default MinhasFichas;

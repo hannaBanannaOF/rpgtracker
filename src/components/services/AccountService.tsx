@@ -9,6 +9,10 @@ class AccountService {
     static getCurrentUserFichas = () => {
         return Rpgtrackerwebclient.get('v1/accounts/current-user/fichas');
     }
+
+    static getCurrentUserMesasMestradas = () => {
+        return Rpgtrackerwebclient.get('v1/accounts/current-user/mesas-mestradas');
+    }
 }
 
 export { AccountService }

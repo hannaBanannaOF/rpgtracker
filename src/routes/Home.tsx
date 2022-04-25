@@ -1,5 +1,5 @@
 import { Skeleton, Typography } from "antd";
-import MinhasFichas from "../ui/MinhasFichas";
+import { MinhasFichas } from "../ui/MinhasFichas";
 import { useAuth } from "../components/providers/AuthProvider";
 
 export interface HomeState {}

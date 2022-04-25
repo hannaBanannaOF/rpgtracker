@@ -6,7 +6,7 @@ import { FaUser } from 'react-icons/fa';
 import Avatar from 'antd/lib/avatar/avatar';
 import { UserOutlined } from '@ant-design/icons';
 import Logo from "../assets/img/menuIcon.png";
-import IconText from './IconText';
+import { IconText } from './IconText';
 
 export interface HeaderContentProps {
     siderHidden: boolean,
@@ -35,7 +35,7 @@ export function HeaderContent(props: HeaderContentProps) {
                 {props.siderHidden && props.siderCollapsed && <img src={`${Logo}`} alt="logo" width={75} onClick={() => {props.siderCallback()}}/>}
             </Col>
             <Col style={{ marginRight: props.siderHidden ?  "5px" : 0 }}>
-                <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+                <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" >
                     <Avatar src={auth.getCurrUser()?.photo ?? undefined} icon={<UserOutlined />} style={{ cursor: "pointer" }}/>
                 </Dropdown>
             </Col>

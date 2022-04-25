@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CurrentUser } from "../models/CurrentUser";
 import { AccountService } from "../services/AccountService";
 import { authenticate, logout } from "../services/AuthenticationService";
@@ -17,6 +17,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     const [currentUser, setCurrentUser] = useState<CurrentUser | undefined>(undefined);
 
+    useEffect(() => {
+      if (currentUser === undefined && valid()) {
+        let userData = localStorage.getItem("user-data");
+        if(userData) {
+          setCurrentUser(JSON.parse(userData));
+        } else {
+          setCurrUser();
+        }
+      }
+    }, [])
+
     let signin = (newUser: string, callback: VoidFunction, errorCallback: (message: any) => void) => {
       return authenticate(newUser, (data) => {
         localStorage.setItem("tokens", JSON.stringify(data));
@@ -29,6 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   
     let setCurrUser = () => {
       AccountService.getCurrentUserObj().then((res) => {
+        localStorage.setItem("user-data", JSON.stringify(res.data));
         setCurrentUser(res.data);
       });
     }
@@ -41,9 +53,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     let getCurrUser = () => {
-      if (currentUser === undefined && valid()) {
-        setCurrUser();
-      }
       return currentUser;
     }
   
@@ -56,8 +65,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
-export default AuthContext;
 
 export function useAuth() {
     return React.useContext(AuthContext);

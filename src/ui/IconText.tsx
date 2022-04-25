@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { Space } from 'antd';
 
 export interface IconTextProps {
@@ -7,18 +7,13 @@ export interface IconTextProps {
     iconLeft?: boolean
 }
 
-class IconText extends React.Component<IconTextProps, any> {
+export function IconText(props: IconTextProps){
 
-    render = () => {
-        return (
-            <Space>
-                {(this.props.iconLeft ?? false) && this.props.icon}
-                {this.props.text}
-                {!(this.props.iconLeft ?? false) && this.props.icon}
-            </Space>
-        )
-    }
-
+    return (
+        <Space>
+            {(props.iconLeft ?? false) && props.icon}
+            {props.text}
+            {!(props.iconLeft ?? false) && props.icon}
+        </Space>
+    )
 }
-
-export default IconText;
