@@ -9,7 +9,7 @@ import { Login } from './routes/Login';
 import "./App.css";
 import { SmileOutlined } from '@ant-design/icons';
 import { OAuthCallback } from './routes/callbacks/OAuthCallback';
-import DetalhesFichaCoC from './routes/DetalhesFichaCoC';
+import { DetalhesFichaCoC } from './routes/DetalhesFichaCoC';
 import { Layout } from './ui/Layout';
 import { MinhasMesas } from './routes/MinhasMesas';
 class App extends React.Component {

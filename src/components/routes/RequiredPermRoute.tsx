@@ -10,7 +10,7 @@ export interface Permissions {
 export function RequireAuth(props: Permissions) {
     let auth = useAuth();
     let location = useLocation();
-  
+
     if (!auth.valid()) {
       return <Navigate to="/login" state={{ from: location }} replace />;
     }

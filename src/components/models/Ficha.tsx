@@ -1,4 +1,15 @@
-import { CurrentUser } from './CurrentUser'
+import { CurrentUser } from "./CurrentUser";
+import { MesaBase } from "./Mesa";
+
+export type FichaType = FichaBase | FichaCOC;
+
+export interface FichaBase {
+    id: number,
+    nome_personagem: string,
+    get_content_type: string,
+    mesa? : MesaBase,
+    jogador: CurrentUser
+}
 
 interface Skill {
     id: number,
@@ -38,13 +49,11 @@ export interface ArmasEmFicha {
     weapon: Arma
 }
 
-export interface FichaCOC {
+export interface FichaCOC extends FichaBase {
     age: number,
     birthplace: string,
     residence: string,
     sex: string,
-    nome_personagem: string,
-    jogador: CurrentUser,
     pulp_cthulhu: boolean,
     pulp_archetype?: string,
     strength: number,

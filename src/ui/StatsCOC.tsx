@@ -11,42 +11,38 @@ export interface CoCStatsProps {
     fullWidth?: boolean
 }
 
-class CoCStats extends React.Component<CoCStatsProps, any> {
+export function CoCStats(props: CoCStatsProps){
 
-    render = () => {
-        return (
-            <React.Fragment>
-                {!this.props.fullRounded && <Col span={24}>
-                    <Row justify='space-around' align='middle'>
-                        <Col span={8}>
-                            {this.props.improvcheck ? <Checkbox checked={this.props.improvedCheck}>{ this.props.stat }</Checkbox> : <Typography.Title level={5}>{this.props.stat}</Typography.Title>}
-                        </Col>
-                        <Col span={4}>
-                            <Space style={{ border: "1px solid black", borderRadius: "0 10px 0 0" }}>
-                                <Col span={12} style={{ paddingLeft: 7 }}>{this.props.value}</Col>
-                                <Col span={12} style={{ borderLeft: "1px solid black" }}>
-                                    <Space direction='vertical' size={0}>
-                                        <Col style={{ paddingLeft: 5, paddingRight: 5, borderBottom: "1px solid black" }}>{Math.floor(+this.props.value/2)}</Col>
-                                        <Col style={{ paddingLeft: 5, paddingRight: 5 }}>{Math.floor(+this.props.value/5)}</Col>
-                                    </Space>
-                                </Col>
-                            </Space>
-                        </Col>
-                    </Row>
-                </Col>}
-                {this.props.fullRounded && !this.props.improvcheck && <Col span={24}>
-                    <Row justify='space-around' align='middle'>
-                        <Col span={8}>
-                            <Typography.Title level={5}>{this.props.stat}</Typography.Title>
-                        </Col>
-                        <Col span={4} style={{ padding: 10, border: "1px solid black", borderRadius: "10px", textAlign: 'center' }}>
-                            {this.props.value}
-                        </Col>
-                    </Row>
-                </Col>}
-            </React.Fragment>
-        );
-    }
+    return (
+        <React.Fragment>
+            {!props.fullRounded && <Col span={24}>
+                <Row justify='space-around' align='middle'>
+                    <Col span={8}>
+                        {props.improvcheck ? <Checkbox checked={props.improvedCheck}>{ props.stat }</Checkbox> : <Typography.Title level={5}>{props.stat}</Typography.Title>}
+                    </Col>
+                    <Col span={4}>
+                        <Space style={{ border: "1px solid black", borderRadius: "0 10px 0 0" }}>
+                            <Col span={12} style={{ paddingLeft: 7 }}>{props.value}</Col>
+                            <Col span={12} style={{ borderLeft: "1px solid black" }}>
+                                <Space direction='vertical' size={0}>
+                                    <Col style={{ paddingLeft: 5, paddingRight: 5, borderBottom: "1px solid black" }}>{Math.floor(+props.value/2)}</Col>
+                                    <Col style={{ paddingLeft: 5, paddingRight: 5 }}>{Math.floor(+props.value/5)}</Col>
+                                </Space>
+                            </Col>
+                        </Space>
+                    </Col>
+                </Row>
+            </Col>}
+            {props.fullRounded && !props.improvcheck && <Col span={24}>
+                <Row justify='space-around' align='middle'>
+                    <Col span={8}>
+                        <Typography.Title level={5}>{props.stat}</Typography.Title>
+                    </Col>
+                    <Col span={4} style={{ padding: 10, border: "1px solid black", borderRadius: "10px", textAlign: 'center' }}>
+                        {props.value}
+                    </Col>
+                </Row>
+            </Col>}
+        </React.Fragment>
+    );
 }
-
-export default CoCStats;

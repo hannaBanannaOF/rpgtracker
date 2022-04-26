@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { CurrentUser } from "../models/CurrentUser";
 import { AccountService } from "../services/AccountService";
 import { authenticate, logout } from "../services/AuthenticationService";
@@ -14,8 +14,6 @@ interface AuthContextType {
 let AuthContext = React.createContext<AuthContextType>(null!);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    
-    const [currentUser, setCurrentUser] = useState<CurrentUser | undefined>(undefined);
 
     let signin = (newUser: string, callback: VoidFunction, errorCallback: (message: any) => void) => {
       return authenticate(newUser, (data) => {
@@ -29,22 +27,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   
     let setCurrUser = () => {
       AccountService.getCurrentUserObj().then((res) => {
-        setCurrentUser(res.data);
+        localStorage.setItem("user-data", JSON.stringify(res.data));
       });
     }
 
     let signout = (callback: VoidFunction) => {
       return logout(() => {
         localStorage.removeItem("tokens");
+        localStorage.removeItem("user-data");
         callback();
       });
     };
 
     let getCurrUser = () => {
-      if (currentUser === undefined && valid()) {
-        setCurrUser();
+      let data = localStorage.getItem("user-data");
+      if(data) {
+        return JSON.parse(data);
+      } else {
+        return undefined;
       }
-      return currentUser;
     }
   
     let valid = () => {
@@ -56,8 +57,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
-export default AuthContext;
 
 export function useAuth() {
     return React.useContext(AuthContext);

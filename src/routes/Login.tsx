@@ -1,7 +1,7 @@
-import { Col, Divider, notification, Row, Typography } from "antd";
+import { Col, Divider, Row, Typography } from "antd";
 import Bg from '../assets/img/bg.jpg';
 import { Form, Button } from 'antd';
-import { Navigate, useLocation, useNavigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../components/providers/AuthProvider";
 import { FaLock } from "react-icons/fa";
 import { useState } from "react";
@@ -10,26 +10,12 @@ export interface LoginProps {
 }
 
 export function Login(props: LoginProps) {
-    let navigate = useNavigate();
     let location = useLocation();
     let auth = useAuth();
   
     let from = (location.state as any)?.from?.pathname || "/";
   
     let [authent, setAuthent] = useState(false);
-
-    function handleSubmit(values: string) {  
-        setAuthent(true);
-        auth.signin(values, () => {
-        navigate(from, { replace: true });
-      }, (message) => {
-            setAuthent(false);
-            notification.error({
-                message: 'Falha ao realizar login!',
-                description: message
-            });
-      });
-    }
 
     function redirectOAuth(redirect: string) {
         setAuthent(true);
@@ -50,7 +36,6 @@ export function Login(props: LoginProps) {
                         wrapperCol={{ span: 16 }}
                         layout="vertical"
                         size="large"
-                        onFinish={handleSubmit}
                         >
                             <Divider style={{ color: "white" }} orientation="left">
                                 <Typography.Title style={{ color: "white" }}>Login</Typography.Title>
