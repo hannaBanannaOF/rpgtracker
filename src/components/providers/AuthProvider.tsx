@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { CurrentUser } from "../models/CurrentUser";
 import { AccountService } from "../services/AccountService";
 import { authenticate, logout } from "../services/AuthenticationService";
@@ -14,19 +14,6 @@ interface AuthContextType {
 let AuthContext = React.createContext<AuthContextType>(null!);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    
-    const [currentUser, setCurrentUser] = useState<CurrentUser | undefined>(undefined);
-
-    useEffect(() => {
-      if (currentUser === undefined && valid()) {
-        let userData = localStorage.getItem("user-data");
-        if(userData) {
-          setCurrentUser(JSON.parse(userData));
-        } else {
-          setCurrUser();
-        }
-      }
-    }, [])
 
     let signin = (newUser: string, callback: VoidFunction, errorCallback: (message: any) => void) => {
       return authenticate(newUser, (data) => {
@@ -41,19 +28,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let setCurrUser = () => {
       AccountService.getCurrentUserObj().then((res) => {
         localStorage.setItem("user-data", JSON.stringify(res.data));
-        setCurrentUser(res.data);
       });
     }
 
     let signout = (callback: VoidFunction) => {
       return logout(() => {
         localStorage.removeItem("tokens");
+        localStorage.removeItem("user-data");
         callback();
       });
     };
 
     let getCurrUser = () => {
-      return currentUser;
+      let data = localStorage.getItem("user-data");
+      if(data) {
+        return JSON.parse(data);
+      } else {
+        return undefined;
+      }
     }
   
     let valid = () => {

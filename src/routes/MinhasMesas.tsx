@@ -1,14 +1,18 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Avatar, Card, Col, Divider, List, Row, Skeleton, Space, Tooltip, Typography } from "antd";
+import { Avatar, Button, Col, Descriptions, Divider, List, PageHeader, Row, Skeleton, Tag, Tooltip } from "antd";
 import { CSSProperties, useEffect, useState } from "react";
 import { GiHarryPotterSkull, GiOctopus } from "react-icons/gi";
-import { Mesa } from "../components/models/Mesa";
+import { useNavigate } from "react-router";
+import { FichaBase } from "../components/models/Ficha";
+import { MesaBase } from "../components/models/Mesa";
 import { AccountService } from "../components/services/AccountService";
 
 export function MinhasMesas() {
 
     const [loading, setLoading] = useState(true);
-    const [mesas, setMesas] = useState<Mesa[] | null>(null);
+    const [mesas, setMesas] = useState<MesaBase[] | null>(null);
+
+    let navigate = useNavigate();
 
     useEffect(() => {
         setLoading(true);
@@ -41,28 +45,27 @@ export function MinhasMesas() {
         <Divider orientation="left">Minhas Mesas</Divider>
         <Col span={24} lg={12}>
             <Skeleton loading={loading} active>
-                <List dataSource={mesas!} grid={{ gutter: 16, column: 1 }} renderItem={(item: Mesa) => (
-                    <List.Item key={item.id} actions={[
-                        //<Link to={`fichas/${item.get_content_type}/details?pk=${item.id}`}>Ver</Link>
-                    ]}>
-                        <Card title={
-                            <Space direction="horizontal">
-                                <Typography.Title level={3}>
-                                    <Tooltip title={getContentTypeTooltip(item.get_content_type)}>
-                                        {getContentTypeItem(item.get_content_type)}
-                                    </Tooltip>
-                                    {item.name}
-                                </Typography.Title>
-                            </Space>
-                        }>
-                            <Avatar.Group>
-                                {item.fichas_mesa.map((ficha) => {
-                                    return <Tooltip title={ficha.jogador.first_name ?? "Anon"}>
-                                        <Avatar src={ficha.jogador.photo ?? undefined} icon={<UserOutlined />}/>
-                                    </Tooltip>
-                                })}
-                            </Avatar.Group>
-                        </Card>
+                <List dataSource={mesas!} grid={{ gutter: 16, column: 1 }} renderItem={(item: MesaBase) => (
+                    <List.Item key={item.id}>
+                        <PageHeader avatar={{ icon: getContentTypeItem(item.get_content_type) }} 
+                            subTitle={getContentTypeTooltip(item.get_content_type)}
+                            ghost={false} title={item.name} 
+                            tags={item.open_session ? <Tag color={"green"}>Sessão aberta</Tag> : undefined}
+                            extra={[
+                                <Button key="open-mesa-action" type="primary" onClick={() => {navigate(`mesas/${item.get_content_type}/details?pk=${item.id}`)}}>
+                                    Ver fichas
+                                </Button>
+                            ]}>
+                            <Descriptions size="small">
+                                <Descriptions.Item label="Players">
+                                    <Avatar.Group>
+                                        {item.fichas_mesa.map((ficha: FichaBase) => <Tooltip title={ficha.jogador.first_name ?? "Anon"}>
+                                            <Avatar src={ficha.jogador?.photo ?? undefined} icon={<UserOutlined />} style={{ cursor: "pointer" }}/>
+                                        </Tooltip>)}
+                                    </Avatar.Group>
+                                </Descriptions.Item>
+                            </Descriptions>
+                        </PageHeader>
                     </List.Item>
                 )}/>
             </Skeleton>

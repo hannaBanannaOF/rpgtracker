@@ -1,7 +1,7 @@
 import { Card, Col, Collapse, List, notification, Row, Skeleton, Slider, Space, Table, Typography } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import { useEffect, useState } from 'react';
-import { ArmasEmFicha, FichaCOC } from '../components/models/FichaCOC';
+import { ArmasEmFicha, FichaCOC } from '../components/models/Ficha';
 import { useQuery } from '../components/routes/WithRouter';
 import { CoCService } from '../components/services/CoCService';
 import { UserOutlined } from '@ant-design/icons';

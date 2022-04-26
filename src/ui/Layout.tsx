@@ -7,13 +7,14 @@ import Menu from 'antd/lib/menu';
 import { HeaderContent } from "../ui/Header";
 import Logo from "../assets/img/menuIcon.png";
 import { HomeOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/providers/AuthProvider';
 import { GiTabletopPlayers } from 'react-icons/gi';
 
 export function Layout(props: any) {
 
 	let auth = useAuth();
+	let navigate = useNavigate();
 
 	const [siderCollapsed, setSiderCollapsed] = useState(false);
 	const [siderCollapsedWidth, setSiderCollapsedWidth] = useState(80);
@@ -21,6 +22,25 @@ export function Layout(props: any) {
     const toggle = () => {
 		setSiderCollapsed(!siderCollapsed);
     }
+
+	const getMenuItems = () => {
+		const itens = [
+			{
+				key: "home_menu_opt",
+				label: "Home",
+				icon: <HomeOutlined />,
+				onClick: () => navigate("/")
+			}
+		];
+		if (auth.getCurrUser()?.is_mestre!)
+			itens.push({
+					key: "minhas_mesas_menu_opt",
+					label: "Minhas mesas",
+					icon: <GiTabletopPlayers/>,
+					onClick: () => navigate("/minhas-mesas")
+			});
+		return itens
+	}
 
 	return(
 		<AntdLayout className="d-flex flex-row">
@@ -41,14 +61,8 @@ export function Layout(props: any) {
 				</div>
 				<Menu
 					mode="inline"
-					theme="dark">
-						<Menu.Item key="home_menu_opt" icon={<HomeOutlined />}>
-							<Link to={"/"} style={{ textDecoration: "none", color:"white" }}>Home</Link>
-						</Menu.Item>
-						{auth.getCurrUser()?.is_mestre! && <Menu.Item key="minhas_mesas_menu_opt" icon={<GiTabletopPlayers/>}>
-							<Link to={"/minhas-mesas"} style={{ textDecoration: "none", color:"white" }}>Minhas mesas</Link>
-						</Menu.Item>}
-				</Menu>
+					theme="dark"
+					items={getMenuItems()}/>
 			</Sider>
 			<AntdLayout style={{ minHeight: "100vh" }}>
 				<Header style={{ padding: siderCollapsedWidth === 0 ? "0" : "0, 50px" }}>
