@@ -1,5 +1,7 @@
-import { Avatar, Button, Col, Divider, List, notification, Row, Skeleton, Tooltip } from 'antd';
-import { CSSProperties, useEffect, useState } from 'react';
+import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Tooltip } from '@mui/material';
+import { notification } from 'antd';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import React, { useEffect, useState } from 'react';
 import { GiOctopus, GiHarryPotterSkull } from "react-icons/gi";
 import { useNavigate } from 'react-router-dom';
 import { FichaBase as Ficha } from '../components/models/Ficha';
@@ -17,7 +19,7 @@ export function MinhasFichas() {
         setLoading(true);
         AccountService.getCurrentUserFichas().then((res) => {
             setLoading(false);
-            setFichas(res.data)
+            setFichas(res.data);
 		}).catch(err => {
 			notification.error({
 				message: "Erro ao buscar fichas do usuário",
@@ -27,12 +29,11 @@ export function MinhasFichas() {
     }, []);
 
     const getContentTypeItem = (content_type: string) => {
-        let defStyle: CSSProperties = { color: "black" }
         if(content_type === 'coc') {
-            return <GiOctopus style={defStyle}/>;
+            return <GiOctopus />;
         }
         if(content_type === 'hp') {
-            return <GiHarryPotterSkull style={defStyle}/>;
+            return <GiHarryPotterSkull />;
         }
     }
 
@@ -43,31 +44,36 @@ export function MinhasFichas() {
         if(content_type === 'hp') {
             return "Harry Potter (Broomstix)";
         }
+        return "";
     }
 
-    return (
-        <Row justify='center'>
-            <Divider orientation="left">Minhas fichas</Divider>
-            <Col span={24} lg={12}>
-                <Skeleton loading={loading} active>
-                    <List dataSource={fichas!} renderItem={(item: Ficha) => (
-                        <List.Item 
-                            key={item.id}    
-                            style={{ backgroundColor: "white", padding: 20 }}
-                            actions={[
-                                <Button type="primary" onClick={() => {navigate(`fichas/${item.get_content_type}/details?pk=${item.id}`)}}>
-                                    Ver
-                                </Button>
-                        ]}>
-                            <List.Item.Meta
-                                avatar={<Tooltip title={getContentTypeTooltip(item.get_content_type)}><Avatar icon={getContentTypeItem(item.get_content_type)} /></Tooltip>}
-                                title={item.nome_personagem}
-                                description={item.mesa?.name ?? ""}
-                            />
-                        </List.Item>
-                    )}/>
-                </Skeleton>
-            </Col>
-        </Row>
+    return loading ? <Skeleton animation="wave" variant="rectangular"/> : (
+        <React.Fragment>
+            <Divider textAlign="left">Minhas fichas</Divider>
+            <List>
+                {fichas?.map((ficha) => {
+                    return <ListItem
+                        key={ficha.id}
+                        secondaryAction={
+                        <IconButton edge="end" aria-label="Ver ficha" onClick={() => {navigate(`fichas/${ficha.get_content_type}/details?pk=${ficha.id}`)}}>
+                            <ReadMoreIcon />
+                        </IconButton>
+                        }
+                    >
+                        <ListItemAvatar>
+                            <Tooltip title={getContentTypeTooltip(ficha.get_content_type)}>
+                                <Avatar>
+                                    {getContentTypeItem(ficha.get_content_type)}
+                                </Avatar>
+                            </Tooltip>
+                        </ListItemAvatar>
+                        <ListItemText
+                        primary={ficha.nome_personagem}
+                        secondary={ficha.mesa?.name}
+                        />
+                    </ListItem>
+                })}
+            </List>
+        </React.Fragment>
     );
 }

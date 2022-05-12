@@ -1,10 +1,10 @@
-import { Col, Divider, Row, Typography } from "antd";
 import Bg from '../assets/img/bg.jpg';
-import { Form, Button } from 'antd';
 import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../components/providers/AuthProvider";
-import { FaLock } from "react-icons/fa";
 import { useState } from "react";
+import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import LockIcon from '@mui/icons-material/Lock';
 
 export interface LoginProps {
 }
@@ -22,32 +22,38 @@ export function Login(props: LoginProps) {
         window.location.replace(redirect);
     }
   
-    if (auth.valid()) {
+    if (auth.valid) {
         return <Navigate to={from} replace />;
     }
 
     return(
         <div style={{ backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0)), url(${Bg})`, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", height: "100%"}}>
-            <Row style={{ height: "50%" }} align="middle">
-                <Col span={24} style={{ padding: 20 }} lg={12}>
-                    <Form
-                        name="login"
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
-                        layout="vertical"
-                        size="large"
-                        >
-                            <Divider style={{ color: "white" }} orientation="left">
-                                <Typography.Title style={{ color: "white" }}>Login</Typography.Title>
+            <Box sx={{ flexGrow: 1 }}>
+                <Grid
+                    container
+                    justifyContent="flex-start"
+                    alignItems="center"
+                    px={5}
+                >
+                    <Grid item md={8} xs={12}>
+                        <Stack mt={25}>
+                            <Divider textAlign="left">
+                                <Typography variant="h4" gutterBottom component={"div"}>Login</Typography>
                             </Divider>
-                            <Form.Item>
-                                <Button loading={authent} onClick={() => redirectOAuth(process.env.REACT_APP_HBAUTH_OAUTH_REDIRECT!)} style={{ width: "100%", color: "azure", backgroundColor:"purple", border: "none" }}>
-                                    <FaLock size={25} style={{ marginRight: "5px" }}/> Login com HBAuth
-                                </Button>
-                            </Form.Item>
-                        </Form>
-                </Col>
-            </Row>
+                            <LoadingButton
+                                sx={{ backgroundColor: "purple" }}
+                                onClick={() => redirectOAuth(process.env.REACT_APP_HBAUTH_OAUTH_REDIRECT!)}
+                                loading={authent}
+                                loadingPosition="start"
+                                startIcon={<LockIcon />}
+                                variant="contained"
+                            >
+                            Login com HBAuth
+                            </LoadingButton>
+                        </Stack>
+                    </Grid>
+                </Grid>
+            </Box>
         </div>
     );
 }
