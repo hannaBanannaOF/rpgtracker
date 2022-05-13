@@ -1,6 +1,4 @@
-import { Col, Row, Space, Typography } from 'antd';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
-import React from 'react'
+import { Grid, Typography, FormControlLabel, Checkbox, Paper, Box } from '@mui/material';
 
 export interface CoCStatsProps {
     value: string | number,
@@ -9,40 +7,63 @@ export interface CoCStatsProps {
     improvcheck?: boolean,
     improvedCheck?: boolean,
     fullWidth?: boolean
+    span?: Viewports
+}
+
+interface Viewports {
+    xs?: number,
+    sm?: number,
+    md?: number,
+    lg?: number,
+    xl?: number,
 }
 
 export function CoCStats(props: CoCStatsProps){
 
     return (
-        <React.Fragment>
-            {!props.fullRounded && <Col span={24}>
-                <Row justify='space-around' align='middle'>
-                    <Col span={8}>
-                        {props.improvcheck ? <Checkbox checked={props.improvedCheck}>{ props.stat }</Checkbox> : <Typography.Title level={5}>{props.stat}</Typography.Title>}
-                    </Col>
-                    <Col span={4}>
-                        <Space style={{ border: "1px solid black", borderRadius: "0 10px 0 0" }}>
-                            <Col span={12} style={{ paddingLeft: 7 }}>{props.value}</Col>
-                            <Col span={12} style={{ borderLeft: "1px solid black" }}>
-                                <Space direction='vertical' size={0}>
-                                    <Col style={{ paddingLeft: 5, paddingRight: 5, borderBottom: "1px solid black" }}>{Math.floor(+props.value/2)}</Col>
-                                    <Col style={{ paddingLeft: 5, paddingRight: 5 }}>{Math.floor(+props.value/5)}</Col>
-                                </Space>
-                            </Col>
-                        </Space>
-                    </Col>
-                </Row>
-            </Col>}
-            {props.fullRounded && !props.improvcheck && <Col span={24}>
-                <Row justify='space-around' align='middle'>
-                    <Col span={8}>
-                        <Typography.Title level={5}>{props.stat}</Typography.Title>
-                    </Col>
-                    <Col span={4} style={{ padding: 10, border: "1px solid black", borderRadius: "10px", textAlign: 'center' }}>
-                        {props.value}
-                    </Col>
-                </Row>
-            </Col>}
-        </React.Fragment>
+            <Grid container item xs={props.span?.xs ?? 12} sm={props.span?.sm ?? 12} md={props.span?.md ?? 12} lg={props.span?.lg ?? 12} xl={props.span?.xl ?? 12}>
+                {!props.fullRounded && <Grid item container justifyContent={"space-around"} alignItems={"center"} xs={12}>
+                    {props.improvcheck ? <FormControlLabel control={<Checkbox checked={props.improvedCheck} />} label=   {props.stat} /> : <Typography display="inline">{props.stat}</Typography>}
+                    <Paper sx={{
+                        backgroundColor: (theme) =>
+                        theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+                        border: (theme) => 
+                        theme.palette.mode === 'dark' ? '1px solid #fff' : '1px solid #1A2027',
+                        borderRadius: "0 10px 0 0",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-around"
+                    }}>
+                        <Typography sx={{ 
+                            p: 2,
+                            borderRight: (theme) => 
+                            theme.palette.mode === 'dark' ? '1px solid #fff' : '1px solid #1A2027',
+                        }}>{props.value}</Typography>
+                        <Box>
+                            <Typography display="block" variant="caption" sx={{ 
+                                px: 2, 
+                                borderBottom: (theme) => 
+                                theme.palette.mode === 'dark' ? '1px solid #fff' : '1px solid #1A2027',
+                            }}>{Math.floor(+props.value/2)}</Typography>
+                            <Typography display="block" variant="caption" sx={{
+                                px: 2
+                            }}>{Math.floor(+props.value/5)}</Typography>
+                        </Box>
+                    </Paper>
+                </Grid>}
+                {props.fullRounded && !props.improvcheck && <Grid item container justifyContent={"space-around"} alignItems={"center"} xs={12}>
+                    <Typography display="inline">{props.stat}</Typography>
+                    <Paper sx={{
+                        p: 2,
+                        backgroundColor: (theme) =>
+                        theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+                        border: (theme) => 
+                        theme.palette.mode === 'dark' ? '1px solid #fff' : '1px solid #1A2027',
+                        borderRadius: "10px"
+                    }}>
+                        <Typography>{props.value}</Typography>
+                    </Paper>
+                </Grid>}
+            </Grid>
     );
 }
