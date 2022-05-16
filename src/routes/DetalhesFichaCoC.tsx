@@ -1,9 +1,11 @@
-import { Skeleton, Grid, Paper, Typography, Divider, Avatar, Slider, Chip, Box } from '@mui/material';
+import { Skeleton, Grid, Paper, Typography, Divider, Avatar, Slider, Chip, Box, FormControlLabel, Checkbox, List } from '@mui/material';
 import { notification } from 'antd';
 import { useEffect, useState } from 'react';
 import { ArmasEmFicha, FichaCOC } from '../components/models/Ficha';
 import { useQuery } from '../components/routes/WithRouter';
 import { CoCService } from '../components/services/CoCService';
+import { DefaultEmpty } from '../ui/DefaultEmpty';
+import { ExpandableListItem } from '../ui/ExpandableListItem';
 import { CoCStats } from '../ui/StatsCOC';
 
 export function DetalhesFichaCoC() {
@@ -50,7 +52,7 @@ export function DetalhesFichaCoC() {
     }, [fichaId])
 
     return loading ? <Skeleton variant='rectangular' animation='wave'/> : (
-        <Grid container columns={24} spacing={2}>
+        <Grid container columns={24} spacing={2} sx={{ mb: 2 }}>
             <Grid item order={{lg: 1, md: 1, sm: 2, xs: 2}} xs={17} md={15} lg={6}>
                 <Paper sx={{ padding: 2 }}>
                     <Divider textAlign='left'>
@@ -105,58 +107,100 @@ export function DetalhesFichaCoC() {
                     />
                 </Paper>
             </Grid>
+            <Grid item order={5} lg={16} xs={24}>
+                <Paper sx={{ padding: 2 }}>
+                    <Divider textAlign='left'>
+                        <Typography variant='h6' component="div">Sanidade: {ficha?.san ?? 0}</Typography>
+                    </Divider>
+                    
+                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                        <Typography variant="button" component="div">MAX SAN: {ficha?.max_san ?? "0"}</Typography>
+                        {(ficha?.san ?? 0) === 0 && <Chip label="Insano" sx={{ ml: "auto" }}/>}
+                    </Box>
+                    <Typography variant="button" component="div">START SAN: {ficha?.start_san ?? "0"}</Typography>
+                    <FormControlLabel control={<Checkbox checked={ficha?.temporary_insanity} />} label="Insanidade temporária" />
+                    <FormControlLabel control={<Checkbox checked={ficha?.indefinity_insanity} />} label="Insanidade indeterminada" />
+                    <Slider
+                        max={ficha?.max_san ?? 0} value={ficha?.san ?? 0} min={0}
+                    />
+                </Paper>
+            </Grid>
+            <Grid item order={6} lg={16} xs={24}>
+                <Paper sx={{ padding: 2 }}>
+                    <Divider textAlign='left'>
+                        <Typography variant='h6' component="div">Sorte: {ficha?.luck ?? 0}</Typography>
+                    </Divider>
+                    {(ficha?.luck ?? 0) === 0 && <Chip label="Sem sorte"/>}
+                    <Slider
+                        max={99} value={ficha?.luck ?? 0} min={0}
+                    />
+                </Paper>
+            </Grid>
+            <Grid item order={7} lg={8} xs={24}>
+                <Paper sx={{ padding: 2 }}>
+                    <Divider textAlign='left'>
+                        <Typography variant='h6' component="div">MP: {ficha?.mp ?? 0}</Typography>
+                    </Divider>
+                    <Typography variant="button" component="div">Max MP: {ficha?.max_mp ?? "0"}</Typography>
+                    <Slider
+                        max={ficha?.max_mp ?? 0} value={ficha?.mp ?? 0} min={0}
+                    />
+                </Paper>
+            </Grid>
+            <Grid item order={8} xs={24}>
+                <Paper sx={{ padding: 2 }}>
+                    <Divider textAlign='center'>
+                        <Typography variant='h6' component="div">Perícias</Typography>
+                    </Divider>
+                    <Grid container item xs={24} justifyContent="space-around" spacing={2} columns={{ lg: 4, md: 2, xs: 1 }}>
+                        {(ficha?.skill_list ?? []).map((skill: any) => {
+                            return <Grid item>
+                                <CoCStats value={skill.value} stat={skill.name} improvcheck improvedCheck={skill.improv}/>
+                            </Grid>
+                        })}
+                    </Grid>
+                </Paper>
+            </Grid>
+            <Grid item order={9} xs={24} lg={18}>
+            <Paper sx={{ padding: 2 }}>
+                    <Divider textAlign='center'>
+                        <Typography variant='h6' component="div">Armas</Typography>
+                    </Divider>
+                    <DefaultEmpty itens={ficha?.weapons.length ?? 0}>
+                        {/* TODO - Tabela de armas */}
+                    </DefaultEmpty>
+                </Paper>
+            </Grid>
+            <Grid item order={10} xs={24} lg={6}>
+                <Paper sx={{ padding: 2 }}>
+                    <Divider textAlign='center'>
+                        <Typography variant='h6' component="div">Combate</Typography>
+                    </Divider>
+                    <Grid container item spacing={2} columns={12}>
+                        <CoCStats fullRounded value={ficha?.bonus_dmg ?? "0"} stat="Bonus Damage"/>
+                        <CoCStats fullRounded value={ficha?.build ?? "0"} stat="Build"/>
+                        <CoCStats value={ficha?.dodge ?? "0"} stat="Dodge"/>
+                    </Grid>
+                </Paper>
+            </Grid>
+            {ficha?.pulp_cthulhu && <Grid item order={11} xs={24}>
+                <Paper sx={{ padding: 2 }}>
+                    <Divider textAlign='center'>
+                        <Typography variant='h6' component="div">Talentos (PCoC)</Typography>
+                    </Divider>
+                    <DefaultEmpty itens={ficha.pulp_talents.length ?? 0}>
+                        <List sx={{ width: '100%'}}>
+                            {ficha.pulp_talents.map(item => {
+                                return <ExpandableListItem listItemText={item.name}>
+                                    <Typography>{item.desc}</Typography>
+                                </ExpandableListItem>
+                            })}
+                        </List>
+                    </DefaultEmpty>
+                </Paper>
+            </Grid>}
         </Grid>
     );
-
-    //             <Col xl={{ span: 16, order: 5 }} lg={{ span: 16, order: 5 }} md={{ span: 24, order: 5 }} sm={{ span: 24, order: 5 }} xs={{ span: 24, order: 5 }}>
-    //                 <Card title="Sanidade">
-    //                     <Space direction='vertical' style={{ width: "100%" }}>
-    //                         <Space>
-    //                             <Typography.Title level={5}>MAX SAN: {ficha?.max_san ?? "0"}</Typography.Title>
-    //                             <Typography.Title level={5}>START SAN: {ficha?.start_san ?? "0"}</Typography.Title>
-    //                             {(ficha?.san ?? 0) === 0 && <Typography.Title level={5}>Insano</Typography.Title>}
-    //                         </Space>
-    //                         <Space direction='vertical'>
-    //                             <Checkbox checked={ficha?.temporary_insanity}>Insanidade temporária</Checkbox>
-    //                             <Checkbox checked={ficha?.indefinity_insanity}>Insanidade Indefinida</Checkbox>
-    //                         </Space>
-    //                         <Slider max={ficha?.max_san ?? 0} value={ficha?.san ?? 0} min={0}/>
-    //                     </Space>
-    //                 </Card>
-    //             </Col>
-    //             <Col xl={{ span: 16, order: 6 }} lg={{ span: 16, order: 6 }} md={{ span: 24, order: 6 }} sm={{ span: 24, order: 6 }} xs={{ span: 24, order: 6 }}>
-    //                 <Card title="Sorte">
-    //                     <Space direction='vertical' style={{ width: "100%" }}>
-    //                         {(ficha?.luck ?? 0) === 0 && <Typography.Title level={5}>Sem sorte</Typography.Title>}
-    //                         <Slider max={99} value={ficha?.luck ?? 0} min={0}/>
-    //                     </Space>
-    //                 </Card>
-    //             </Col>
-    //             <Col xl={{ span: 8, order: 7 }} lg={{ span: 8, order: 7 }} md={{ span: 24, order: 7 }} sm={{ span: 24, order: 7 }} xs={{ span: 24, order: 7 }}>
-    //                 <Card title="MP">
-    //                     <Space direction='vertical' style={{ width: "100%" }}>
-    //                         <Typography.Title level={5}>MAX MP: {ficha?.max_mp ?? "0"}</Typography.Title>
-    //                         <Slider max={ficha?.max_mp ?? 0} value={ficha?.mp ?? 0} min={0}/>
-    //                     </Space>
-    //                 </Card>
-    //             </Col>
-    //             <Col span={24} order={8}>
-    //                 <Card title="Perícias" headStyle={{ textAlign: "center" }}>
-    //                     <List 
-    //                         dataSource={ficha?.skill_list ?? []}
-    //                         grid={{ gutter: 5, xs: 1,
-    //                             sm: 1,
-    //                             md: 2,
-    //                             lg: 3,
-    //                             xl: 4,
-    //                             xxl: 4, }}
-    //                         renderItem={(item: any) => (
-    //                                 <List.Item key={item.name}>
-    //                                     <CoCStats value={item.value} stat={item.name} improvcheck improvedCheck={item.improv}/>
-    //                                 </List.Item>)
-    //                         }/>
-    //                 </Card>
-    //             </Col>
     //             <Col xs={{ span: 24, order: 9 }} sm={{ span: 24, order: 9 }} md={{ span: 24, order: 9 }} lg={{ span: 18, order: 9 }} xl={{ span: 18, order: 9 }}>
     //                 <Card title="Armas" headStyle={{ textAlign: "center" }}>
     //                     <Table rowKey={"id"} columns={columns} dataSource={ficha?.weapons ?? []} expandable={{
@@ -178,26 +222,6 @@ export function DetalhesFichaCoC() {
     //                     }}/>
     //                 </Card>
     //             </Col>
-    //             <Col xs={{ span: 24, order: 10 }} sm={{ span: 24, order: 10 }} md={{ span: 24, order: 10 }} lg={{ span: 6, order: 10 }} xl={{ span: 6, order: 10 }}>
-    //                 <Card title="Combate" headStyle={{ textAlign: "center" }}>
-    //                     <Space direction='vertical' style={{ width: "100%" }}>
-    //                         <CoCStats fullRounded value={ficha?.bonus_dmg ?? "0"} stat="Bonus Damage"/>
-    //                         <CoCStats fullRounded value={ficha?.build ?? "0"} stat="Build"/>
-    //                         <CoCStats value={ficha?.dodge ?? "0"} stat="Dodge"/>
-    //                     </Space>
-    //                 </Card>
-    //             </Col>
-    //             {ficha?.pulp_cthulhu && <Col span={24} order={11}>
-    //                 <Card title="Talentos (PCoC)" headStyle={{ textAlign: "center" }}>
-    //                     <Collapse>
-    //                         {ficha.pulp_talents.map(item => {
-    //                             return <Collapse.Panel key={item.id} showArrow={false} header={item.name}>
-    //                                 <p>{item.desc}</p>
-    //                             </Collapse.Panel>
-    //                         })}
-    //                     </Collapse>
-    //                 </Card>
-    //             </Col>}
     //         </Row>
     //     </Skeleton>
     // );
