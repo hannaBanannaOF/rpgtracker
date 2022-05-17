@@ -4,7 +4,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { ListItemIcon } from "@mui/material";
+import { ListItemIcon, Paper } from "@mui/material";
 
 interface ExpandableListItemProps {
     icon?: ReactNode,
@@ -20,17 +20,17 @@ export function ExpandableListItem(props: ExpandableListItemProps) {
         setOpen(!open);
     };
 
-    return (<React.Fragment>
-        <ListItemButton onClick={handleClick}>
-            {props.icon && <ListItemIcon>
-                {props.icon}
-            </ListItemIcon>}
-            <ListItemText primary={props.listItemText}/>
-                {open ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={open} timeout="auto">
-            {props.children}
-        </Collapse>
-    </React.Fragment>);
+    return (<Paper elevation={open ? 10 : 1}>
+            <ListItemButton onClick={handleClick}>
+                {props.icon && <ListItemIcon>
+                    {props.icon}
+                </ListItemIcon>}
+                <ListItemText primary={props.listItemText}/>
+                    {open ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={open} timeout="auto" sx={{ p: open ? 2 : 0 }}>
+                {props.children}
+            </Collapse>
+        </Paper>);
 
 }

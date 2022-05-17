@@ -67,25 +67,25 @@ export function DetalhesFichaCoC() {
                     {(ficha?.pulp_cthulhu ?? false) &&<Typography><Typography sx={{textDecoration: 'underline'}} display="inline">Arquétipo:</Typography> {ficha?.pulp_archetype ?? ""}</Typography>}
                 </Paper>
             </Grid>
-            <Grid item order={{lg: 2, md: 3, sm: 3, xs: 3}} xl={12} lg={13} xs={24}>
+            <Grid item order={{lg: 2, md: 3, sm: 3, xs: 3}} lg={13} xs={24}>
                 <Paper sx={{ padding: 2 }}>
                     <Divider textAlign='center'>
                         <Typography variant='h6' component="div">Características</Typography>
                     </Divider>
                     <Grid container item spacing={2} columns={12}>
-                        <CoCStats span={{ lg: 4, md: 6, sm: 12 }} value={ficha?.strength ?? "0"} stat="STR"/>
-                        <CoCStats span={{ lg: 4, md: 6, sm: 12 }} value={ficha?.dexterity ?? "0"} stat="DEX"/>
-                        <CoCStats span={{ lg: 4, md: 6, sm: 12 }} value={ficha?.power ?? "0"} stat="POW"/>
-                        <CoCStats span={{ lg: 4, md: 6, sm: 12 }} value={ficha?.constitution ?? "0"} stat="CON"/>
-                        <CoCStats span={{ lg: 4, md: 6, sm: 12 }} value={ficha?.appearence ?? "0"} stat="APP"/>
-                        <CoCStats span={{ lg: 4, md: 6, sm: 12 }} value={ficha?.education ?? "0"} stat="EDU"/>
-                        <CoCStats span={{ lg: 4, md: 6, sm: 12 }} value={ficha?.size ?? "0"} stat="SIZ"/>
-                        <CoCStats span={{ lg: 4, md: 6, sm: 12 }} value={ficha?.inteligence ?? "0"} stat="INT"/>
-                        <CoCStats span={{ lg: 4, md: 6, sm: 12 }} fullRounded value={ficha?.move_rate ?? "0"} stat="Move Rate"/>
+                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={ficha?.strength ?? "0"} stat="STR"/>
+                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={ficha?.dexterity ?? "0"} stat="DEX"/>
+                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={ficha?.power ?? "0"} stat="POW"/>
+                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={ficha?.constitution ?? "0"} stat="CON"/>
+                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={ficha?.appearence ?? "0"} stat="APP"/>
+                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={ficha?.education ?? "0"} stat="EDU"/>
+                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={ficha?.size ?? "0"} stat="SIZ"/>
+                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={ficha?.inteligence ?? "0"} stat="INT"/>
+                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} fullRounded value={ficha?.move_rate ?? "0"} stat="Move Rate"/>
                     </Grid>
                 </Paper>
             </Grid>
-            <Grid item order={{lg: 3, md: 2, sm: 1, xs: 1}} xl={6} lg={5} md={9} xs={7}>
+            <Grid item order={{lg: 3, md: 2, sm: 1, xs: 1}} lg={5} md={9} xs={7}>
                 <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                     <Avatar />
                 </Box>           
