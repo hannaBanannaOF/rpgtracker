@@ -143,7 +143,7 @@ export function DetalhesFichaCoC() {
                     </Divider>
                     <Grid container spacing={2} columns={12}>
                         {(ficha?.skill_list ?? []).map((skill: any) => {
-                            return <CoCStats span={{ xl: 3, lg: 3, md: 6, sm: 12 }} value={skill.value} stat={skill.name} improvcheck improvedCheck={skill.improv}/>
+                            return <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={skill.value} stat={skill.name} improvcheck improvedCheck={skill.improv}/>
                         })}
                     </Grid>
                 </Paper>
