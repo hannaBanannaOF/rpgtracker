@@ -1,38 +1,19 @@
 import { Skeleton, Grid, Paper, Typography, Divider, Avatar, Slider, Chip, Box, FormControlLabel, Checkbox, List } from '@mui/material';
-import { notification } from 'antd';
-import { useEffect, useState } from 'react';
-import { ArmasEmFicha, FichaCOC } from '../components/models/Ficha';
+import React, { useEffect, useState } from 'react';
+import { ArmasEmFicha, FichaCOC, Talentos } from '../components/models/Ficha';
 import { useQuery } from '../components/routes/WithRouter';
 import { CoCService } from '../components/services/CoCService';
 import { DefaultEmpty } from '../ui/DefaultEmpty';
 import { ExpandableListItem } from '../ui/ExpandableListItem';
 import { CoCStats } from '../ui/StatsCOC';
+import { useSnackbar } from 'notistack';
 
 export function DetalhesFichaCoC() {
 
     const query = useQuery();
     const fichaId = query.get("pk") as unknown as number;
-    const columns = [
-        {
-            title: "Arma",
-            key: "arma_col",
-            render: (record: ArmasEmFicha) => {
-                return record.nickname ?? record.weapon.name
-            }
-        },
-        {
-            title: "Dano",
-            dataIndex: ["weapon","damage"],
-            key: "damage_col"
-        },
-        {
-            title: "Ataques",
-            key: "atk_col",
-            render: (record: ArmasEmFicha) => {
-                return record.weapon.attacks > 1 ? `1(${record.weapon.attacks})` : 1
-            }
-        }
-    ]
+    console.log(fichaId);
+    const { enqueueSnackbar } = useSnackbar();
 
     const [loading, setLoading] = useState(true);
     const [ficha, setFicha] = useState<FichaCOC | null>(null);
@@ -40,15 +21,22 @@ export function DetalhesFichaCoC() {
 
     useEffect(() => {
         setLoading(true);
-        CoCService.getFicha(fichaId).then(res => {
-            setFicha(res.data);
-            setLoading(false);
-        }).catch(err => {
-            notification.error({
-                message: "Não foi possível buscar detalhes da ficha!",
-                description: err.response?.data?.detail ?? ""
+        if (!fichaId) {
+            enqueueSnackbar("Não foi possível buscar detalhes da ficha!", {
+                variant: "error"
             });
-        });
+        } else {
+            CoCService.getFicha(fichaId).then(res => {
+                setFicha(res.data);
+                setLoading(false);
+            }).catch(err => {
+                    //description: err.response?.data?.detail ?? ""
+                enqueueSnackbar("Não foi possível buscar detalhes da ficha!", {
+                    variant: "error"
+                });
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fichaId])
 
     return loading ? <Skeleton variant='rectangular' animation='wave'/> : (
@@ -167,7 +155,35 @@ export function DetalhesFichaCoC() {
                         <Typography variant='h6' component="div">Armas</Typography>
                     </Divider>
                     <DefaultEmpty itens={ficha?.weapons.length ?? 0}>
-                        {/* TODO - Tabela de armas */}
+                    <List sx={{ width: '100%'}}>
+                            {ficha!.weapons.map((item: ArmasEmFicha) => {
+                                return <ExpandableListItem listItemText={item.nickname ?? item.weapon.name}>
+                                    <Box px={2}>
+                                        <Divider textAlign='left'>
+                                            <Typography variant='button'>Propriedades básicas</Typography>
+                                        </Divider>
+                                        <Typography>Dano: {item.weapon.damage}</Typography>
+                                        <Typography>Ataques: {item.weapon.attacks > 1 ? `1(${item.weapon.attacks})` : 1}</Typography>
+                                        <Divider textAlign='left'>
+                                            <Typography variant='button'>Propriedades avançadas</Typography>
+                                        </Divider>
+                                        {item.weapon.is_melee && <React.Fragment>
+                                           <Typography>Arma mano-a-mano</Typography>
+                                           <Typography>Acerto normal: {item.normal_success_value}</Typography>
+                                           <Typography>Acerto bom: {Math.floor(item.normal_success_value/2)}</Typography>
+                                           <Typography>Acerto extremo: {Math.floor(item.normal_success_value/5)}</Typography>
+                                       </React.Fragment>}
+                                       {!item.weapon.is_melee && <React.Fragment>
+                                           <Typography>Acerto normal: {item.normal_success_value}</Typography>
+                                           <Typography>Acerto bom: {Math.floor(item.normal_success_value/2)}</Typography>
+                                           <Typography>Acerto extremo: {Math.floor(item.normal_success_value/5)}</Typography>
+                                           <Typography>Tiros restantes: {item.rounds_left}</Typography>
+                                           <Typography>Munição disponível: {`${item.ammo_left} (${item.total_ammo_left})`}</Typography>
+                                       </React.Fragment>}
+                                    </Box>
+                                </ExpandableListItem>
+                            })}
+                        </List>
                     </DefaultEmpty>
                 </Paper>
             </Grid>
@@ -190,7 +206,7 @@ export function DetalhesFichaCoC() {
                     </Divider>
                     <DefaultEmpty itens={ficha.pulp_talents.length ?? 0}>
                         <List sx={{ width: '100%'}}>
-                            {ficha.pulp_talents.map(item => {
+                            {ficha.pulp_talents.map((item: Talentos) => {
                                 return <ExpandableListItem listItemText={item.name}>
                                     <Typography>{item.desc}</Typography>
                                 </ExpandableListItem>
@@ -201,29 +217,4 @@ export function DetalhesFichaCoC() {
             </Grid>}
         </Grid>
     );
-    //             <Col xs={{ span: 24, order: 9 }} sm={{ span: 24, order: 9 }} md={{ span: 24, order: 9 }} lg={{ span: 18, order: 9 }} xl={{ span: 18, order: 9 }}>
-    //                 <Card title="Armas" headStyle={{ textAlign: "center" }}>
-    //                     <Table rowKey={"id"} columns={columns} dataSource={ficha?.weapons ?? []} expandable={{
-    //                         expandedRowRender: record => <Card title="Detalhes">
-    //                             {record.weapon.is_melee && <Space direction='vertical'>
-    //                                 <Typography.Text>Arma mano-a-mano</Typography.Text>
-    //                                 <Typography.Text>Acerto normal: {record.normal_success_value}</Typography.Text>
-    //                                 <Typography.Text>Acerto bom: {Math.floor(record.normal_success_value/2)}</Typography.Text>
-    //                                 <Typography.Text>Acerto extremo: {Math.floor(record.normal_success_value/5)}</Typography.Text>
-    //                             </Space>}
-    //                             {!record.weapon.is_melee && <Space direction='vertical'>
-    //                                 <Typography.Text>Acerto normal: {record.normal_success_value}</Typography.Text>
-    //                                 <Typography.Text>Acerto bom: {Math.floor(record.normal_success_value/2)}</Typography.Text>
-    //                                 <Typography.Text>Acerto extremo: {Math.floor(record.normal_success_value/5)}</Typography.Text>
-    //                                 <Typography.Text>Tiros restantes: {record.rounds_left}</Typography.Text>
-    //                                 <Typography.Text>Munição disponível: {`${record.ammo_left} (${record.total_ammo_left})`}</Typography.Text>
-    //                             </Space>}
-    //                         </Card>,
-    //                     }}/>
-    //                 </Card>
-    //             </Col>
-    //         </Row>
-    //     </Skeleton>
-    // );
-
 }

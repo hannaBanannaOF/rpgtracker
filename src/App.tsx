@@ -13,8 +13,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { deepPurple } from '@mui/material/colors';
 import { Layout } from './ui/Layout';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { CssBaseline } from '@mui/material';
-
+import { CssBaseline, Fade } from '@mui/material';
+import { SnackbarProvider } from 'notistack';
 
 export function App(){
 
@@ -37,34 +37,40 @@ export function App(){
   	return (
 		<AuthProvider>
 			<ThemeProvider theme={theme}>
-				<CssBaseline />
-				<Router>
-					<Routes>
-						<Route path="/login" element={<Login />} />
-						<Route path="/login/oauth/callback" element={<OAuthCallback />}/>
-						<Route path="/" element={
-							<RequireAuth>
-								<Layout>
-									<Home />
-								</Layout>
-							</RequireAuth>
-						} />
-						<Route path="/fichas/coc/details" element={
-							<RequireAuth>
-								<Layout>
-									<DetalhesFichaCoC />
-								</Layout>
-							</RequireAuth>
-						}/>
-						<Route path="/minhas-mesas" element={
-							<RequireAuth mestrePerm={true}>
-								<Layout>
-									<MinhasMesas />
-								</Layout>
-							</RequireAuth>
-						}/>
-					</Routes>
-				</Router>
+				<SnackbarProvider maxSnack={3} anchorOrigin={{
+					vertical: 'top',
+					horizontal: 'right',
+				}}
+				TransitionComponent={Fade}>
+					<CssBaseline />
+					<Router>
+						<Routes>
+							<Route path="/login" element={<Login />} />
+							<Route path="/login/oauth/callback" element={<OAuthCallback />}/>
+							<Route path="/" element={
+								<RequireAuth>
+									<Layout>
+										<Home />
+									</Layout>
+								</RequireAuth>
+							} />
+							<Route path="/fichas/coc/details" element={
+								<RequireAuth>
+									<Layout>
+										<DetalhesFichaCoC />
+									</Layout>
+								</RequireAuth>
+							}/>
+							<Route path="/minhas-mesas" element={
+								<RequireAuth mestrePerm={true}>
+									<Layout>
+										<MinhasMesas />
+									</Layout>
+								</RequireAuth>
+							}/>
+						</Routes>
+					</Router>
+				</SnackbarProvider>
 			</ThemeProvider>
 		</AuthProvider>
 	);
