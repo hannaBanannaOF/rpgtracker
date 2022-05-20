@@ -1,10 +1,11 @@
-import { notification, Typography } from "antd";
 import { useEffect } from "react";
-import { FaLock } from "react-icons/fa";
+import LockIcon from '@mui/icons-material/Lock';
 import { useLocation, useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../components/providers/AuthProvider";
 import { Rpgtrackerwebclient } from "../../components/webclient/Rpgtrackerwebclient";
+import { Typography } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 export function OAuthCallback() {
 
@@ -12,21 +13,26 @@ export function OAuthCallback() {
     let location = useLocation();
     let auth = useAuth();
     let [searchParams] = useSearchParams();
-
+    const { enqueueSnackbar } = useSnackbar();
     let from = (location.state as any)?.from?.pathname || "/";
 
     useEffect(() => {
-        if (auth.valid() || !searchParams.get('code')) {
+        if (auth.valid || !searchParams.get('code')) {
             navigate(from, {replace: true});
             return;
         }
         let code = searchParams.get('code');
         Rpgtrackerwebclient.post(`/v1/token/social-auth/social/jwt-pair/hannabananna/`, {code: code}).then(res => {
             localStorage.setItem("tokens", JSON.stringify(res.data));
-            auth.setCurrUser();
-            navigate(from, {replace: true});
+            auth.setCurrUser().then(() => {
+                navigate(from, {replace: true});
+            });
         }).catch(err => {
-            notification.error({message: `Não foi possível conectar com o HBAuth`, description: err.response.data});
+            //description: err.response.data
+            enqueueSnackbar(`Não foi possível conectar com o HBAuth`, {
+                variant: "error",
+                key: "error_connect_hbauth"
+            });
             navigate(from, {replace: true});
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,8 +40,8 @@ export function OAuthCallback() {
 
     return (
         <div style={{ width: "100%", height: "100%", backgroundColor: "purple", display: "flex", flexDirection: "column", justifyContent:"center", alignItems:"center"}}>
-            <FaLock color="azure" size={150} />
-            <Typography.Title style={{ color: "azure" }}>Authenticating</Typography.Title>
+            <LockIcon color="action" sx={{ fontSize: 100 }} />
+            <Typography variant="h4" component="div">Authenticating</Typography>
         </div>
     );
 

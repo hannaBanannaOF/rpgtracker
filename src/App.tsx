@@ -1,30 +1,62 @@
-import { ConfigProvider } from 'antd';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css'
 import { AuthProvider } from './components/providers/AuthProvider';
 import { RequireAuth } from './components/routes/RequiredPermRoute';
-import Home from './routes/Home';
+import { Home } from './routes/Home';
 import { Login } from './routes/Login';
-import "./App.css";
-import { SmileOutlined } from '@ant-design/icons';
 import { OAuthCallback } from './routes/callbacks/OAuthCallback';
 import { DetalhesFichaCoC } from './routes/DetalhesFichaCoC';
-import { Layout } from './ui/Layout';
 import { MinhasMesas } from './routes/MinhasMesas';
-class App extends React.Component {
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { deepPurple } from '@mui/material/colors';
+import { Layout } from './ui/Layout';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { CssBaseline, Fade, IconButton } from '@mui/material';
+import { SnackbarProvider } from 'notistack';
+import { Close } from '@mui/icons-material';
 
-	customizeRenderEmpty = () => (
-        <div style={{ textAlign: 'center' }}>
-            <SmileOutlined style={{ fontSize: 20 }} />
-            <p>Nada encontrado</p>
-        </div>
-    );
+export function App(){
 
-  	render() {
-        return (
-			<AuthProvider>
-				<ConfigProvider renderEmpty={this.customizeRenderEmpty}>
+	const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+	const notistackRef: any = React.createRef();
+	const onClickDismiss = (key: any) => () => { 
+		notistackRef.current.closeSnackbar(key);
+	}
+
+	const theme = React.useMemo(
+		() =>
+		  createTheme({
+			palette: {
+			  mode: prefersDarkMode ? 'dark' : 'light',
+			  primary: {
+				  main: deepPurple[900]
+			  }
+			},
+		  }),
+		[prefersDarkMode],
+	  );
+
+
+  	return (
+		<AuthProvider>
+			<ThemeProvider theme={theme}>
+				<SnackbarProvider 
+				ref={notistackRef}
+				action={(key) => (
+					<IconButton onClick={onClickDismiss(key)}>
+						<Close />
+					</IconButton>
+				)}
+				maxSnack={3} 
+				preventDuplicate 
+				anchorOrigin={{
+					vertical: 'top',
+					horizontal: 'right',
+				}}
+				TransitionComponent={Fade}
+				>
+					<CssBaseline />
 					<Router>
 						<Routes>
 							<Route path="/login" element={<Login />} />
@@ -52,10 +84,8 @@ class App extends React.Component {
 							}/>
 						</Routes>
 					</Router>
-				</ConfigProvider>
-			</AuthProvider>
-        );
-  	}
+				</SnackbarProvider>
+			</ThemeProvider>
+		</AuthProvider>
+	);
 }
-
-export default App

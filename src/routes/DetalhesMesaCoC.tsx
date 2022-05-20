@@ -1,4 +1,4 @@
-import { notification } from "antd";
+import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { MesaBase } from "../components/models/Mesa";
 import { useQuery } from "../components/routes/WithRouter";
@@ -10,16 +10,17 @@ export function DetalhesMesaCoC() {
 
     const [loading, setLoading] = useState(true);
     const [mesa, setMesa] = useState<MesaBase | null>(null);
-
+    const { enqueueSnackbar } = useSnackbar();
     useEffect(() => {
         setLoading(true);
         CoCService.getMesa(mesaId).then(res => {
             setMesa(res.data);
             setLoading(false);
         }).catch(err => {
-            notification.error({
-                message: "Não foi possível buscar detalhes da mesa!",
-                description: err.response?.data?.detail ?? ""
+            //err.response?.data?.detail ?? ""
+            enqueueSnackbar("Não foi possível buscar detalhes da mesa!", {
+                variant: 'error',
+                key: 'error_mesa_not_found'
             });
         });
     }, [mesaId])

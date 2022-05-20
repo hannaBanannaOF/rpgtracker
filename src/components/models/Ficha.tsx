@@ -18,7 +18,7 @@ interface Skill {
     improv: boolean
 }
 
-interface Talentos {
+export interface Talentos {
     id: number,
     name: string,
     desc: string

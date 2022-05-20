@@ -1,59 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CurrentUser } from "../models/CurrentUser";
 import { AccountService } from "../services/AccountService";
-import { authenticate, logout } from "../services/AuthenticationService";
+import { logout } from "../services/AuthenticationService";
 
 interface AuthContextType {
-    getCurrUser: () => CurrentUser | undefined;
-    setCurrUser: () => void;
-    valid: () => boolean;
-    signin: (user: string, callback: VoidFunction, errorCallback: (message: any) => void) => void;
-    signout: (callback: VoidFunction) => void;
+    currentUser: CurrentUser | undefined;
+    setCurrUser: () => Promise<void>;
+    valid: boolean;
+    signout: () => Promise<void>;
   }
   
-let AuthContext = React.createContext<AuthContextType>(null!);
+let AuthContext = React.createContext<AuthContextType>({} as AuthContextType);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 
-    let signin = (newUser: string, callback: VoidFunction, errorCallback: (message: any) => void) => {
-      return authenticate(newUser, (data) => {
-        localStorage.setItem("tokens", JSON.stringify(data));
-        setCurrUser();
-        callback();
-      }, (message) => {
-        errorCallback(message);
-      });
-    };
+    const [currentUser, setCurrentUser] = useState<CurrentUser | undefined>(undefined);
+    const [valid, setValid] = useState(false);
+
+    let updateStates = () => {
+      const storagedUser = localStorage.getItem('user-data');
+      const storagedToken = localStorage.getItem('tokens');
   
-    let setCurrUser = () => {
-      AccountService.getCurrentUserObj().then((res) => {
-        localStorage.setItem("user-data", JSON.stringify(res.data));
-      });
-    }
-
-    let signout = (callback: VoidFunction) => {
-      return logout(() => {
-        localStorage.removeItem("tokens");
-        localStorage.removeItem("user-data");
-        callback();
-      });
-    };
-
-    let getCurrUser = () => {
-      let data = localStorage.getItem("user-data");
-      if(data) {
-        return JSON.parse(data);
+      if (storagedToken && storagedUser) {
+        setCurrentUser(JSON.parse(storagedUser));
+        setValid(true);
       } else {
-        return undefined;
+        setCurrentUser(undefined);
+        setValid(false);
       }
     }
-  
-    let valid = () => {
-        let localStorageData = localStorage.getItem("tokens")
-        return localStorageData !== null;
+
+    useEffect(() => {
+      updateStates();
+    }, []);
+
+    let setCurrUser = async () => {
+      let res = await AccountService.getCurrentUserObj();
+      localStorage.setItem("user-data", JSON.stringify(res.data));
+      updateStates();
     }
 
-    let value = { valid, signin, signout, getCurrUser, setCurrUser };
+    let signout = async () => {
+      return await logout(() => {
+        localStorage.removeItem("tokens");
+        localStorage.removeItem("user-data");
+        updateStates();
+      });
+    };
+
+    let value = { valid, signout, currentUser, setCurrUser };
   
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
