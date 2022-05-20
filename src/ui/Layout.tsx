@@ -92,10 +92,10 @@ export function Layout(props: any) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Box sx={{ display: "flex", flexGrow: 1, alignItems: "center" }}>
                         <img src={`${Logo}`} alt="logo" width={75}/>
-                        RPGTracker
-                    </Typography>
+                        <Typography variant="h6" component='span'>RPGTracker</Typography>
+                    </Box>
                     <IconButton onClick={handleMenu} sx={{ p: 0 }}>
                         <Avatar src={auth.currentUser?.photo ?? undefined} />
                     </IconButton>

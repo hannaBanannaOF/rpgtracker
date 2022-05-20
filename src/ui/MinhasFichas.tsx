@@ -1,18 +1,18 @@
 import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Tooltip } from '@mui/material';
-import { notification } from 'antd';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import React, { useEffect, useState } from 'react';
 import { GiOctopus, GiHarryPotterSkull } from "react-icons/gi";
 import { useNavigate } from 'react-router-dom';
 import { FichaBase as Ficha } from '../components/models/Ficha';
 import { AccountService } from '../components/services/AccountService';
+import { useSnackbar } from 'notistack';
 
 
 export function MinhasFichas() {
 
     const [loading, setLoading] = useState(true);
     const [fichas, setFichas] = useState<Ficha[] | null>(null);
-
+    const { enqueueSnackbar } = useSnackbar();
     let navigate = useNavigate();
 
     useEffect(() => {
@@ -21,11 +21,13 @@ export function MinhasFichas() {
             setLoading(false);
             setFichas(res.data);
 		}).catch(err => {
-			notification.error({
-				message: "Erro ao buscar fichas do usuário",
-				description: err.response?.data?.detail ?? ""
-			});
+            //err.response?.data?.detail ?? ""
+            enqueueSnackbar("Erro ao buscar fichas do usuário", {
+                variant: 'error',
+                key:'error_minhas_fichas_not_found'
+            });
 		});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getContentTypeItem = (content_type: string) => {

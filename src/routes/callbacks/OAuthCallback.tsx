@@ -1,4 +1,3 @@
-import { notification } from "antd";
 import { useEffect } from "react";
 import LockIcon from '@mui/icons-material/Lock';
 import { useLocation, useNavigate } from "react-router";
@@ -6,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../components/providers/AuthProvider";
 import { Rpgtrackerwebclient } from "../../components/webclient/Rpgtrackerwebclient";
 import { Typography } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 export function OAuthCallback() {
 
@@ -13,7 +13,7 @@ export function OAuthCallback() {
     let location = useLocation();
     let auth = useAuth();
     let [searchParams] = useSearchParams();
-
+    const { enqueueSnackbar } = useSnackbar();
     let from = (location.state as any)?.from?.pathname || "/";
 
     useEffect(() => {
@@ -28,7 +28,11 @@ export function OAuthCallback() {
                 navigate(from, {replace: true});
             });
         }).catch(err => {
-            notification.error({message: `Não foi possível conectar com o HBAuth`, description: err.response.data});
+            //description: err.response.data
+            enqueueSnackbar(`Não foi possível conectar com o HBAuth`, {
+                variant: "error",
+                key: "error_connect_hbauth"
+            });
             navigate(from, {replace: true});
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps

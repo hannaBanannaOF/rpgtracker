@@ -12,7 +12,6 @@ export function DetalhesFichaCoC() {
 
     const query = useQuery();
     const fichaId = query.get("pk") as unknown as number;
-    console.log(fichaId);
     const { enqueueSnackbar } = useSnackbar();
 
     const [loading, setLoading] = useState(true);
@@ -23,7 +22,8 @@ export function DetalhesFichaCoC() {
         setLoading(true);
         if (!fichaId) {
             enqueueSnackbar("Não foi possível buscar detalhes da ficha!", {
-                variant: "error"
+                variant: "error",
+                key: "error_ficha_not_found"
             });
         } else {
             CoCService.getFicha(fichaId).then(res => {
@@ -32,7 +32,8 @@ export function DetalhesFichaCoC() {
             }).catch(err => {
                     //description: err.response?.data?.detail ?? ""
                 enqueueSnackbar("Não foi possível buscar detalhes da ficha!", {
-                    variant: "error"
+                    variant: "error",
+                    key: "error_ficha_not_found"
                 });
             });
         }
@@ -74,7 +75,7 @@ export function DetalhesFichaCoC() {
                 </Paper>
             </Grid>
             <Grid item order={{lg: 3, md: 2, sm: 1, xs: 1}} lg={5} md={9} xs={7}>
-                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Avatar />
                 </Box>           
             </Grid>

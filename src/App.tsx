@@ -1,11 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css'
 import { AuthProvider } from './components/providers/AuthProvider';
 import { RequireAuth } from './components/routes/RequiredPermRoute';
 import { Home } from './routes/Home';
 import { Login } from './routes/Login';
-import "./App.css";
 import { OAuthCallback } from './routes/callbacks/OAuthCallback';
 import { DetalhesFichaCoC } from './routes/DetalhesFichaCoC';
 import { MinhasMesas } from './routes/MinhasMesas';
@@ -13,12 +11,18 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { deepPurple } from '@mui/material/colors';
 import { Layout } from './ui/Layout';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { CssBaseline, Fade } from '@mui/material';
+import { CssBaseline, Fade, IconButton } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
+import { Close } from '@mui/icons-material';
 
 export function App(){
 
 	const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+	const notistackRef: any = React.createRef();
+	const onClickDismiss = (key: any) => () => { 
+		notistackRef.current.closeSnackbar(key);
+	}
 
 	const theme = React.useMemo(
 		() =>
@@ -37,11 +41,21 @@ export function App(){
   	return (
 		<AuthProvider>
 			<ThemeProvider theme={theme}>
-				<SnackbarProvider maxSnack={3} anchorOrigin={{
+				<SnackbarProvider 
+				ref={notistackRef}
+				action={(key) => (
+					<IconButton onClick={onClickDismiss(key)}>
+						<Close />
+					</IconButton>
+				)}
+				maxSnack={3} 
+				preventDuplicate 
+				anchorOrigin={{
 					vertical: 'top',
 					horizontal: 'right',
 				}}
-				TransitionComponent={Fade}>
+				TransitionComponent={Fade}
+				>
 					<CssBaseline />
 					<Router>
 						<Routes>
