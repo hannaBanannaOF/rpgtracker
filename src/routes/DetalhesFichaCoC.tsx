@@ -141,11 +141,9 @@ export function DetalhesFichaCoC() {
                     <Divider textAlign='center'>
                         <Typography variant='h6' component="div">Perícias</Typography>
                     </Divider>
-                    <Grid container item xs={24} justifyContent="space-around" spacing={2} columns={{ lg: 4, md: 2, xs: 1 }}>
+                    <Grid container spacing={2} columns={12}>
                         {(ficha?.skill_list ?? []).map((skill: any) => {
-                            return <Grid item>
-                                <CoCStats value={skill.value} stat={skill.name} improvcheck improvedCheck={skill.improv}/>
-                            </Grid>
+                            return <CoCStats span={{ xl: 3, lg: 3, md: 6, sm: 12 }} value={skill.value} stat={skill.name} improvcheck improvedCheck={skill.improv}/>
                         })}
                     </Grid>
                 </Paper>
