@@ -1,6 +1,6 @@
 import Bg from '../assets/img/bg.jpg';
 import { Navigate, useLocation } from "react-router";
-import { useAuth } from "../components/providers/AuthProvider";
+import { useAuth } from "../providers/AuthProvider";
 import { useState } from "react";
 import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';

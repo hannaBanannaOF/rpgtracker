@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import LockIcon from '@mui/icons-material/Lock';
 import { useLocation, useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
-import { useAuth } from "../../components/providers/AuthProvider";
-import { Rpgtrackerwebclient } from "../../components/webclient/Rpgtrackerwebclient";
+import { useAuth } from "../../providers/AuthProvider";
+import { Rpgtrackerwebclient } from "../../webclient/Rpgtrackerwebclient";
 import { Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 

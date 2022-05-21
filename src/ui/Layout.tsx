@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../components/providers/AuthProvider';
+import { useAuth } from '../providers/AuthProvider';
 import Logo from "../assets/img/menuIcon.png";
 import { AppBar, Container, IconButton, Stack, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';

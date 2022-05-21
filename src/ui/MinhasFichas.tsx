@@ -3,8 +3,8 @@ import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import React, { useEffect, useState } from 'react';
 import { GiOctopus, GiHarryPotterSkull } from "react-icons/gi";
 import { useNavigate } from 'react-router-dom';
-import { FichaBase as Ficha } from '../components/models/Ficha';
-import { AccountService } from '../components/services/AccountService';
+import { FichaBase as Ficha } from '../models/Ficha';
+import { AccountService } from '../services/AccountService';
 import { useSnackbar } from 'notistack';
 
 

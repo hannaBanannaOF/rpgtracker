@@ -1,5 +1,5 @@
 import { MinhasFichas } from "../ui/MinhasFichas";
-import { useAuth } from "../components/providers/AuthProvider";
+import { useAuth } from "../providers/AuthProvider";
 import React, { useEffect, useState } from "react";
 import { Skeleton, Typography } from "@mui/material";
 

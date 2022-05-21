@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './components/providers/AuthProvider';
-import { RequireAuth } from './components/routes/RequiredPermRoute';
+import { AuthProvider } from './providers/AuthProvider';
+import { RequireAuth } from './routes/RequiredPermRoute';
 import { Home } from './routes/Home';
 import { Login } from './routes/Login';
 import { OAuthCallback } from './routes/callbacks/OAuthCallback';
@@ -14,6 +14,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { CssBaseline, Fade, IconButton } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import { Close } from '@mui/icons-material';
+import { StringParamHandlerRoute } from './components/routes/StringParamHandlerRoute';
 
 export function App(){
 
@@ -43,7 +44,7 @@ export function App(){
 			<ThemeProvider theme={theme}>
 				<SnackbarProvider 
 				ref={notistackRef}
-				action={(key) => (
+				action={(key: string) => (
 					<IconButton onClick={onClickDismiss(key)}>
 						<Close />
 					</IconButton>
@@ -71,7 +72,9 @@ export function App(){
 							<Route path="/fichas/coc/details" element={
 								<RequireAuth>
 									<Layout>
-										<DetalhesFichaCoC />
+										<StringParamHandlerRoute param='pk'>
+											<DetalhesFichaCoC />
+										</StringParamHandlerRoute>
 									</Layout>
 								</RequireAuth>
 							}/>

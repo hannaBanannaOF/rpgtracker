@@ -2,8 +2,8 @@ import { Avatar, AvatarGroup, Divider, IconButton, List, ListItem, ListItemAvata
 import React, { useEffect, useState } from "react";
 import { GiHarryPotterSkull, GiOctopus } from "react-icons/gi";
 import { useNavigate } from "react-router";
-import { MesaBase } from "../components/models/Mesa";
-import { AccountService } from "../components/services/AccountService";
+import { MesaBase } from "../models/Mesa";
+import { AccountService } from "../services/AccountService";
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 
 export function MinhasMesas() {

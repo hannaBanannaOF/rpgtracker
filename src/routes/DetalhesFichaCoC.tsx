@@ -1,17 +1,18 @@
 import { Skeleton, Grid, Paper, Typography, Divider, Avatar, Slider, Chip, Box, FormControlLabel, Checkbox, List } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { ArmasEmFicha, FichaCOC, Talentos } from '../components/models/Ficha';
-import { useQuery } from '../components/routes/WithRouter';
-import { CoCService } from '../components/services/CoCService';
+import { ArmasEmFicha, FichaCOC, Talentos } from '../models/Ficha';
+import { CoCService } from '../services/CoCService';
 import { DefaultEmpty } from '../ui/DefaultEmpty';
 import { ExpandableListItem } from '../ui/ExpandableListItem';
 import { CoCStats } from '../ui/StatsCOC';
 import { useSnackbar } from 'notistack';
 
-export function DetalhesFichaCoC() {
+interface DetalhesFichaCoCProps {
+    pk?: number
+}
 
-    const query = useQuery();
-    const fichaId = query.get("pk") as unknown as number;
+export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
+
     const { enqueueSnackbar } = useSnackbar();
 
     const [loading, setLoading] = useState(true);
@@ -20,13 +21,13 @@ export function DetalhesFichaCoC() {
 
     useEffect(() => {
         setLoading(true);
-        if (!fichaId) {
+        if (!props.pk) {
             enqueueSnackbar("Não foi possível buscar detalhes da ficha!", {
                 variant: "error",
                 key: "error_ficha_not_found"
             });
         } else {
-            CoCService.getFicha(fichaId).then(res => {
+            CoCService.getFicha(props.pk!).then(res => {
                 setFicha(res.data);
                 setLoading(false);
             }).catch(err => {
@@ -38,7 +39,7 @@ export function DetalhesFichaCoC() {
             });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fichaId])
+    }, [props.pk])
 
     return loading ? <Skeleton variant='rectangular' animation='wave'/> : (
         <Grid container columns={24} spacing={2} sx={{ mb: 2 }}>
