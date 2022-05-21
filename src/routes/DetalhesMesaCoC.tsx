@@ -18,17 +18,24 @@ export function DetalhesMesaCoC(props: DetalhesMesaCoCProps) {
 
     useEffect(() => {
         setLoading(true);
-        CoCService.getMesa(props.pk!).then(res => {
-            setMesa(res.data);
-            setFichaSelecionada(mesa?.fichas_mesa[0].id);
-            setLoading(false);
-        }).catch(err => {
-            //err.response?.data?.detail ?? ""
+        if (!props.pk) {
             enqueueSnackbar("Não foi possível buscar detalhes da mesa!", {
-                variant: 'error',
-                key: 'error_mesa_not_found'
+                variant: "error",
+                key: "error_mesa_not_found"
             });
-        });
+        } else {
+            CoCService.getMesa(props.pk!).then(res => {
+                setMesa(res.data);
+                setFichaSelecionada(mesa?.fichas_mesa[0].id);
+                setLoading(false);
+            }).catch(err => {
+                //err.response?.data?.detail ?? ""
+                enqueueSnackbar("Não foi possível buscar detalhes da mesa!", {
+                    variant: 'error',
+                    key: 'error_mesa_not_found'
+                });
+            });
+        }
     }, [props.pk]);
 
     const handleToggle = (event: React.MouseEvent<HTMLElement>, newValue: number) => {

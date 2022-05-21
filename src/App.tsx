@@ -15,6 +15,7 @@ import { CssBaseline, Fade, IconButton } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import { Close } from '@mui/icons-material';
 import { StringParamHandlerRoute } from './components/routes/StringParamHandlerRoute';
+import { DetalhesMesaCoC } from './routes/DetalhesMesaCoC';
 
 export function App(){
 
@@ -82,6 +83,15 @@ export function App(){
 								<RequireAuth mestrePerm={true}>
 									<Layout>
 										<MinhasMesas />
+									</Layout>
+								</RequireAuth>
+							}/>
+							<Route path="/minhas-mesas/mesas/coc/details" element={
+								<RequireAuth mestrePerm={true}>
+									<Layout>
+										<StringParamHandlerRoute param='pk'>
+											<DetalhesMesaCoC />
+										</StringParamHandlerRoute>
 									</Layout>
 								</RequireAuth>
 							}/>
