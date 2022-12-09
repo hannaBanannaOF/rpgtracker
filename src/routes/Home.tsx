@@ -14,7 +14,7 @@ export function Home() {
 
 	return loading? <Skeleton animation="wave" variant="text"/> : (
 		<React.Fragment>
-			<Typography variant="h2" component="div" sx={{ mb: 4 }}>Welcome back, {auth.currentUser?.first_name ?? auth.currentUser?.nickname ?? "Anon"}</Typography>
-			<MinhasFichas />
+			<Typography variant="h2" component="div" sx={{ mb: 4 }}>Welcome back, {auth.currentUser?.given_name ?? auth.currentUser?.preferred_username ?? "Anon"}</Typography>
+			{/* <MinhasFichas /> */}
 		</React.Fragment>);
 }

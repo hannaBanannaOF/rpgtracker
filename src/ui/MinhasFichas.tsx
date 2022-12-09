@@ -1,11 +1,12 @@
 import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Tooltip } from '@mui/material';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { GiOctopus, GiHarryPotterSkull } from "react-icons/gi";
 import { useNavigate } from 'react-router-dom';
 import { FichaBase as Ficha } from '../components/models/Ficha';
 import { AccountService } from '../components/services/AccountService';
 import { useSnackbar } from 'notistack';
+import { useEffectOnce } from '../utils/UseEffectOnce';
 
 
 export function MinhasFichas() {
@@ -15,7 +16,7 @@ export function MinhasFichas() {
     const { enqueueSnackbar } = useSnackbar();
     let navigate = useNavigate();
 
-    useEffect(() => {
+    useEffectOnce(() => {
         setLoading(true);
         AccountService.getCurrentUserFichas().then((res) => {
             setLoading(false);
@@ -27,8 +28,7 @@ export function MinhasFichas() {
                 key:'error_minhas_fichas_not_found'
             });
 		});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    });
 
     const getContentTypeItem = (content_type: string) => {
         if(content_type === 'coc') {

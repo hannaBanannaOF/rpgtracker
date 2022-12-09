@@ -1,4 +1,4 @@
-import { Skeleton, Grid, Paper, Typography, Divider, Avatar, Slider, Chip, Box, FormControlLabel, Checkbox, List } from '@mui/material';
+import { Skeleton, Grid, Paper, Typography, Divider, Slider, Chip, Box, FormControlLabel, Checkbox, List } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ArmasEmFicha, FichaCOC, Talentos } from '../components/models/Ficha';
 import { useQuery } from '../components/routes/WithRouter';
@@ -48,7 +48,7 @@ export function DetalhesFichaCoC() {
                         <Typography variant='h6' component="div">{(ficha?.pulp_cthulhu ?? false) ? "Herói (PCoC)" : "Investigador"}</Typography>
                     </Divider>
                     <Typography><Typography sx={{textDecoration: 'underline'}} display="inline">Nome:</Typography> {ficha?.nome_personagem ?? ""}</Typography>
-                    <Typography><Typography sx={{textDecoration: 'underline'}} display="inline">Jogador:</Typography> {ficha?.jogador.first_name ?? "Anon"}</Typography>
+                    {/* <Typography><Typography sx={{textDecoration: 'underline'}} display="inline">Jogador:</Typography> {ficha?.jogador.first_name ?? "Anon"}</Typography> */}
                     <Typography><Typography sx={{textDecoration: 'underline'}} display="inline">Ocupação:</Typography> {ficha?.ocupation.name}</Typography>
                     <Typography><Typography sx={{textDecoration: 'underline'}} display="inline">Idade:</Typography> {ficha?.age ?? 0}</Typography>
                     <Typography><Typography sx={{textDecoration: 'underline'}} display="inline">Residência:</Typography> {ficha?.residence ?? ""}</Typography>
@@ -76,7 +76,7 @@ export function DetalhesFichaCoC() {
             </Grid>
             <Grid item order={{lg: 3, md: 2, sm: 1, xs: 1}} lg={5} md={9} xs={7}>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Avatar />
+                    {/* <Avatar /> */}
                 </Box>           
             </Grid>
             <Grid item order={4} lg={8} xs={24}>

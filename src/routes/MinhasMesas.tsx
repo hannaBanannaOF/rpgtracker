@@ -64,11 +64,11 @@ export function MinhasMesas() {
                         primary={mesa.name}
                         secondary={
                             <AvatarGroup sx={{ flexDirection: "row" }}>
-                            {mesa.fichas_mesa.map((ficha) => {
+                            {/* {mesa.fichas_mesa.map((ficha) => {
                                 return <Tooltip title={ficha.jogador.first_name ?? "Anon"}>
                                         <Avatar src={ficha.jogador.photo}/>
                                     </Tooltip> 
-                            })}
+                            })} */}
                             </AvatarGroup>
                         }
                         />

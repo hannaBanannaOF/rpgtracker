@@ -14,6 +14,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { CssBaseline, Fade, IconButton } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import { Close } from '@mui/icons-material';
+import { PermissionProvider } from './components/providers/PermissionProvider';
+import { MinhasFichas } from './ui/MinhasFichas';
 
 export function App(){
 
@@ -40,52 +42,61 @@ export function App(){
 
   	return (
 		<AuthProvider>
-			<ThemeProvider theme={theme}>
-				<SnackbarProvider 
-				ref={notistackRef}
-				action={(key) => (
-					<IconButton onClick={onClickDismiss(key)}>
-						<Close />
-					</IconButton>
-				)}
-				maxSnack={3} 
-				preventDuplicate 
-				anchorOrigin={{
-					vertical: 'top',
-					horizontal: 'right',
-				}}
-				TransitionComponent={Fade}
-				>
-					<CssBaseline />
-					<Router>
-						<Routes>
-							<Route path="/login" element={<Login />} />
-							<Route path="/login/oauth/callback" element={<OAuthCallback />}/>
-							<Route path="/" element={
-								<RequireAuth>
-									<Layout>
-										<Home />
-									</Layout>
-								</RequireAuth>
-							} />
-							<Route path="/fichas/coc/details" element={
-								<RequireAuth>
-									<Layout>
-										<DetalhesFichaCoC />
-									</Layout>
-								</RequireAuth>
-							}/>
-							<Route path="/minhas-mesas" element={
-								<RequireAuth mestrePerm={true}>
-									<Layout>
-										<MinhasMesas />
-									</Layout>
-								</RequireAuth>
-							}/>
-						</Routes>
-					</Router>
-				</SnackbarProvider>
-			</ThemeProvider>
+			<PermissionProvider>
+				<ThemeProvider theme={theme}>
+					<SnackbarProvider 
+					ref={notistackRef}
+					action={(key: any) => (
+						<IconButton onClick={onClickDismiss(key)}>
+							<Close />
+						</IconButton>
+					)}
+					maxSnack={3} 
+					preventDuplicate 
+					anchorOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					TransitionComponent={Fade}
+					>
+						<CssBaseline />
+						<Router>
+							<Routes>
+								<Route path="/login" element={<Login />} />
+								<Route path="/login/oauth/callback" element={<OAuthCallback />}/>
+								<Route path="/" element={
+									<RequireAuth>
+										<Layout>
+											<Home />
+										</Layout>
+									</RequireAuth>
+								} />
+								<Route path="/fichas/coc/details" element={
+									<RequireAuth>
+										<Layout>
+											<DetalhesFichaCoC />
+										</Layout>
+									</RequireAuth>
+								}/>
+								<Route path="/me/sesssions" element={
+									<RequireAuth mestrePerm={true}>
+										<Layout>
+											<MinhasMesas />
+										</Layout>
+									</RequireAuth>
+								}/>
+								<Route path="/me/sheets" element={
+									<RequireAuth>
+										<Layout>
+											<MinhasFichas />
+										</Layout>
+									</RequireAuth>
+								}/>
+							</Routes>
+						</Router>
+					</SnackbarProvider>
+				</ThemeProvider>
+			</PermissionProvider>
 		</AuthProvider>
 	);
 }

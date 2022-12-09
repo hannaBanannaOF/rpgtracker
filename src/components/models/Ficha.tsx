@@ -1,4 +1,3 @@
-import { CurrentUser } from "./CurrentUser";
 import { MesaBase } from "./Mesa";
 
 export type FichaType = FichaBase | FichaCOC;
@@ -8,7 +7,7 @@ export interface FichaBase {
     nome_personagem: string,
     get_content_type: string,
     mesa? : MesaBase,
-    jogador: CurrentUser
+    jogador: string
 }
 
 interface Skill {

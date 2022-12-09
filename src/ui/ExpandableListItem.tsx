@@ -23,13 +23,13 @@ export function ExpandableListItem(props: ExpandableListItemProps) {
     return (<Paper elevation={open ? 10 : 1}>
             <ListItemButton onClick={handleClick}>
                 {props.icon && <ListItemIcon>
-                    {props.icon}
+                    {/* {props.icon} */}
                 </ListItemIcon>}
                 <ListItemText primary={props.listItemText}/>
                     {open ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open} timeout="auto" sx={{ p: open ? 2 : 0 }}>
-                {props.children}
+                {/* {props.children} */}
             </Collapse>
         </Paper>);
 

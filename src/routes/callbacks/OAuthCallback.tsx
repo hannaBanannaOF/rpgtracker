@@ -1,30 +1,40 @@
-import { useEffect } from "react";
 import LockIcon from '@mui/icons-material/Lock';
 import { useLocation, useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../../components/providers/AuthProvider";
-import { Rpgtrackerwebclient } from "../../components/webclient/Rpgtrackerwebclient";
 import { Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
+import axios from "axios";
+import { useEffectOnce } from "../../utils/UseEffectOnce";
 
 export function OAuthCallback() {
 
     let navigate = useNavigate();
     let location = useLocation();
     let auth = useAuth();
+
     let [searchParams] = useSearchParams();
     const { enqueueSnackbar } = useSnackbar();
     let from = (location.state as any)?.from?.pathname || "/";
 
-    useEffect(() => {
-        if (auth.valid || !searchParams.get('code')) {
+    let code = searchParams.get('code');
+
+    useEffectOnce(() => {
+        if (auth.valid || !code) {
             navigate(from, {replace: true});
             return;
         }
-        let code = searchParams.get('code');
-        Rpgtrackerwebclient.post(`/v1/token/social-auth/social/jwt-pair/hannabananna/`, {code: code}).then(res => {
-            localStorage.setItem("tokens", JSON.stringify(res.data));
-            auth.setCurrUser().then(() => {
+        
+
+        const data = new URLSearchParams();
+        data.append('redirect_uri', process.env.REACT_APP_THIS_REDIRECT_URI!);
+        data.append('grant_type', 'authorization_code');
+        data.append('client_id', 'rpgtracker');
+        data.append('code', code!);
+        data.append('scope', 'openid')
+
+        axios.post(process.env.REACT_APP_KEYCLOAK_TOKEN_ENDPOINT!, data).then(res => { 
+            auth.setTokens(res.data).then(() => {
                 navigate(from, {replace: true});
             });
         }).catch(err => {
@@ -35,8 +45,7 @@ export function OAuthCallback() {
             });
             navigate(from, {replace: true});
         });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    });
 
     return (
         <div style={{ width: "100%", height: "100%", backgroundColor: "purple", display: "flex", flexDirection: "column", justifyContent:"center", alignItems:"center"}}>

@@ -1,54 +1,77 @@
-import React, { useEffect, useState } from "react";
-import { CurrentUser } from "../models/CurrentUser";
-import { AccountService } from "../services/AccountService";
-import { logout } from "../services/AuthenticationService";
+import React, { useState } from "react";
+import { useEffectOnce } from "../../utils/UseEffectOnce";
 
-interface AuthContextType {
-    currentUser: CurrentUser | undefined;
-    setCurrUser: () => Promise<void>;
+export interface AuthContextType {
+    currentUser: any;
     valid: boolean;
     signout: () => Promise<void>;
+    setTokens: (tokens: string) => Promise<void>;
+    errorMessage: any;
+    clearError: () => Promise<void>;
   }
   
-let AuthContext = React.createContext<AuthContextType>({} as AuthContextType);
+export let AuthContext = React.createContext<AuthContextType>({} as AuthContextType);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 
-    const [currentUser, setCurrentUser] = useState<CurrentUser | undefined>(undefined);
+    const [currentUser, setCurrentUser] = useState<any>(undefined);
     const [valid, setValid] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<any>(undefined);
 
     let updateStates = () => {
-      const storagedUser = localStorage.getItem('user-data');
       const storagedToken = localStorage.getItem('tokens');
-  
-      if (storagedToken && storagedUser) {
-        setCurrentUser(JSON.parse(storagedUser));
-        setValid(true);
+      if (storagedToken) {
+        let user = decodeToken(storagedToken);
+        if (!(user?.resource_access?.rpgtracker?.roles?.find((e: string) => e === 'user') ?? false)) {
+          setErrorMessage({
+            message: `Você não tem permissão para acessar esse recurso!`,
+            variant: "error",
+            key: "error_no_permission"
+          });
+          setCurrentUser(undefined);
+          setValid(false);
+        } else {
+          setErrorMessage(undefined)
+          setCurrentUser(user);
+          setValid(true);
+        }
       } else {
         setCurrentUser(undefined);
+        setErrorMessage(undefined);
         setValid(false);
       }
     }
 
-    useEffect(() => {
+    useEffectOnce(() => {
       updateStates();
-    }, []);
+    });
 
-    let setCurrUser = async () => {
-      let res = await AccountService.getCurrentUserObj();
-      localStorage.setItem("user-data", JSON.stringify(res.data));
-      updateStates();
+    let decodeToken = (token: string) => {
+      let output = JSON.parse(token).access_token;
+      var base64Url = output.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload)
     }
 
     let signout = async () => {
-      return await logout(() => {
-        localStorage.removeItem("tokens");
-        localStorage.removeItem("user-data");
-        updateStates();
-      });
+      const storagedToken = localStorage.getItem('tokens');
+      localStorage.removeItem("tokens");
+      window.location.replace(process.env.REACT_APP_KEYCLOAK_SIGNOUT_URL!+'&id_token_hint='+JSON.parse(storagedToken!).id_token)
     };
 
-    let value = { valid, signout, currentUser, setCurrUser };
+    let clearError = async () => {
+      setErrorMessage(undefined);
+    }
+
+    let setTokens = async (tokens: string) => {
+      localStorage.setItem("tokens", JSON.stringify(tokens));
+      updateStates();
+    }
+
+    let value = { valid, signout, currentUser, setTokens, errorMessage, clearError };
   
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
