@@ -23,7 +23,7 @@ export function CoCStats(props: CoCStatsProps){
     return (
             <Grid container item xs={props.span?.xs ?? 12} sm={props.span?.sm ?? 12} md={props.span?.md ?? 12} lg={props.span?.lg ?? 12} xl={props.span?.xl ?? 12}>
                 {!props.fullRounded && <Grid item container justifyContent={"space-around"} alignItems={"center"} xs={12}>
-                    {props.improvcheck ? <FormControlLabel control={<Checkbox checked={props.improvedCheck} />} label={props.stat} /> : <Typography display="inline">{props.stat}</Typography>}
+                    {props.improvcheck ? <FormControlLabel control={<Checkbox checked={props.improvedCheck} />} label={props.stat} key={props.stat}/> : <Typography display="inline">{props.stat}</Typography>}
                     <Paper sx={{
                         backgroundColor: (theme) =>
                         theme.palette.mode === 'dark' ? '#1A2027' : '#fff',

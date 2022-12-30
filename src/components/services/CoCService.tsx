@@ -2,12 +2,12 @@ import { Rpgtrackerwebclient } from "../webclient/Rpgtrackerwebclient"
 
 class CoCService {
 
-    static getFicha = (idFicha: number) => {
-        return Rpgtrackerwebclient.get('v1/coc/ficha/details/', {params :{pk: idFicha}});
+    static getFicha = (idFicha: string) => {
+        return Rpgtrackerwebclient.get(`coc/character-sheets/${idFicha}`);
     }
 
-    static getMesa = (idMesa: number) => {
-        return Rpgtrackerwebclient.get('v1/coc/mesa/details/', {params :{pk: idMesa}});
+    static getMesa = (idMesa: string) => {
+        return Rpgtrackerwebclient.get(`coc/sessions/${idMesa}`);
     }
 }
 

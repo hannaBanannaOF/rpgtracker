@@ -7,7 +7,7 @@ class AccountService {
     }
 
     static getCurrentUserMesasMestradas = () => {
-        return Rpgtrackerwebclient.get('v1/accounts/current-user/mesas-mestradas');
+        return Rpgtrackerwebclient.get('/my-dm-sessions');
     }
 }
 

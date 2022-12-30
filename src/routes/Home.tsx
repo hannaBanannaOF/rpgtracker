@@ -1,4 +1,3 @@
-import { MinhasFichas } from "../ui/MinhasFichas";
 import { useAuth } from "../components/providers/AuthProvider";
 import React, { useEffect, useState } from "react";
 import { Skeleton, Typography } from "@mui/material";
@@ -15,6 +14,5 @@ export function Home() {
 	return loading? <Skeleton animation="wave" variant="text"/> : (
 		<React.Fragment>
 			<Typography variant="h2" component="div" sx={{ mb: 4 }}>Welcome back, {auth.currentUser?.given_name ?? auth.currentUser?.preferred_username ?? "Anon"}</Typography>
-			{/* <MinhasFichas /> */}
 		</React.Fragment>);
 }

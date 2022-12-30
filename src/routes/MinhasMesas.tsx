@@ -1,15 +1,26 @@
-import { Avatar, AvatarGroup, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Tooltip } from "@mui/material";
+import { Avatar, AvatarGroup, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Tooltip, Typography, useTheme } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { GiHarryPotterSkull, GiOctopus } from "react-icons/gi";
+import { GiHarryPotterSkull, GiOctopus, GiTabletopPlayers } from "react-icons/gi";
 import { useNavigate } from "react-router";
-import { MesaBase } from "../components/models/Mesa";
+import { SessionBase } from "../components/models/Session";
 import { AccountService } from "../components/services/AccountService";
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import styled from "@emotion/styled";
+
+const AvatarContainer = styled.div`
+  display: flex;
+  margin-bottom: 14px;
+  & > * {
+    margin: 4px;
+  }
+`;
 
 export function MinhasMesas() {
 
     const [loading, setLoading] = useState(true);
-    const [mesas, setMesas] = useState<MesaBase[] | null>(null);
+    const [mesas, setMesas] = useState<SessionBase[] | null>(null);
+
+    const theme = useTheme();
 
     let navigate = useNavigate();
 
@@ -21,56 +32,70 @@ export function MinhasMesas() {
         });
     }, []);
 
-    const getContentTypeItem = (content_type: string) => {
-        if(content_type === 'coc') {
+    const getContentTypeItem = (system: string) => {
+        if(system === 'CALL_OF_CTHULHU') {
             return <GiOctopus />;
         }
-        if(content_type === 'hp') {
+        if(system === 'hp') {
             return <GiHarryPotterSkull />;
         }
     }
 
-    const getContentTypeTooltip = (content_type: string) => {
-        if(content_type === 'coc') {
+    const getContentTypeTooltip = (system: string) => {
+        if(system === 'CALL_OF_CTHULHU') {
             return "Call of Cthulhu";
         }
-        if(content_type === 'hp') {
+        if(system === 'hp') {
             return "Harry Potter (Broomstix)";
+        }
+        return "";
+    }
+
+    const getSystemPath = (system: string) => {
+        if(system === 'CALL_OF_CTHULHU') {
+            return "coc";
+        }
+        if(system === 'hp') {
+            return "hp";
         }
         return "";
     }
 
     return loading? <Skeleton animation="wave" variant="rectangular"/> : (
         <React.Fragment>
-            <Divider textAlign="left">Minhas mesas</Divider>
+            <Divider textAlign="left">
+                <GiTabletopPlayers size={20} color={theme.palette.primary.light}/><Typography variant='h6' component="div" display="inline" sx={{ marginLeft: '8px' }}>Minhas mesas</Typography>
+            </Divider>
             <List>
                 {mesas?.map((mesa) => {
                     return <ListItem
-                        key={mesa.id}
+                        key={mesa.uuid}
                         secondaryAction={
-                        <IconButton edge="end" aria-label="Ver mesa" onClick={() => {navigate(`mesas/${mesa.get_content_type}/details?pk=${mesa.id}`)}}>
+                        <IconButton edge="end" aria-label="Ver mesa" onClick={() => {navigate(`/sessions/${getSystemPath(mesa.system)}/details?uuid=${mesa.uuid}`)}}>
                             <ReadMoreIcon />
                         </IconButton>
                         }
                     >
                         <ListItemAvatar>
-                            <Tooltip title={getContentTypeTooltip(mesa.get_content_type)}>
+                            <Tooltip title={getContentTypeTooltip(mesa.system)}>
                                 <Avatar>
-                                    {getContentTypeItem(mesa.get_content_type)}
+                                    {getContentTypeItem(mesa.system)}
                                 </Avatar>
                             </Tooltip>
                         </ListItemAvatar>
-                        <ListItemText
-                        primary={mesa.name}
-                        secondary={
-                            <AvatarGroup sx={{ flexDirection: "row" }}>
-                            {/* {mesa.fichas_mesa.map((ficha) => {
-                                return <Tooltip title={ficha.jogador.first_name ?? "Anon"}>
-                                        <Avatar src={ficha.jogador.photo}/>
-                                    </Tooltip> 
-                            })} */}
-                            </AvatarGroup>
-                        }
+                        <ListItemText 
+                            primary={mesa.sessionName}
+                            secondary={
+                                <AvatarContainer>
+                                    <AvatarGroup sx={{ flexDirection: "row-reverse" }} max={4}>
+                                        {mesa.players.map((playerName: string) => {
+                                            return <Tooltip title={playerName}>
+                                                    <Avatar alt={playerName}/>
+                                                </Tooltip> 
+                                        })}
+                                    </AvatarGroup>
+                                </AvatarContainer>
+                            }
                         />
                     </ListItem>
                 })}
