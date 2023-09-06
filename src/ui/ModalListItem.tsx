@@ -1,8 +1,6 @@
-import React, { useState } from "react"
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
-import { InfoOutlined } from "@mui/icons-material";
+import { useDisclosure } from '@mantine/hooks';
+import { Group, Modal, Paper, Text, UnstyledButton } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 
 interface ModalListItemProps {
     listItemText: string,
@@ -12,22 +10,23 @@ interface ModalListItemProps {
 
 export function ModalListItem(props: ModalListItemProps) {
 
-    const [showModal, setShowModal] = useState(false);
+    const [opened, { open, close }] = useDisclosure(false);
 
-    const handleClick = () => {
-        setShowModal(!showModal);
-    };
-
-    return <React.Fragment>
-            <ListItemButton onClick={handleClick}>
-                <ListItemText primary={props.listItemText}/><InfoOutlined />
-            </ListItemButton>
-            <Dialog open={showModal} onClose={handleClick} fullWidth={true}>
-                <DialogTitle>{props.dialogTitle}</DialogTitle>
-                <DialogContent>
-                    {props.children}
-                </DialogContent>
-            </Dialog>
-        </React.Fragment>;
+    return <>
+        <UnstyledButton onClick={open}>
+            <Paper p={12} shadow="sm" sx={(theme) => ({
+                padding: theme.spacing.md,
+                backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.white
+            })}>
+                <Group position='apart'>
+                    <Text>{props.listItemText}</Text>
+                    <IconInfoCircle />
+                </Group>
+            </Paper>
+        </UnstyledButton>
+        <Modal opened={opened} onClose={close} title={props.dialogTitle}>
+            {props.children}
+        </Modal>
+    </>;
 
 }

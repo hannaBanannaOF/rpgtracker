@@ -1,23 +1,46 @@
 import Bg from '../assets/img/bg.jpg';
 import { useLocation, useNavigate } from "react-router";
-import { useAuth } from "../components/providers/AuthProvider";
+import { useAuth } from "../providers/AuthProvider";
 import { useState } from "react";
-import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
-import LockIcon from '@mui/icons-material/Lock';
-import { useSnackbar } from 'notistack';
+import { IconKey } from "@tabler/icons-react";
+import { Button, Title, Box, createStyles, rem } from '@mantine/core';
 import { useEffectOnce } from '../utils/UseEffectOnce';
 
 export interface LoginProps {
 }
 
+const useStyles = createStyles((theme) => ({
+    wrapper: {
+      minHeight: '100%',
+      backgroundSize: '100% 100%',
+      backgroundRepeat: 'no-repeat',
+      backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0)), url(${Bg})`,
+      paddingTop: rem(100),
+    },
+  
+    form: {
+      minHeight: '100%',
+      height: '100%',
+      maxWidth: rem(450),
+  
+      [theme.fn.smallerThan('sm')]: {
+        maxWidth: '100%',
+      },
+    },
+  
+    title: {
+      color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+      fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    },
+  }));
+
 export function Login(props: LoginProps) {
+    const { classes } = useStyles();
     let location = useLocation();
     let auth = useAuth();
     let navigate = useNavigate();
 
     let from = (location.state as any)?.from?.pathname || "/";
-    const { enqueueSnackbar } = useSnackbar();
     let [authent, setAuthent] = useState(false);
 
     function redirectOAuth(redirect: string) {
@@ -28,41 +51,22 @@ export function Login(props: LoginProps) {
     useEffectOnce(() => {
         if (auth.valid) {
             navigate(from, {replace: true});
-        } else if (auth.errorMessage) {
-            enqueueSnackbar(auth.errorMessage.message, {
-                variant: auth.errorMessage.variant,
-                key: auth.errorMessage.key
-            });
-            auth.clearError();
         }
     });
 
     return(
-        <div style={{ backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0)), url(${Bg})`, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", height: "100%"}}>
-            <Box sx={{ flexGrow: 1 }}>
-                <Grid
-                    container
-                    justifyContent="flex-start"
-                    alignItems="center"
-                    px={5}
-                >
-                    <Grid item md={8} xs={12}>
-                        <Stack mt={25}>
-                            <Divider textAlign="left">
-                                <Typography variant="h4" gutterBottom component={"div"}>Login</Typography>
-                            </Divider>
-                            <LoadingButton
-                                onClick={() => redirectOAuth(process.env.REACT_APP_KEYCLOAK_OAUTH_REDIRECT!)}
-                                loading={authent}
-                                loadingPosition="start"
-                                startIcon={<LockIcon />}
-                                variant="contained"
-                            >
-                            Login com HBAuth
-                            </LoadingButton>
-                        </Stack>
-                    </Grid>
-                </Grid>
+        <div className={classes.wrapper}>
+            <Box className={classes.form} p={30}>
+                <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
+                    Welcome back to RPGTracker!
+                </Title>
+
+                <Button fullWidth 
+                    leftIcon={<IconKey size="1rem" />} 
+                    loading={authent}
+                    onClick={() => redirectOAuth(process.env.REACT_APP_KEYCLOAK_OAUTH_REDIRECT!)}>
+                Login
+                </Button>
             </Box>
         </div>
     );

@@ -3,11 +3,11 @@ import { Rpgtrackerwebclient } from "../webclient/Rpgtrackerwebclient"
 class AccountService {
 
     static getCurrentUserFichas = () => {
-        return Rpgtrackerwebclient.get('/my-character-sheets');
+        return Rpgtrackerwebclient.get('/core/api/v1/my-character-sheets');
     }
 
     static getCurrentUserMesasMestradas = () => {
-        return Rpgtrackerwebclient.get('/my-dm-sessions');
+        return Rpgtrackerwebclient.get('/core/api/v1/my-dm-sessions');
     }
 }
 

@@ -1,222 +1,298 @@
-import { Grid, Paper, Typography, Divider, Slider, Chip, Box, FormControlLabel, Checkbox, List, IconButton, Dialog, DialogTitle, DialogContent } from '@mui/material';
-import React, { useState } from 'react';
-import { CoCWeaponsInSheet, COCCharacterSheet, SkillCoC, PulpTalents } from '../components/models/CharacterSheet';
+import { CoCWeaponsInSheet, COCCharacterSheet, SkillCoC, PulpTalents } from '../models/CharacterSheet';
 import { DefaultEmpty } from './DefaultEmpty';
 import { CoCStats } from './StatsCOC';
-import { InfoOutlined } from '@mui/icons-material';
 import { ModalListItem } from './ModalListItem';
+import { ActionIcon, Avatar, Badge, Card, Center, Checkbox, Grid, Group, Modal, Skeleton, Space, Stack, Text, Title } from '@mantine/core';
+import { IconAddressBook, IconBookmark, IconBrain, IconCards, IconClover2, IconCornerDownRight, IconHeart, IconInfoCircle, IconSword, IconSwordOff, IconSwords, IconUser, IconWand } from '@tabler/icons-react';
+import { useDisclosure } from '@mantine/hooks';
+import SliderWithCaption from './SliderWithCaption';
+import TitleDividerWithIcon from './TitleDividerWithIcon';
+import { useSubscription } from 'react-stomp-hooks';
+import { useAuth } from '../providers/AuthProvider';
+import { useState } from 'react';
+import { GoBack } from './GoBack';
 
 export interface DetalhesFichaCoCProps {
     ficha?: COCCharacterSheet | null;
+    fromSession?: boolean;
+    playerName?: string;
+    characterName?: string;
 }
 
 export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
-    
-    const [occupationDialogOpen, setOccupationDialogOpen] = useState(false);
 
-    return props.ficha ? (
-        <Grid container columns={24} spacing={2} sx={{ mb: 2 }}>
-            <Grid item order={{lg: 1, md: 1, sm: 2, xs: 2}} xs={17} md={15} lg={6}>
-                <Paper sx={{ padding: 2 }}>
-                    <Divider textAlign='left'>
-                        <Typography variant='h6' component="div">{(props.ficha?.basicInfo.pulpCthulhu ?? false) ? "Herói (PCoC)" : "Investigador"}</Typography>
-                    </Divider>
-                    <div>
-                        <Typography sx={{textDecoration: 'underline'}} display="inline">Nome:</Typography> {props.ficha?.basicInfo.characterName ?? "Noname"}
-                    </div>
-                    <div>
-                        <Typography sx={{textDecoration: 'underline'}} display="inline">Jogador:</Typography> {props.ficha?.basicInfo.playerName ?? "Anon"}
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                        <div><Typography sx={{textDecoration: 'underline'}} display="inline">Ocupação:</Typography> {props.ficha?.occupation?.name ?? "Unoccupied"}</div>
-                        {props.ficha?.occupation && props.ficha?.occupation!.description && <React.Fragment>
-                            <IconButton onClick={() => {setOccupationDialogOpen(true);}}>
-                                <InfoOutlined />
-                            </IconButton>
-                            <Dialog open={occupationDialogOpen} onClose={() => {setOccupationDialogOpen(false);}} fullWidth={true}>
-                                <DialogTitle>{props.ficha?.occupation?.name}</DialogTitle>
-                                <DialogContent>
-                                    <Divider textAlign='left'>
-                                        <Typography variant='button' >Descrição</Typography>
-                                    </Divider>
-                                    {props.ficha?.occupation?.description ?? ""}
-                                    <Divider textAlign='left'>
-                                        <Typography variant='button' >Contatos sugeridos</Typography>
-                                    </Divider>
-                                    {props.ficha?.occupation?.suggestedContacts ?? ""}
-                                </DialogContent>
-                            </Dialog>
-                        </React.Fragment>}
-                    </div>
-                    <div>
-                        <Typography sx={{textDecoration: 'underline'}} display="inline">Idade:</Typography> {props.ficha?.basicInfo.age ?? 0}
-                    </div>
-                    <div>
-                        <Typography sx={{textDecoration: 'underline'}} display="inline">Residência:</Typography> {props.ficha?.basicInfo.residence ?? ""}
-                    </div>
-                    <div>
-                        <Typography sx={{textDecoration: 'underline'}} display="inline">Naturalidade:</Typography> {props.ficha?.basicInfo.birthplace ?? ""}
-                    </div>
-                    {(props.ficha?.basicInfo.pulpCthulhu ?? false) &&<Typography><Typography sx={{textDecoration: 'underline'}} display="inline">Arquétipo:</Typography> {props.ficha?.basicInfo.pulpArchetype ?? ""}</Typography>}
-                </Paper>
-            </Grid>
-            <Grid item order={{lg: 2, md: 3, sm: 3, xs: 3}} lg={13} xs={24}>
-                <Paper sx={{ padding: 2 }}>
-                    <Divider textAlign='center'>
-                        <Typography variant='h6' component="div">Características</Typography>
-                    </Divider>
-                    <Grid container item spacing={2} columns={12}>
-                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={props.ficha?.basicAttributes.strength ?? "0"} stat="STR"/>
-                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={props.ficha?.basicAttributes.dexterity ?? "0"} stat="DEX"/>
-                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={props.ficha?.basicAttributes.power ?? "0"} stat="POW"/>
-                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={props.ficha?.basicAttributes.constitution ?? "0"} stat="CON"/>
-                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={props.ficha?.basicAttributes.appearance ?? "0"} stat="APP"/>
-                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={props.ficha?.basicAttributes.education ?? "0"} stat="EDU"/>
-                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={props.ficha?.basicAttributes.size ?? "0"} stat="SIZ"/>
-                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={props.ficha?.basicAttributes.intelligence ?? "0"} stat="INT"/>
-                        <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} fullRounded value={props.ficha?.calculatedAttributes.moveRate ?? "0"} stat="Move Rate"/>
-                    </Grid>
-                </Paper>
-            </Grid>
-            <Grid item order={{lg: 3, md: 2, sm: 1, xs: 1}} lg={5} md={9} xs={7}>
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                </Box>           
-            </Grid>
-            <Grid item order={4} lg={8} xs={24}>
-                <Paper sx={{ padding: 2 }}>
-                    <Divider textAlign='left'>
-                        <Typography variant='h6' component="div">HP: {props.ficha?.calculatedAttributes.healthPoints ?? 0}</Typography>
-                    </Divider>
-                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                        <Typography variant="button" component="div">Max HP: {props.ficha?.calculatedAttributes.maximumHealthPoints ?? "0"}</Typography>
-                        {(props.ficha?.calculatedAttributes.healthPoints ?? 0) === 0 && props.ficha?.calculatedAttributes.maximumHealthPoints && <Chip label="Morrendo" sx={{ ml: "auto" }} color="error"/>}
-                        {(props.ficha?.calculatedAttributes.healthPoints ?? 0) === 0 && !props.ficha?.calculatedAttributes.maximumHealthPoints && <Chip label="Inconsciente" sx={{ ml: "auto" }}/>}
-                    </Box>
-                    <Slider
-                        value={props.ficha?.calculatedAttributes.healthPoints ?? 0}
-                        min={0}
-                        max={props.ficha?.calculatedAttributes.maximumHealthPoints ?? 0}
+    const [ocupationOpened, { open, close }] = useDisclosure(false);
+
+    const _getHpEndBadge = () => {
+        if ((props.ficha?.calculatedAttributes.healthPoints ?? 0) === 0/* && majorWound*/) {
+            return <Badge color='red'>Morrendo</Badge>
+        } else if ((props.ficha?.calculatedAttributes.healthPoints ?? 0) === 0) {
+            return <Badge color='grey'>Inconsciente</Badge>
+        }
+        return null;
+    }
+
+    return <Grid grow>
+        {!props.fromSession && <Grid.Col>
+            <GoBack />   
+        </Grid.Col>}
+        {/* Basic info */}
+        <Grid.Col sm={10} md={8} lg={3} order={1} orderLg={1} orderSm={2}>
+            <Card padding="lg">
+                <TitleDividerWithIcon icon={<IconUser />} label={(props.ficha?.basicInfo.pulpCthulhu ?? false) ? "Herói (PCoC)" : "Investigador"} />
+                <Skeleton visible={props.characterName == null}>
+                    <Group position='left'>
+                        <Text td="underline">Nome:</Text>
+                        {props.characterName}
+                    </Group>
+                </Skeleton>
+                <Skeleton visible={props.playerName == null}>
+                    <Group position='left'>
+                        <Text td="underline" display="inline">Jogador:</Text>
+                        {props.playerName}
+                    </Group>
+                </Skeleton>
+                <Group position='left'>
+                    <Text td="underline" display="inline">Idade:</Text>
+                    {props.ficha?.basicInfo.age ?? 0}
+                </Group>
+                <Group position='left'>
+                    <Text td="underline" display="inline">Residência:</Text>
+                    {props.ficha?.basicInfo.residence ?? ""}
+                </Group>
+                <Group position='left'>
+                    <Text td="underline" display="inline">Naturalidade:</Text>
+                    {props.ficha?.basicInfo.birthplace ?? ""}
+                </Group>
+                <Group position='apart'>
+                    <Group position='left'>
+                        <Text td="underline" display="inline">Ocupação:</Text>
+                        {props.ficha?.occupation?.name ?? "Unoccupied"}
+                    </Group>
+                    {props.ficha?.occupation && props.ficha?.occupation!.description && 
+                    <>
+                            <ActionIcon onClick={open}>
+                                <IconInfoCircle />
+                            </ActionIcon>
+                            <Modal opened={ocupationOpened} onClose={close} title={props.ficha?.occupation?.name}>
+                            <TitleDividerWithIcon icon={<IconInfoCircle />} label='Descrição' />
+                            {props.ficha?.occupation?.description ?? ""}
+                            <TitleDividerWithIcon icon={<IconAddressBook />} label='Contatos sugeridos' />
+                            {props.ficha?.occupation?.suggestedContacts ?? ""}
+                            </Modal>
+                        </>}
+                </Group>
+                {(props.ficha?.basicInfo.pulpCthulhu ?? false) &&<Group position='left'><Text td="underline" display="inline">Arquétipo:</Text>{props.ficha?.basicInfo.pulpArchetype ?? ""}</Group>}
+            </Card>
+        </Grid.Col>
+        {/* Basic characteristics */}
+        <Grid.Col sm={12} md={12} lg={7} order={3} orderLg={2} orderSm={3}>
+            <Card padding={"lg"}>
+                <TitleDividerWithIcon icon={<IconInfoCircle />} label='Características' />
+                <Grid align='center' justify='center'>
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.strength ?? "0"} stat="STR"/>
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.dexterity ?? "0"} stat="DEX"/>
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.power ?? "0"} stat="POW"/>
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.constitution ?? "0"} stat="CON"/>
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.appearance ?? "0"} stat="APP"/>
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.education ?? "0"} stat="EDU"/>
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.size ?? "0"} stat="SIZ"/>
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.intelligence ?? "0"} stat="INT"/>
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} fullRounded noShowFifth value={props.ficha?.calculatedAttributes.moveRate ?? "0"} stat="Move Rate"/>
+                </Grid>
+            </Card>
+        </Grid.Col>
+        {/* Avatar */}
+        <Grid.Col sm={2} md={2} lg={2} order={2} orderLg={2} orderSm={1}>
+            <Card padding={"lg"}>
+                <Center>
+                    <Avatar radius="xl"/>
+                </Center>
+            </Card>
+        </Grid.Col>
+        {/* Lifepoints */}
+        <Grid.Col sm={12} md={4} lg={4} order={4}>
+            <Card padding={"lg"}>
+                <TitleDividerWithIcon icon={<IconHeart />} label='Pontos de Vida' />
+                <SliderWithCaption 
+                    color="red"
+                    value={props.ficha?.calculatedAttributes.healthPoints ?? 0}
+                    max={props.ficha?.calculatedAttributes.maximumHealthPoints ?? 0} 
+                    thumbChildren={<IconHeart size="1rem" />}
+                    disabled
+                    endBadge={_getHpEndBadge()}
+                />
+                <Space h={"md"} />
+                <Group>
+                    <Title order={5}>Max HP:</Title>
+                    <Text>{props.ficha?.calculatedAttributes.maximumHealthPoints ?? "0"}</Text>
+                </Group>
+                <Space h={"md"}/>
+                <Checkbox
+                    label="Major wound"
+                    disabled
+                />
+            </Card>
+        </Grid.Col>
+        {/* Sanity */}
+        <Grid.Col sm={12} md={8} lg={8} order={5}>
+            <Card padding={"lg"}>
+                <TitleDividerWithIcon icon={<IconBrain />} label='Sanidade' />
+                <SliderWithCaption 
+                    color="blue"
+                    value={props.ficha?.calculatedAttributes.sanity ?? 0} 
+                    thumbChildren={<IconBrain size="1rem" />}
+                    max={props.ficha?.calculatedAttributes.maximumSanity ?? 0}
+                    disabled
+                    endBadge={(props.ficha?.calculatedAttributes.sanity ?? 0) === 0 ? <Badge color='grey'>Insano</Badge> : null}
+                />
+                <Space h={"md"} />
+                <Group>
+                    <Title order={5}>Max SAN:</Title>
+                    <Text>{props.ficha?.calculatedAttributes.maximumSanity ?? "0"}</Text>
+                </Group>
+                <Group>
+                    <Title order={5}>SAN inicial:</Title>
+                    <Text>{props.ficha?.calculatedAttributes.startingSanity ?? "0"}</Text>
+                </Group>
+                <Space h={"md"} />
+                <>
+                    <Checkbox
+                        label="Insanidade temporária"
+                        disabled
                     />
-                </Paper>
-            </Grid>
-            <Grid item order={5} lg={16} xs={24}>
-                <Paper sx={{ padding: 2 }}>
-                    <Divider textAlign='left'>
-                        <Typography variant='h6' component="div">Sanidade: {props.ficha?.calculatedAttributes.sanity ?? 0}</Typography>
-                    </Divider>
-                    
-                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                        <Typography variant="button" component="div">MAX SAN: {props.ficha?.calculatedAttributes.maximumSanity ?? "0"}</Typography>
-                        {(props.ficha?.calculatedAttributes.sanity ?? 0) === 0 && <Chip label="Insano" sx={{ ml: "auto" }}/>}
-                    </Box>
-                    <Typography variant="button" component="div">START SAN: {props.ficha?.calculatedAttributes.startingSanity ?? "0"}</Typography>
-                    <FormControlLabel control={<Checkbox checked={props.ficha?.calculatedAttributes.temporaryInsanity} />} label="Insanidade temporária" />
-                    <FormControlLabel control={<Checkbox checked={props.ficha?.calculatedAttributes.indefiniteInsanity} />} label="Insanidade indeterminada" />
-                    <Slider
-                        max={props.ficha?.calculatedAttributes.maximumSanity ?? 0} value={props.ficha?.calculatedAttributes.sanity ?? 0} min={0}
+                    <Checkbox
+                        label="Insanidade indefinida"
+                        disabled
                     />
-                </Paper>
-            </Grid>
-            <Grid item order={6} lg={16} xs={24}>
-                <Paper sx={{ padding: 2 }}>
-                    <Divider textAlign='left'>
-                        <Typography variant='h6' component="div">Sorte: {props.ficha?.basicAttributes.luck ?? 0}</Typography>
-                    </Divider>
-                    {(props.ficha?.basicAttributes.luck ?? 0) === 0 && <Chip label="Sem sorte"/>}
-                    <Slider
-                        max={99} value={props.ficha?.basicAttributes.luck ?? 0} min={0}
-                    />
-                </Paper>
-            </Grid>
-            <Grid item order={7} lg={8} xs={24}>
-                <Paper sx={{ padding: 2 }}>
-                    <Divider textAlign='left'>
-                        <Typography variant='h6' component="div">MP: {props.ficha?.calculatedAttributes.magicPoints ?? 0}</Typography>
-                    </Divider>
-                    <Typography variant="button" component="div">Max MP: {props.ficha?.calculatedAttributes.maximumMagicPoints ?? "0"}</Typography>
-                    <Slider
-                        max={props.ficha?.calculatedAttributes.maximumMagicPoints ?? 0} value={props.ficha?.calculatedAttributes.magicPoints ?? 0} min={0}
-                    />
-                </Paper>
-            </Grid>
-            <Grid item order={8} xs={24}>
-                <Paper sx={{ padding: 2 }}>
-                    <Divider textAlign='center'>
-                        <Typography variant='h6' component="div">Perícias</Typography>
-                    </Divider>
-                    <Grid container spacing={2} columns={12}>
-                        {(props.ficha?.skills ?? []).map((skill: SkillCoC) => {
-                            return <CoCStats span={{ xl: 4, lg: 4, md: 6, sm: 12 }} value={skill.value} stat={skill.skillName} improvcheck improvedCheck={skill.improvementCheck}/>
+                </>
+            </Card>
+        </Grid.Col>
+        {/* Luck */}
+        <Grid.Col sm={12} md={8} lg={8} order={6}>
+            <Card padding={"lg"}>
+                <TitleDividerWithIcon icon={<IconClover2 />} label='Sorte' />
+                <SliderWithCaption 
+                    value={props.ficha?.basicAttributes.luck ?? 0} 
+                    thumbChildren={<IconClover2 size="1rem" />}
+                    disabled
+                    endBadge={(props.ficha?.basicAttributes.luck ?? 0) === 0 ? <Badge color='grey'>Sem sorte</Badge> : null}
+                />
+            </Card>
+        </Grid.Col>
+        <Grid.Col sm={12} md={4} lg={4} order={7}>
+            <Card padding={"lg"}>
+                <TitleDividerWithIcon icon={<IconWand />} label="Pontos de magia" />
+                <SliderWithCaption 
+                    color="grape"
+                    value={props.ficha?.calculatedAttributes.magicPoints ?? 0}
+                    max={props.ficha?.calculatedAttributes.maximumMagicPoints ?? 0} 
+                    thumbChildren={<IconWand size="1rem" />}
+                    disabled
+                />
+                <Space h={"md"} />
+                <Group>
+                    <Title order={5}>Max MP:</Title>
+                    <Text>{props.ficha?.calculatedAttributes.maximumMagicPoints ?? "0"}</Text>
+                </Group>
+            </Card>
+        </Grid.Col>
+        <Grid.Col sm={12} md={12} lg={12} order={8}>
+            <Card>
+                <TitleDividerWithIcon icon={<IconBookmark />} label='Perícias' />
+                <Grid>
+                    {(props.ficha?.skills ?? []).map((skill: SkillCoC) => {
+                        return <CoCStats key={skill.skillID ?? skill.skillName} span={{ xl: 3, lg: 3, md: 4, sm: 6, xs: 12 }} value={skill.value} stat={skill.skillName} improvcheck improvedCheck={skill.improvementCheck}/>
+                    })}
+                </Grid>
+            </Card>
+        </Grid.Col>
+        {/* Weapons */}
+        <Grid.Col sm={12} md={12} lg={9} order={9}>
+            <Card>
+                <TitleDividerWithIcon icon={<IconSwords />} label='Armas' />
+                <DefaultEmpty visible={(props.ficha?.weapons.length ?? 0) === 0} emptyIcon={<IconSwordOff />}>
+                    <Stack>
+                    {(props.ficha?.weapons ?? []).map((item: CoCWeaponsInSheet) => {
+                        return <ModalListItem key={item.nickname} listItemText={item.nickname ?? item.weapon.name} dialogTitle={item.nickname ?? item.weapon.name}>
+                            <>
+                                <TitleDividerWithIcon icon={<IconInfoCircle />} label='Informações básicas'/>
+                                <Stack spacing={"xs"}>
+                                    <Text>Dano: {item.weapon.damage}</Text>
+                                    <Text>Ataques: {item.weapon.attacksPerRound > 1 ? `1(${item.weapon.attacksPerRound})` : 1}</Text>
+                                </Stack>
+                                <TitleDividerWithIcon icon={<IconCornerDownRight />} label='Informações avançadas' />
+                                <Stack spacing={"xs"}>
+                                    {item.weapon.isMelee && <>
+                                        <Text>Arma mano-a-mano</Text>
+                                        {/* <Typography>Acerto normal: {item.normal_success_value}</Typography>
+                                        <Typography>Acerto bom: {Math.floor(item.normal_success_value/2)}</Typography>
+                                    <Typography>Acerto extremo: {Math.floor(item.normal_success_value/5)}</Typography> */}
+                                    </>}
+                                    {!item.weapon.isMelee && <>
+                                        {/* <Typography>Acerto normal: {item.normal_success_value}</Typography>
+                                        <Typography>Acerto bom: {Math.floor(item.normal_success_value/2)}</Typography>
+                                        <Typography>Acerto extremo: {Math.floor(item.normal_success_value/5)}</Typography>
+                                        <Typography>Tiros restantes: {item.ammoLeft}</Typography>
+                                    <Typography>Munição disponível: {`${item.roundsLeft} (${item.totalAmmoLeft})`}</Typography> */}
+                                    </>}
+                                </Stack>
+                            </>
+                        </ModalListItem>
+                    })}
+                    </Stack>
+                </DefaultEmpty>
+            </Card>
+        </Grid.Col>
+        <Grid.Col sm={12} md={12} lg={3} order={10}>
+            <Card>
+                <TitleDividerWithIcon icon={<IconSword />} label='Combate' />
+                <Grid>
+                    <CoCStats fullRounded noShowFifth value={props.ficha?.calculatedAttributes.bonusDamage ?? "0"} stat="Bonus Damage"/>
+                    <CoCStats fullRounded noShowFifth value={props.ficha?.calculatedAttributes.build ?? "0"} stat="Build"/>
+                    <CoCStats value={props.ficha?.calculatedAttributes.dodge ?? "0"} stat="Dodge"/>
+                </Grid>
+            </Card>
+        </Grid.Col>
+        {/* Pulp Talents */}
+        <Grid.Col order={11}>
+            <Card>
+                <TitleDividerWithIcon icon={<IconCards />} label='Talentos (PCoC)' />
+                <DefaultEmpty visible={(props.ficha?.pulpTalents?.length ?? 0) === 0} emptyIcon={<IconCards />}>
+                    <Stack>
+                        {(props.ficha?.pulpTalents ?? []).map((item: PulpTalents) => {
+                            return <ModalListItem key={item.id} listItemText={item.name} dialogTitle={item.name}>
+                                <TitleDividerWithIcon icon={<IconInfoCircle />} label='Descrição' />
+                                {item.description}
+                            </ModalListItem>
                         })}
-                    </Grid>
-                </Paper>
-            </Grid>
-            <Grid item order={9} xs={24} lg={18}>
-                <Paper sx={{ padding: 2 }}>
-                    <Divider textAlign='center'>
-                        <Typography variant='h6' component="div">Armas</Typography>
-                    </Divider>
-                    <DefaultEmpty itens={props.ficha?.weapons.length ?? 0}>
-                    <List sx={{ width: '100%'}}>
-                            {props.ficha!.weapons.map((item: CoCWeaponsInSheet) => {
-                                return <ModalListItem listItemText={item.nickname ?? item.weapon.name} dialogTitle={item.nickname ?? item.weapon.name}>
-                                    <React.Fragment>
-                                        <Divider textAlign='left'>
-                                            <Typography variant='button'>Propriedades básicas</Typography>
-                                        </Divider>
-                                        <Typography>Dano: {item.weapon.damage}</Typography>
-                                        <Typography>Ataques: {item.weapon.attacksPerRound > 1 ? `1(${item.weapon.attacksPerRound})` : 1}</Typography>
-                                        <Divider textAlign='left'>
-                                            <Typography variant='button'>Propriedades avançadas</Typography>
-                                        </Divider>
-                                        {item.weapon.isMelee && <React.Fragment>
-                                           <Typography>Arma mano-a-mano</Typography>
-                                           {/* <Typography>Acerto normal: {item.normal_success_value}</Typography>
-                                           <Typography>Acerto bom: {Math.floor(item.normal_success_value/2)}</Typography>
-                                           <Typography>Acerto extremo: {Math.floor(item.normal_success_value/5)}</Typography> */}
-                                       </React.Fragment>}
-                                       {!item.weapon.isMelee && <React.Fragment>
-                                           {/* <Typography>Acerto normal: {item.normal_success_value}</Typography>
-                                           <Typography>Acerto bom: {Math.floor(item.normal_success_value/2)}</Typography>
-                                           <Typography>Acerto extremo: {Math.floor(item.normal_success_value/5)}</Typography> */}
-                                           <Typography>Tiros restantes: {item.ammoLeft}</Typography>
-                                           <Typography>Munição disponível: {`${item.roundsLeft} (${item.totalAmmoLeft})`}</Typography>
-                                       </React.Fragment>}
-                                    </React.Fragment>
-                                </ModalListItem>
-                            })}
-                        </List>
-                    </DefaultEmpty>
-                </Paper>
-            </Grid>
-            <Grid item order={10} xs={24} lg={6}>
-                <Paper sx={{ padding: 2 }}>
-                    <Divider textAlign='center'>
-                        <Typography variant='h6' component="div">Combate</Typography>
-                    </Divider>
-                    <Grid container item spacing={2} columns={12}>
-                        <CoCStats fullRounded value={props.ficha?.calculatedAttributes.bonusDamage ?? "0"} stat="Bonus Damage"/>
-                        <CoCStats fullRounded value={props.ficha?.calculatedAttributes.build ?? "0"} stat="Build"/>
-                        <CoCStats value={props.ficha?.calculatedAttributes.dodge ?? "0"} stat="Dodge"/>
-                    </Grid>
-                </Paper>
-            </Grid>
-            {props.ficha?.basicInfo.pulpCthulhu && <Grid item order={11} xs={24}>
-                <Paper sx={{ padding: 2 }}>
-                    <Divider textAlign='center'>
-                        <Typography variant='h6' component="div">Talentos (PCoC)</Typography>
-                    </Divider>
-                    <DefaultEmpty itens={props.ficha.pulpTalents.length ?? 0}>
-                        <List sx={{ width: '100%'}}>
-                            {props.ficha.pulpTalents.map((item: PulpTalents) => {
-                                return <ModalListItem listItemText={item.name} dialogTitle={item.name}>
-                                    {item.description}
-                                </ModalListItem>
-                            })}
-                        </List>
-                    </DefaultEmpty>
-                </Paper>
-            </Grid>}
-        </Grid>
-    ) : <React.Fragment></React.Fragment>;
+                    </Stack>
+                </DefaultEmpty>
+            </Card>
+        </Grid.Col>
+    </Grid>
+}
+
+export function DetalhesFichaCoCWithSubscription(props: DetalhesFichaCoCProps) {
+    const auth = useAuth();
+    const [characterName, setCharacterName] = useState(undefined);
+    const [playerName, setPlayerName] = useState(undefined);
+
+    useSubscription(`/topic/${auth.currentUser?.uuid}/character-sheet/${props.ficha?.coreId}/infos`, (message) => {
+        let data = JSON.parse(message.body);
+        if (data['infos']) {
+            let first = data.infos[0];
+            if (first['characterName']) {
+                setCharacterName(first.characterName);
+            }
+        }
+        if (data['users']) {
+            let first = data.users[0];
+            if (first['displayName']) {
+                setPlayerName(first.displayName);
+            }
+        }
+    });
+
+    return <DetalhesFichaCoC ficha={props.ficha} fromSession={props.fromSession} playerName={playerName} characterName={characterName} />
 }

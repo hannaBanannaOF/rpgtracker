@@ -1,28 +1,29 @@
-import React, { ReactNode } from "react";
-import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
-import { Box, Typography } from "@mui/material";
+import { ReactNode } from "react";
+import { Box, Title } from '@mantine/core';
+import { IconMoodSmile } from "@tabler/icons-react";
 
 interface DefaultEmptyProps {
-    itens: number,
+    visible: boolean,
     children: ReactNode,
     emptyIcon?: ReactNode,
     emptyText?: string
 }
 
 export function DefaultEmpty(props: DefaultEmptyProps) {
-    return <React.Fragment>{
-        props.itens === 0 && <Box sx={{ 
+    return <>{
+        props.visible && <Box sx={{ 
             width: "100%", 
             display: "flex", 
             flexDirection: "column", 
             textAlign: "center", 
             alignItems: "center",
             py: 2
-        }}>
+        }}><>
             {props.emptyIcon !== null && props.emptyIcon} 
-            {!props.emptyIcon && <SentimentSatisfiedAltIcon sx={{ fontSize: 50 }}/>}
-            <Typography variant='caption' display='block'>{props.emptyText ?? "Nada encontrado"}</Typography>
+            {!props.emptyIcon && <IconMoodSmile />}
+            <Title order={4}>{props.emptyText ?? "Nada encontrado"}</Title>
+        </>
         </Box>}
-        {props.itens > 0 && props.children}
-    </React.Fragment>
+        {!props.visible && props.children}
+    </>
 }

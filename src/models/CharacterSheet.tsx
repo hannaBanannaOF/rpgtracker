@@ -4,7 +4,7 @@ export interface CharacterSheetBase {
     uuid: string,
     characterName: string,
     system: string,
-    sessionName: string;
+    session: any;
 }
 
 export interface SkillCoC {
@@ -60,8 +60,6 @@ interface CoCAmmo {
 }
 
 interface FichaCOCBasicInfo {
-    characterName: string,
-    playerName?: string | null,
     pulpCthulhu: boolean,
     age?: number | null,
     sex?: string | null,
@@ -103,6 +101,7 @@ interface FichaCOCCalculatedAttributes {
 
 export interface COCCharacterSheet {
     id: string,
+    coreId: string,
     basicInfo: FichaCOCBasicInfo,
     basicAttributes: FichaCOCBasicAttributes,
     calculatedAttributes: FichaCOCCalculatedAttributes,

@@ -46,10 +46,16 @@ Rpgtrackerwebclient.interceptors.response.use(response => {
         }).catch(err => {
             if (err.response.status === 400) {
                 localStorage.removeItem("tokens");
+                localStorage.removeItem("permissions");
                 window.location.href = '/';
             }
             return Promise.reject(err);
         });
+    }
+    if (originalRequest._retry) {
+        localStorage.removeItem("tokens");
+        localStorage.removeItem("permissions");
+        window.location.href = '/';
     }
     return Promise.reject(error);
 })

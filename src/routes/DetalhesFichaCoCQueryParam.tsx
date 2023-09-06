@@ -1,14 +1,14 @@
-import { Skeleton } from "@mui/lab";
-import { useSnackbar } from "notistack";
-import { useQuery } from "../components/hooks/useQuery";
-import { COCCharacterSheet } from "../components/models/CharacterSheet";
-import { CoCService } from "../components/services/CoCService";
-import { DetalhesFichaCoC } from "../ui/DetalhesFichaCoC";
+import { notifications } from '@mantine/notifications';
+import { Skeleton } from '@mantine/core';
+import { useQuery } from "../hooks/useQuery";
+import { COCCharacterSheet } from "../models/CharacterSheet";
+import { CoCService } from "../services/CoCService";
+import { DetalhesFichaCoCWithSubscription } from "../ui/DetalhesFichaCoC";
 import { useEffect, useState } from "react";
+import { StompSessionProvider } from 'react-stomp-hooks';
 
 export function DetalhesFichaCoCQueryParam() {
     const query = useQuery();
-    const { enqueueSnackbar } = useSnackbar();
 
     const [loading, setLoading] = useState(true);
     const [ficha, setFicha] = useState<COCCharacterSheet | null>(null);
@@ -22,9 +22,10 @@ export function DetalhesFichaCoCQueryParam() {
                 setFicha(res.data);
                 setLoading(false);
             }).catch(err => {
-                enqueueSnackbar("Não foi possível buscar detalhes da ficha!", {
-                    variant: "error",
-                    key: "error_ficha_not_found"
+                notifications.show({
+                    id: "error_ficha_not_found",
+                    message: "Não foi possível buscar detalhes da ficha!",
+                    color: "red"
                 });
             });
         } else {
@@ -33,5 +34,11 @@ export function DetalhesFichaCoCQueryParam() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fichaId])
 
-    return loading ? <Skeleton variant='rectangular' animation='wave'/> : <DetalhesFichaCoC ficha={ficha}></DetalhesFichaCoC>
+    return (
+        <Skeleton visible={loading}> 
+            <StompSessionProvider url={`${process.env.REACT_APP_WS_URL}coc/ws`}>
+                <DetalhesFichaCoCWithSubscription ficha={ficha} />
+            </StompSessionProvider>
+        </Skeleton>
+    )
 }

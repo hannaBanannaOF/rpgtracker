@@ -3,7 +3,7 @@ export interface SessionBase {
     sessionName: string
     system: string,
     inPlay: boolean,
-    players: string[]
+    players: any[]
 }
 
 export interface SessionSheet {
@@ -12,5 +12,5 @@ export interface SessionSheet {
 }
 
 export interface SessionWithSheets extends SessionBase {
-    characterSheets: SessionSheet[]
+    sessionSheets: SessionSheet[]
 }

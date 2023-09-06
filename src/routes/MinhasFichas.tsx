@@ -1,20 +1,43 @@
-import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Tooltip, Typography, useTheme } from '@mui/material';
-import ReadMoreIcon from '@mui/icons-material/ReadMore';
-import React, { useState } from 'react';
-import { GiOctopus, GiHarryPotterSkull, GiArchiveResearch } from "react-icons/gi";
+import { useState } from 'react';
+import { GiArchiveResearch } from "react-icons/gi";
 import { useNavigate } from 'react-router-dom';
-import { CharacterSheetBase } from '../components/models/CharacterSheet';
-import { AccountService } from '../components/services/AccountService';
-import { useSnackbar } from 'notistack';
+import { CharacterSheetBase } from '../models/CharacterSheet';
+import { AccountService } from '../services/AccountService';
 import { useEffectOnce } from '../utils/UseEffectOnce';
+import { Center, Divider, Group, Paper, Skeleton, Stack, Text, ThemeIcon, Tooltip, createStyles } from '@mantine/core';
+import { IconBookUpload } from '@tabler/icons-react';
+import { getContentTypeItem, getContentTypeTooltip, getSystemPath } from '../utils/Utils';
+import { notifications } from '@mantine/notifications';
 
+const useStyles = createStyles((theme) => ({
+    paper: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignContent: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.white,
+        cursor: 'pointer'
+    },
+
+    div: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignContent: 'center'
+    },
+
+    avatarGroupWrapper: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center'
+    }
+}));
 
 export function MinhasFichas() {
 
+    const {classes} = useStyles();
+
     const [loading, setLoading] = useState(true);
     const [fichas, setFichas] = useState<CharacterSheetBase[] | null>(null);
-    const { enqueueSnackbar } = useSnackbar();
-    const theme = useTheme();
     let navigate = useNavigate();
 
     useEffectOnce(() => {
@@ -23,71 +46,53 @@ export function MinhasFichas() {
             setLoading(false);
             setFichas(res.data);
 		}).catch(err => {
-            enqueueSnackbar("Erro ao buscar fichas do usuário", {
-                variant: 'error',
-                key:'error_minhas_fichas_not_found'
-            });
+            notifications.show({
+                message: "Erro ao buscar fichas do usuário",
+                id: "error_minhas_fichas_not_found",
+                color: 'red'
+              });
 		});
     });
 
-    const getContentTypeItem = (system: string) => {
-        if(system === 'CALL_OF_CTHULHU') {
-            return <GiOctopus />;
-        }
-        if(system === 'hp') {
-            return <GiHarryPotterSkull />;
-        }
-    }
-
-    const getContentTypeTooltip = (system: string) => {
-        if(system === 'CALL_OF_CTHULHU') {
-            return "Call of Cthulhu";
-        }
-        if(system === 'hp') {
-            return "Harry Potter (Broomstix)";
-        }
-        return "";
-    }
-
-    const getSystemPath = (system: string) => {
-        if(system === 'CALL_OF_CTHULHU') {
-            return "coc";
-        }
-        if(system === 'hp') {
-            return "hp";
-        }
-        return "";
-    }
-
-    return loading ? <Skeleton animation="wave" variant="rectangular"/> : (
-        <React.Fragment>
-            <Divider textAlign="left">
-                <GiArchiveResearch size={20} color={theme.palette.primary.light}/><Typography variant='h6' component="div" display="inline" sx={{ marginLeft: '8px' }}>Minhas fichas</Typography>
-            </Divider>
-            <List>
-                {fichas?.map((ficha) => {
-                    return <ListItem
-                        key={ficha.uuid}
-                        secondaryAction={
-                        <IconButton edge="end" aria-label="Ver ficha" onClick={() => {navigate(`/sheets/${getSystemPath(ficha.system)}/details?uuid=${ficha.uuid}`)}}>
-                            <ReadMoreIcon />
-                        </IconButton>
-                        }
-                    >
-                        <ListItemAvatar>
-                            <Tooltip title={getContentTypeTooltip(ficha.system)}>
-                                <Avatar>
-                                    {getContentTypeItem(ficha.system)}
-                                </Avatar>
-                            </Tooltip>
-                        </ListItemAvatar>
-                        <ListItemText
-                        primary={ficha.characterName}
-                        secondary={ficha.sessionName}
-                        />
-                    </ListItem>
-                })}
-            </List>
-        </React.Fragment>
-    );
+    return (
+        <>
+            <Divider labelPosition="left" label={
+                <Group position='left'>
+                    <Text fz="lg">Minhas fichas</Text>
+                    <GiArchiveResearch size={40} />
+                </Group>
+            }/>
+            <Skeleton visible={loading}>
+                <Stack mt={25}>
+                    {fichas?.map((ficha) => {
+                        return <Paper
+                            key={ficha.uuid}
+                            className={classes.paper}
+                            shadow="sm"
+                            component="a"
+                            p="xl"
+                            onClick={() => navigate(`/sheets/${getSystemPath(ficha.system)}/details?uuid=${ficha.uuid}`)}
+                        >
+                            <div className={classes.div}>
+                                <Center mr="xl">
+                                    <Tooltip label={getContentTypeTooltip(ficha.system)}>
+                                        <ThemeIcon color="teal" size="xl" radius="xl">
+                                            {getContentTypeItem(ficha.system)}
+                                        </ThemeIcon>
+                                    </Tooltip>
+                                </Center>
+                                <div className={classes.avatarGroupWrapper}>
+                                    <Text fz="lg">{ficha.characterName}</Text>
+                                    {ficha.session && <Text fz="sm" fw={500}>Mesa: {ficha.session.sessionName}</Text>}
+                                </div>
+                            </div>
+                            <Center>
+                                <IconBookUpload size={20} />
+                            </Center> 
+                        </Paper>
+                    })}
+                </Stack>
+            </Skeleton>
+        </>
+    )
 }

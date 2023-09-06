@@ -1,50 +1,76 @@
-import React, { useState } from "react";
-import { useEffectOnce } from "../../utils/UseEffectOnce";
+import React, { useEffect, useState } from "react";
+import { Rpgtrackerwebclient } from "../webclient/Rpgtrackerwebclient";
+import { notifications } from "@mantine/notifications";
+import { User } from "../models/User";
+
+export interface CurrentUser {
+  
+}
 
 export interface AuthContextType {
-    currentUser: any;
+    currentUser: User | undefined;
     valid: boolean;
     signout: () => Promise<void>;
     setTokens: (tokens: string) => Promise<void>;
-    errorMessage: any;
-    clearError: () => Promise<void>;
+    loading: boolean;
   }
   
 export let AuthContext = React.createContext<AuthContextType>({} as AuthContextType);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 
-    const [currentUser, setCurrentUser] = useState<any>(undefined);
+    const [currentUser, setCurrentUser] = useState<User | undefined>(undefined);
     const [valid, setValid] = useState(false);
-    const [errorMessage, setErrorMessage] = useState<any>(undefined);
+    const [loading, setLoading] = useState(true);
+
+    let loadPermissions = async (valid: boolean) => {
+      if (valid) {
+        return Rpgtrackerwebclient.get("core/api/v1/user-config").then((res) => {
+          return res.data.dm ?? false;
+        });
+      }
+    }
 
     let updateStates = () => {
       const storagedToken = localStorage.getItem('tokens');
       if (storagedToken) {
         let user = decodeToken(storagedToken);
-        if (!(user?.resource_access?.rpgtracker?.roles?.find((e: string) => e === 'user') ?? false)) {
-          setErrorMessage({
-            message: `Você não tem permissão para acessar esse recurso!`,
-            variant: "error",
-            key: "error_no_permission"
+        let isUser = (user?.resource_access?.rpgtracker?.roles?.find((e: string) => e === 'user') ?? false);
+        if (!isUser) {
+          notifications.show({
+            message: `Você não tem permissão para acessar esse recurso!!`,
+            color: "red",
+            id: "error_no_permission"
           });
           setCurrentUser(undefined);
           setValid(false);
+          setLoading(false);
         } else {
-          setErrorMessage(undefined)
-          setCurrentUser(user);
           setValid(true);
+          loadPermissions(true).then(res => {
+            setCurrentUser({
+              isUser: isUser, 
+              name: user?.given_name ?? user?.preferred_username ?? "Anon", 
+              //TODO verificar se é isso mesmo
+              uuid: user?.sub ?? "", 
+              permissions: {
+                dm: res,
+              }
+            } as User);
+            setLoading(false);
+          });
         }
       } else {
         setCurrentUser(undefined);
-        setErrorMessage(undefined);
         setValid(false);
+        setLoading(false);
       }
     }
 
-    useEffectOnce(() => {
+    useEffect(() => {
       updateStates();
-    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     let decodeToken = (token: string) => {
       let output = JSON.parse(token).access_token;
@@ -53,25 +79,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
-      return JSON.parse(jsonPayload)
+      return JSON.parse(jsonPayload);
     }
 
     let signout = async () => {
       const storagedToken = localStorage.getItem('tokens');
       localStorage.removeItem("tokens");
+      localStorage.removeItem("permissions");
       window.location.replace(process.env.REACT_APP_KEYCLOAK_SIGNOUT_URL!+'&id_token_hint='+JSON.parse(storagedToken!).id_token)
     };
-
-    let clearError = async () => {
-      setErrorMessage(undefined);
-    }
 
     let setTokens = async (tokens: string) => {
       localStorage.setItem("tokens", JSON.stringify(tokens));
       updateStates();
     }
 
-    let value = { valid, signout, currentUser, setTokens, errorMessage, clearError };
+    let value = { valid, signout, currentUser, setTokens, loading };
   
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -1,26 +1,51 @@
-import { Avatar, AvatarGroup, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Skeleton, Tooltip, Typography, useTheme } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { GiHarryPotterSkull, GiOctopus, GiTabletopPlayers } from "react-icons/gi";
+import { useEffect, useState } from "react";
+import { GiTabletopPlayers } from "react-icons/gi";
 import { useNavigate } from "react-router";
-import { SessionBase } from "../components/models/Session";
-import { AccountService } from "../components/services/AccountService";
-import ReadMoreIcon from '@mui/icons-material/ReadMore';
-import styled from "@emotion/styled";
+import { SessionBase } from "../models/Session";
+import { AccountService } from "../services/AccountService";
+import { Skeleton, Divider, Text, Stack, Tooltip, Paper, ThemeIcon, createStyles, Center, Avatar, Group } from "@mantine/core";
+import { IconBookUpload } from "@tabler/icons-react";
+import { getContentTypeItem, getContentTypeTooltip, getSystemPath } from "../utils/Utils";
+import { notifications } from "@mantine/notifications";
+import { useSubscription } from "react-stomp-hooks";
+import { useAuth } from "../providers/AuthProvider";
 
-const AvatarContainer = styled.div`
-  display: flex;
-  margin-bottom: 14px;
-  & > * {
-    margin: 4px;
-  }
-`;
+const useStyles = createStyles((theme) => ({
+    paper: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignContent: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.white,
+        cursor: 'pointer'
+    },
+
+    div: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignContent: 'center'
+    },
+
+    avatarGroupWrapper: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center'
+    }
+}));
 
 export function MinhasMesas() {
 
-    const [loading, setLoading] = useState(true);
-    const [mesas, setMesas] = useState<SessionBase[] | null>(null);
+    const {classes} = useStyles();
+    const auth = useAuth();
 
-    const theme = useTheme();
+    const [loading, setLoading] = useState(true);
+    const [mesas, setMesas] = useState<SessionBase[]>([]);
+    const [fichas, setFichas] = useState<any[]>([]);
+
+    useSubscription(`/topic/${auth.currentUser?.uuid}/users`, (message) => {
+        let data = JSON.parse(message.body);
+        setFichas([...fichas, data]);
+    });
 
     let navigate = useNavigate();
 
@@ -29,77 +54,82 @@ export function MinhasMesas() {
         AccountService.getCurrentUserMesasMestradas().then(res => {
             setMesas(res.data);
             setLoading(false);
-        });
+        }).catch(err => {
+            notifications.show({
+                message: "Erro ao buscar mesas do usuário",
+                id: "error_minhas_mesas_not_found",
+                color: 'red'
+              });
+		});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const getContentTypeItem = (system: string) => {
-        if(system === 'CALL_OF_CTHULHU') {
-            return <GiOctopus />;
+    const buildAvatarGroup = (mesa: SessionBase) => {
+        let fichasMesa = fichas.find((e) => e.session === mesa.uuid);
+        let remain = 0;
+        let users: any[] = [];
+        if (fichasMesa) {
+            if (fichasMesa.users.length > 3) {
+                remain = fichasMesa.users.length - 3;
+                users = fichasMesa.users.slice(0, 3);
+            } else {
+                users = fichasMesa.users;
+            }
         }
-        if(system === 'hp') {
-            return <GiHarryPotterSkull />;
-        }
+
+
+        return <Avatar.Group spacing="sm">
+            {users.map((u) => {
+                return <Tooltip key={u.uuid} label={u.displayName}>
+                    <Avatar radius="xl" color="teal">
+                        {u.firstName && u.firstName.charAt(0).toUpperCase()}
+                        {u.firstName && u.lastName && u.lastName.charAt(0).toUpperCase()}
+                    </Avatar>
+                </Tooltip>
+            })}
+            {remain > 0 && <Avatar radius="xl" color="teal">+{remain}</Avatar>}
+        </Avatar.Group>
     }
 
-    const getContentTypeTooltip = (system: string) => {
-        if(system === 'CALL_OF_CTHULHU') {
-            return "Call of Cthulhu";
-        }
-        if(system === 'hp') {
-            return "Harry Potter (Broomstix)";
-        }
-        return "";
-    }
-
-    const getSystemPath = (system: string) => {
-        if(system === 'CALL_OF_CTHULHU') {
-            return "coc";
-        }
-        if(system === 'hp') {
-            return "hp";
-        }
-        return "";
-    }
-
-    return loading? <Skeleton animation="wave" variant="rectangular"/> : (
-        <React.Fragment>
-            <Divider textAlign="left">
-                <GiTabletopPlayers size={20} color={theme.palette.primary.light}/><Typography variant='h6' component="div" display="inline" sx={{ marginLeft: '8px' }}>Minhas mesas</Typography>
-            </Divider>
-            <List>
-                {mesas?.map((mesa) => {
-                    return <ListItem
-                        key={mesa.uuid}
-                        secondaryAction={
-                        <IconButton edge="end" aria-label="Ver mesa" onClick={() => {navigate(`/sessions/${getSystemPath(mesa.system)}/details?uuid=${mesa.uuid}`)}}>
-                            <ReadMoreIcon />
-                        </IconButton>
-                        }
-                    >
-                        <ListItemAvatar>
-                            <Tooltip title={getContentTypeTooltip(mesa.system)}>
-                                <Avatar>
-                                    {getContentTypeItem(mesa.system)}
-                                </Avatar>
-                            </Tooltip>
-                        </ListItemAvatar>
-                        <ListItemText 
-                            primary={mesa.sessionName}
-                            secondary={
-                                <AvatarContainer>
-                                    <AvatarGroup sx={{ flexDirection: "row-reverse" }} max={4}>
-                                        {mesa.players.map((playerName: string) => {
-                                            return <Tooltip title={playerName}>
-                                                    <Avatar alt={playerName}/>
-                                                </Tooltip> 
-                                        })}
-                                    </AvatarGroup>
-                                </AvatarContainer>
-                            }
-                        />
-                    </ListItem>
-                })}
-            </List>
-        </React.Fragment>
-    );
+    return (
+        <>
+            <Divider labelPosition="left" label={
+                <Group position='left'>
+                    <Text fz="lg">Minhas mesas</Text>
+                    <GiTabletopPlayers size={40} />
+                </Group>
+            }/>
+            <Skeleton visible={loading}>
+                <Stack mt={25}>
+                    {mesas?.map((mesa) => {
+                        return <Paper
+                            key={mesa.uuid}
+                            className={classes.paper}
+                            shadow="sm"
+                            component="a"
+                            p="xl"
+                            onClick={() => navigate(`/sessions/${getSystemPath(mesa.system)}/details?uuid=${mesa.uuid}`)}
+                        >
+                            <div className={classes.div}>
+                                <Center mr="xl">
+                                    <Tooltip label={getContentTypeTooltip(mesa.system)}>
+                                        <ThemeIcon color="teal" size="xl" radius="xl">
+                                            {getContentTypeItem(mesa.system)}
+                                        </ThemeIcon>
+                                    </Tooltip>
+                                </Center>
+                                <div className={classes.avatarGroupWrapper}>
+                                    <Text fz="lg">{mesa.sessionName}</Text>
+                                    {buildAvatarGroup(mesa)}
+                                </div>
+                            </div>
+                            <Center>
+                                <IconBookUpload size={20} />
+                            </Center>
+                        </Paper>
+                    })}
+                </Stack>
+        </Skeleton>
+    </>
+    )
 }
