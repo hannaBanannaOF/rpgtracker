@@ -2,14 +2,15 @@ import { SessionBase, SessionWithSheets } from "../models/Session";
 import { useState } from "react";
 import { COCCharacterSheet } from "../models/CharacterSheet";
 import { CoCService } from "../services/CoCService";
-import TitleDividerWithIcon from "./TitleDividerWithIcon";
+import { TitleDividerWithIcon } from "./TitleDividerWithIcon";
 import { GiArchiveResearch } from "react-icons/gi";
 import { useSubscription } from "react-stomp-hooks";
 import { useAuth } from "../providers/AuthProvider";
-import { Center, Grid, SegmentedControl, Skeleton } from "@mantine/core";
+import { Badge, Card, Center, Flex, Grid, SegmentedControl, Skeleton, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { DetalhesFichaCoC } from "./DetalhesFichaCoC";
 import { GoBack } from "./GoBack";
+import { IconInfoCircle } from "@tabler/icons-react";
 
 export interface DetalhesMesaCoCProps {
     mesa?: SessionBase | null;
@@ -17,8 +18,8 @@ export interface DetalhesMesaCoCProps {
 
 export function DetalhesMesaCoC(props: DetalhesMesaCoCProps) {
 
-    const [characterName, setCharacterName] = useState(undefined);
-    const [playerName, setPlayerName] = useState(undefined);
+    const [ characterName, setCharacterName ] = useState(undefined);
+    const [ playerName, setPlayerName ] = useState(undefined);
     const [ selectedSheet, setSelectedSheet ] = useState<COCCharacterSheet | null>(null);
     const [ selectedSheetId, setSelectedSheetId ] = useState<string | undefined>(undefined);
     const [ mesaWithFullInfo, setMesaWithFullInfo ] = useState<SessionWithSheets | null>(null);
@@ -73,17 +74,32 @@ export function DetalhesMesaCoC(props: DetalhesMesaCoCProps) {
             <GoBack />
         </Grid.Col>
         <Grid.Col span={12}>
-            <TitleDividerWithIcon icon={<GiArchiveResearch size={20}/>} label="Fichas da mesa"/>
             <Skeleton visible={mesaWithFullInfo == null}>
                 <Center>
-                    <SegmentedControl  color="teal"
-                        onChange={handleChange}
-                        value={selectedSheetId}
-                        data={(mesaWithFullInfo?.sessionSheets ?? []).map((e) => {
-                            return {label: e.characterName, value: e.uuid}
-                        })}
-                    />
+                    <Title mb={"lg"} order={2}>{mesaWithFullInfo?.sessionName ?? ''}</Title>
                 </Center>
+            </Skeleton>
+            {props.mesa?.pulpCthulhu && <>
+                <TitleDividerWithIcon icon={<IconInfoCircle size={20}/>} label="Informações básicas"/>
+                <Card mb={"lg"}>
+                    <Flex justify={'flex-end'}>
+                        <Badge>Pulp Cthulhu</Badge>
+                    </Flex>
+                </Card>
+            </>}
+            <TitleDividerWithIcon icon={<GiArchiveResearch size={20}/>} label="Fichas da mesa"/>
+            <Skeleton visible={mesaWithFullInfo == null}>
+                <Card>
+                    <Center>
+                        <SegmentedControl  color="teal"
+                            onChange={handleChange}
+                            value={selectedSheetId}
+                            data={(mesaWithFullInfo?.sessionSheets ?? []).map((e) => {
+                                return {label: e.characterName, value: e.uuid}
+                            })}
+                        />
+                    </Center>
+                </Card>
                 {selectedSheetId && <Skeleton visible={loading}>
                     <TitleDividerWithIcon label="Detalhes da ficha" />
                     <DetalhesFichaCoC ficha={selectedSheet} fromSession playerName={playerName} characterName={characterName} />

@@ -3,7 +3,8 @@ export interface SessionBase {
     sessionName: string
     system: string,
     inPlay: boolean,
-    players: any[]
+    players: any[],
+    pulpCthulhu?: boolean,
 }
 
 export interface SessionSheet {

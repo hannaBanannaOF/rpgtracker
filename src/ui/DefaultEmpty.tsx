@@ -1,12 +1,13 @@
 import { ReactNode } from "react";
-import { Box, Title } from '@mantine/core';
+import { Box, Button, Center, Stack, Title } from '@mantine/core';
 import { IconMoodSmile } from "@tabler/icons-react";
 
 interface DefaultEmptyProps {
     visible: boolean,
-    children: ReactNode,
+    children: ReactNode | ReactNode[],
     emptyIcon?: ReactNode,
-    emptyText?: string
+    emptyText?: string,
+    add?: () => void
 }
 
 export function DefaultEmpty(props: DefaultEmptyProps) {
@@ -18,11 +19,16 @@ export function DefaultEmpty(props: DefaultEmptyProps) {
             textAlign: "center", 
             alignItems: "center",
             py: 2
-        }}><>
-            {props.emptyIcon !== null && props.emptyIcon} 
-            {!props.emptyIcon && <IconMoodSmile />}
+        }}><Stack spacing={"xs"}>
+            <Center>
+                {props.emptyIcon !== null && props.emptyIcon} 
+                {!props.emptyIcon && <IconMoodSmile />}
+            </Center>
             <Title order={4}>{props.emptyText ?? "Nada encontrado"}</Title>
-        </>
+            {props.add && <Button onClick={() => {
+                props.add!();
+            }}>Adicionar</Button>}
+        </Stack>
         </Box>}
         {!props.visible && props.children}
     </>

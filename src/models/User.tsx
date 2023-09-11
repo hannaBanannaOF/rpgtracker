@@ -6,5 +6,6 @@ export interface User {
 }
 
 interface Permissions {
-    dm: boolean;
+    isCocDm?: boolean;
+    hasCocSheet?: boolean;
 }

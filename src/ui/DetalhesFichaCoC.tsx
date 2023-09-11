@@ -5,8 +5,8 @@ import { ModalListItem } from './ModalListItem';
 import { ActionIcon, Avatar, Badge, Card, Center, Checkbox, Grid, Group, Modal, Skeleton, Space, Stack, Text, Title } from '@mantine/core';
 import { IconAddressBook, IconBookmark, IconBrain, IconCards, IconClover2, IconCornerDownRight, IconHeart, IconInfoCircle, IconSword, IconSwordOff, IconSwords, IconUser, IconWand } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
-import SliderWithCaption from './SliderWithCaption';
-import TitleDividerWithIcon from './TitleDividerWithIcon';
+import { SliderWithCaption } from './SliderWithCaption';
+import { TitleDividerWithIcon } from './TitleDividerWithIcon';
 import { useSubscription } from 'react-stomp-hooks';
 import { useAuth } from '../providers/AuthProvider';
 import { useState } from 'react';
@@ -214,7 +214,7 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
                 <DefaultEmpty visible={(props.ficha?.weapons.length ?? 0) === 0} emptyIcon={<IconSwordOff />}>
                     <Stack>
                     {(props.ficha?.weapons ?? []).map((item: CoCWeaponsInSheet) => {
-                        return <ModalListItem key={item.nickname} listItemText={item.nickname ?? item.weapon.name} dialogTitle={item.nickname ?? item.weapon.name}>
+                        return <ModalListItem key={item.weapon.id} listItemText={item.nickname ?? item.weapon.name} dialogTitle={item.nickname ?? item.weapon.name}>
                             <>
                                 <TitleDividerWithIcon icon={<IconInfoCircle />} label='Informações básicas'/>
                                 <Stack spacing={"xs"}>
@@ -222,21 +222,15 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
                                     <Text>Ataques: {item.weapon.attacksPerRound > 1 ? `1(${item.weapon.attacksPerRound})` : 1}</Text>
                                 </Stack>
                                 <TitleDividerWithIcon icon={<IconCornerDownRight />} label='Informações avançadas' />
-                                <Stack spacing={"xs"}>
-                                    {item.weapon.isMelee && <>
-                                        <Text>Arma mano-a-mano</Text>
-                                        {/* <Typography>Acerto normal: {item.normal_success_value}</Typography>
-                                        <Typography>Acerto bom: {Math.floor(item.normal_success_value/2)}</Typography>
-                                    <Typography>Acerto extremo: {Math.floor(item.normal_success_value/5)}</Typography> */}
-                                    </>}
-                                    {!item.weapon.isMelee && <>
-                                        {/* <Typography>Acerto normal: {item.normal_success_value}</Typography>
-                                        <Typography>Acerto bom: {Math.floor(item.normal_success_value/2)}</Typography>
-                                        <Typography>Acerto extremo: {Math.floor(item.normal_success_value/5)}</Typography>
-                                        <Typography>Tiros restantes: {item.ammoLeft}</Typography>
-                                    <Typography>Munição disponível: {`${item.roundsLeft} (${item.totalAmmoLeft})`}</Typography> */}
-                                    </>}
-                                </Stack>
+                                <Group position='apart' align='flex-start'>
+                                    <Stack spacing={"xs"}>
+                                        <Text>Acerto normal: {item.successValue}</Text>
+                                        <Text>Acerto bom: {Math.floor(item.successValue/2)}</Text>
+                                        <Text>Acerto extremo: {Math.floor(item.successValue/5)}</Text>
+                                        {!item.weapon.isMelee && <Text>Munição disponível: {`${item.roundsLeft} (${item.totalAmmoLeft})`}</Text>}
+                                    </Stack>
+                                    {item.weapon.isMelee &&<Badge>Arma mano-a-mano</Badge>}
+                                </Group>
                             </>
                         </ModalListItem>
                     })}

@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let loadPermissions = async (valid: boolean) => {
       if (valid) {
         return Rpgtrackerwebclient.get("core/api/v1/user-config").then((res) => {
-          return res.data.dm ?? false;
+          return res.data ?? {};
         });
       }
     }
@@ -49,12 +49,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setValid(true);
           loadPermissions(true).then(res => {
             setCurrentUser({
-              isUser: isUser, 
-              name: user?.given_name ?? user?.preferred_username ?? "Anon", 
+              isUser: isUser,
+              name: user?.given_name ?? user?.preferred_username ?? "Anon",
               //TODO verificar se é isso mesmo
-              uuid: user?.sub ?? "", 
+              uuid: user?.sub ?? "",
               permissions: {
-                dm: res,
+                isCocDm: res.cocDm ?? false,
+                hasCocSheet: res.hasCocSheet ?? false,
               }
             } as User);
             setLoading(false);
@@ -85,7 +86,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let signout = async () => {
       const storagedToken = localStorage.getItem('tokens');
       localStorage.removeItem("tokens");
-      localStorage.removeItem("permissions");
       window.location.replace(process.env.REACT_APP_KEYCLOAK_SIGNOUT_URL!+'&id_token_hint='+JSON.parse(storagedToken!).id_token)
     };
 

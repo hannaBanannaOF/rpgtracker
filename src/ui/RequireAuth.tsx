@@ -19,7 +19,7 @@ export function RequireAuth(props: Permissions) {
         navigate("/login", {state: {from: location}, replace: true})
       }
 
-      if ((props.mestrePerm ?? false) && !(auth.currentUser?.permissions.dm ?? false)) {
+      if ((props.mestrePerm ?? false) && !(auth.currentUser?.permissions.isCocDm ?? false)) {
         let from = (location.state as any)?.from?.pathname || "/";
         notifications.show({
           message: "Você não tem permissão para acessar esse recurso!",

@@ -5,7 +5,7 @@ export interface TitleDividerWithIconProps {
     label: string
 }
 
-export default function TitleDividerWithIcon(props: TitleDividerWithIconProps) {
+export function TitleDividerWithIcon(props: TitleDividerWithIconProps) {
     return <Divider labelPosition='left' mb={"xs"} label={
         <Group position='left'>
             {props.icon}

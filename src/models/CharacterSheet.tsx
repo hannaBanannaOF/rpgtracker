@@ -33,6 +33,7 @@ export interface CoCWeaponsInSheet {
     quantityCarry: number,
     nickname?: string,
     totalAmmoLeft: number,
+    successValue: number,
     weapon: CoCWeapon
 }
 
@@ -53,7 +54,7 @@ interface CoCWeapon {
     
 }
 
-interface CoCAmmo {
+export interface CoCAmmo {
     id: string,
     name: string,
     roundsShotWithEach: number

@@ -10,7 +10,7 @@ export interface SliderWithCaptionProps {
     endBadge?: React.ReactNode,
 }
 
-export default function SliderWithCaption(props: SliderWithCaptionProps) {
+export function SliderWithCaption(props: SliderWithCaptionProps) {
 
     const [currentValue, setCurrentValue] = useState(props.value);
 
