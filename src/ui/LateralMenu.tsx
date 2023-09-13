@@ -5,6 +5,7 @@ import { useAuth } from "../providers/AuthProvider";
 import { useLocation, useNavigate } from "react-router";
 import { Burger, Drawer, Flex, Group, Menu, Navbar, Skeleton, Text, Title, Tooltip, Transition, UnstyledButton, createStyles, rem } from "@mantine/core";
 import { useDisclosure, useElementSize } from "@mantine/hooks";
+import { useTranslation } from "react-i18next";
 
 export interface LateralMenuProps {
     small?: boolean
@@ -18,16 +19,16 @@ interface NavbarLink {
     key: string;
 }
 
-const cocAmmoLink: NavbarLink = { label: 'Munição', key: 'menu-coc-register-sub-ammo', link: 'listing/coc/ammo' };
-const cocOcupationsLink: NavbarLink = { label: 'Ocupações', key: 'menu-coc-register-sub-ocupation', link: 'listing/coc/occupations' };
-const cocPulpTalentsLink: NavbarLink = { label: 'Talentos (PCoC)', key: 'menu-coc-register-sub-pulp-talents', link: 'listing/coc/pulp-talents' };
-const cocSkillsLink: NavbarLink = { label: 'Skills', key: 'menu-coc-register-sub-skills', link: 'listing/coc/skills' }
-const cocWeaponsLink:NavbarLink = { label: 'Armas', key: 'menu-coc-register-sub-weapons', link: 'listing/coc/weapons' }
+const cocAmmoLink: NavbarLink = { label: 'coc.ammo', key: 'menu-coc-register-sub-ammo', link: 'listing/coc/ammo' };
+const cocOcupationsLink: NavbarLink = { label: 'coc.occupations', key: 'menu-coc-register-sub-ocupation', link: 'listing/coc/occupations' };
+const cocPulpTalentsLink: NavbarLink = { label: 'coc.pulpTalents', key: 'menu-coc-register-sub-pulp-talents', link: 'listing/coc/pulp-talents' };
+const cocSkillsLink: NavbarLink = { label: 'coc.skills', key: 'menu-coc-register-sub-skills', link: 'listing/coc/skills' }
+const cocWeaponsLink:NavbarLink = { label: 'coc.weapons', key: 'menu-coc-register-sub-weapons', link: 'listing/coc/weapons' }
 
-const homeLink: NavbarLink = { icon: IconHome, label: 'Home', link: '/', key: 'menu-opt-home' };
-const characterSheetsLink: NavbarLink = { icon: GiArchiveResearch, label: 'Minhas fichas', link: '/me/sheets', key: 'menu-opt-my-sheets' };
-const sessionsLink: NavbarLink = { icon: GiTabletopPlayers, label: 'Minhas mesas', link: '/me/sessions', key: 'menu-opt-my-sessions' };
-const cocMainLinks: NavbarLink = { icon: GiOctopus, label: "Call of Cthulhu - Cadastros", key: 'menu-opt-coc-registers', links: [
+const homeLink: NavbarLink = { icon: IconHome, label: 'main.home', link: '/', key: 'menu-opt-home' };
+const characterSheetsLink: NavbarLink = { icon: GiArchiveResearch, label: 'main.myCHaracterSheets', link: '/me/sheets', key: 'menu-opt-my-sheets' };
+const sessionsLink: NavbarLink = { icon: GiTabletopPlayers, label: 'main.MyDMedSessions', link: '/me/sessions', key: 'menu-opt-my-sessions' };
+const cocMainLinks: NavbarLink = { icon: GiOctopus, label: "main.coc", key: 'menu-opt-coc-registers', links: [
     cocAmmoLink,
     cocOcupationsLink,
     cocPulpTalentsLink,
@@ -35,8 +36,8 @@ const cocMainLinks: NavbarLink = { icon: GiOctopus, label: "Call of Cthulhu - Ca
     cocWeaponsLink
 ]};
 
-const profileLink: NavbarLink = { icon: IconUser, label: 'Perfil', key: 'menu-opt-profile' };
-const logoutLink: NavbarLink = { icon: IconLogout, label: 'Sair', key: 'menu-opt-logout' };
+const profileLink: NavbarLink = { icon: IconUser, label: 'main.profile', key: 'menu-opt-profile' };
+const logoutLink: NavbarLink = { icon: IconLogout, label: 'main.logout', key: 'menu-opt-logout' };
 
 const useStyles = createStyles((theme) => ({
     mainLink: {
@@ -160,6 +161,8 @@ export function LateralMenu(props: LateralMenuProps) {
 
     const { classes, cx } = useStyles();
 
+    const { t } = useTranslation('menu');
+
     useEffect(() => {
         if (auth.loading) return;
 
@@ -211,11 +214,11 @@ export function LateralMenu(props: LateralMenuProps) {
             <Navbar.Section grow mt={"lg"} ml={"xs"}>
                 {mainLinks.map((link) => (<>
                     {!link.links && <Tooltip
-                        label={link.label}
+                        label={t(link.label)}
                         position="right"
                         withArrow
                         transitionProps={{ duration: 0 }}
-                        key={link.label}
+                        key={link.key}
                     >
                     <UnstyledButton
                         onClick={() => {
@@ -235,7 +238,7 @@ export function LateralMenu(props: LateralMenuProps) {
                             </UnstyledButton>
                         </Menu.Target>
                         <Menu.Dropdown>
-                            <Menu.Label>{link.label}</Menu.Label>
+                            <Menu.Label>{t(link.label)}</Menu.Label>
                             {(link.links ?? []).map((subLink) => {
                                 return <Menu.Item key={subLink.key} icon={subLink.icon} color={activeLink === subLink.key ? "teal" : undefined} onClick={() => {
                                     setActive(link);
@@ -243,7 +246,7 @@ export function LateralMenu(props: LateralMenuProps) {
                                     if (subLink.link) {
                                         navigate(subLink.link);
                                     }
-                                }}>{subLink.label}</Menu.Item>
+                                }}>{t(subLink.label)}</Menu.Item>
                             })}
                         </Menu.Dropdown>
                     </Menu>}
@@ -252,11 +255,11 @@ export function LateralMenu(props: LateralMenuProps) {
             <Navbar.Section ml={"xs"} mb={"lg"}>
                 {endLinks.map((link) => {
                     return <Tooltip
-                        label={link.label}
+                        label={t(link.label)}
                         position="right"
                         withArrow
                         transitionProps={{ duration: 0 }}
-                        key={link.label}
+                        key={link.key}
                     >
                         <UnstyledButton className={classes.mainLink} onClick={() => {
                             if (link.key === logoutLink.key) {
@@ -283,7 +286,7 @@ export function LateralMenu(props: LateralMenuProps) {
                         <div>
                             {mainLinks.map((link) => {
                                 return !link.links ? <UnstyledButton
-                                    key={link.key}
+                                    key={`drawer-${link.key}`}
                                     onClick={() => {
                                         navigate(link.link!);
                                         setActive(link);
@@ -294,18 +297,20 @@ export function LateralMenu(props: LateralMenuProps) {
                                 >
                                     <Group position="apart">
                                         {link.icon && <link.icon size="1.4rem" stroke={'1.5'} />}
-                                        <Text>{link.label}</Text>
+                                        <Text>{t(link.label)}</Text>
                                     </Group>
                                 </UnstyledButton> : <DropdownButton
+                                    key={`drawer-${link.key}`}
                                     button={
                                         <Group position="apart">
                                             {link.icon && <link.icon size="1.4rem" stroke={'1.5'} />}
-                                            <Text>{link.label}</Text>
+                                            <Text>{t(link.label)}</Text>
                                         </Group>
                                     }
                                     active={link.key === active.key}
                                     dropdownItens={(link.links ?? []).map(sublink => {
                                         return <UnstyledButton className={classes.mainButton}
+                                            key={`drawer=${sublink.key}`}
                                             onClick={() => {
                                                 setActive(link);
                                                 setActiveLink(sublink.key);
@@ -316,7 +321,7 @@ export function LateralMenu(props: LateralMenuProps) {
                                             }}
                                         >
                                             <Text color={activeLink === sublink.key ? "teal" : undefined}>
-                                                {sublink.label}
+                                                {t(sublink.label)}
                                             </Text>
                                         </UnstyledButton>      
                                     })}
@@ -345,33 +350,6 @@ export function LateralMenu(props: LateralMenuProps) {
                     </Flex>
                 </Drawer.Body>
             </Drawer.Content>
-                {/* {mainLinks.map((link) => (
-                    <UnstyledButton
-                    key={link.key}
-                    onClick={() => {
-                        setActive(link);
-                        close();
-                    }}
-                    className={cx(classes.mainButton, { [classes.mainButtonActive]: link.key === active.key })}
-                >
-                    <Group position="apart">
-                    {link.icon && <link.icon size="1.4rem" stroke={'1.5'} />}
-                    <Text>{link.label}</Text>
-                    </Group>
-                </UnstyledButton>
-                ))}
-                <UnstyledButton key={"perfil"} className={classes.mainButton}>
-                    <Group position="apart">
-                    <IconUser />
-                    <Text>Perfil</Text>
-                    </Group>
-                </UnstyledButton>
-                <UnstyledButton key={"sair"} className={classes.mainButton}>
-                    <Group position="apart">
-                    <IconLogout />
-                    <Text>Sair</Text>
-                    </Group>
-                </UnstyledButton> */}
         </Drawer.Root>
     </>
 }

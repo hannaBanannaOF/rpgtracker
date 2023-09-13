@@ -10,12 +10,16 @@ import { useSubscription } from "react-stomp-hooks";
 import { useAuth } from "../providers/AuthProvider";
 import { ClickablePaper } from "../ui/ClickablePaper";
 import { Listing } from "../ui/Listing";
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../Constants";
 
 export function MinhasMesas() {
 
     let navigate = useNavigate()
     const auth = useAuth();
     const [fichas, setFichas] = useState<any[]>([]);
+
+    const { t } = useTranslation(['session', 'notification']);
 
     useSubscription(`/topic/${auth.currentUser?.uuid}/users`, (message) => {
         let data = JSON.parse(message.body);
@@ -53,9 +57,8 @@ export function MinhasMesas() {
         dataFetch={AccountService.getCurrentUserMesasMestradas}
         dataFetchError={err => {
             notifications.show({
-                message: "Erro ao buscar mesas do usuário",
-                id: "error_minhas_mesas_not_found",
-                color: 'red'
+                message: t('session.fetchError', { ns: "notifications" }),
+                ...NotificationKeys.ErrorMinhasMesas
               });
 		}}
         dataMap={(mesa) => {
@@ -74,7 +77,7 @@ export function MinhasMesas() {
         title={
             <Divider labelPosition="left" label={
                 <Group position='left'>
-                    <Text fz="lg">Minhas mesas</Text>
+                    <Text fz="lg">{t('myDMedSessions')}</Text>
                     <GiTabletopPlayers size={40} />
                 </Group>
             }/>

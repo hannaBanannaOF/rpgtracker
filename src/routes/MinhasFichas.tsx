@@ -6,18 +6,20 @@ import { getContentTypeItem, getContentTypeTooltip, getSystemPath } from '../uti
 import { notifications } from '@mantine/notifications';
 import { ClickablePaper } from '../ui/ClickablePaper';
 import { Listing } from '../ui/Listing';
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../Constants";
 
 export function MinhasFichas() {
 
     let navigate = useNavigate();
+    const { t } = useTranslation(['characterSheet', 'notifications']);
 
     return <Listing 
         dataFetch={AccountService.getCurrentUserFichas}
         dataFetchError={err => {
             notifications.show({
-                message: "Erro ao buscar fichas do usuário",
-                id: "error_minhas_fichas_not_found",
-                color: 'red'
+                message: t('characterSheet.fetchError', { ns: "notifications" }),
+                ...NotificationKeys.ErrorMinhasFichas
               });
 		}}
         dataMap={(ficha) => {
@@ -30,12 +32,12 @@ export function MinhasFichas() {
                     </ThemeIcon>
                 </Tooltip>}
                 title={ficha.characterName}
-                subtitle={ficha.session && `Mesa: ${ficha.session.sessionName}`}
+                subtitle={ficha.session && t('characterSheetSession', { sessionName: ficha.session.sessionName })}
             />
         }}
         title={<Divider labelPosition="left" label={
             <Group position='left'>
-                <Text fz="lg">Minhas fichas</Text>
+                <Text fz="lg">{t('myCharacterSheets')}</Text>
                 <GiArchiveResearch size={40} />
             </Group>
         }/>} 

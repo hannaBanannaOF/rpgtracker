@@ -5,13 +5,15 @@ import { Title, useMantineTheme  } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconKey } from "@tabler/icons-react";
 import axios from "axios";
-import { useEffectOnce } from "../../utils/UseEffectOnce";
+import { useEffectOnce } from "../../hooks/UseEffectOnce";
+import { useTranslation } from "react-i18next";
 
 export function OAuthCallback() {
 
     let navigate = useNavigate();
     let location = useLocation();
     let auth = useAuth();
+    let { t } = useTranslation('login');
 
     let [searchParams] = useSearchParams();
     let from = (location.state as any)?.from?.pathname || "/";
@@ -51,7 +53,7 @@ export function OAuthCallback() {
     return (
         <div style={{ width: "100%", height: "100%", backgroundColor: theme.primaryColor, display: "flex", flexDirection: "column", justifyContent:"center", alignItems:"center"}}>
             <IconKey />
-            <Title order={4}>Authenticating</Title>
+            <Title order={4}>{t('authenticating')}</Title>
         </div>
     );
 

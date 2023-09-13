@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { StompSessionProvider } from 'react-stomp-hooks';
 import { AccountService } from '../../services/AccountService';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { NotificationKeys } from '../../Constants';
 
 export function DetalhesFichaCoCQueryParam() {
     const query = useQuery();
@@ -19,6 +21,8 @@ export function DetalhesFichaCoCQueryParam() {
 
     const fichaId = query.get("uuid");
 
+    const { t } = useTranslation('notifications');
+
     useEffect(() => {
         setLoading(true);
         if (fichaId) {
@@ -28,24 +32,22 @@ export function DetalhesFichaCoCQueryParam() {
                     setLoading(false);
                 }).catch(err => {
                     notifications.show({
-                        id: "error_ficha_not_found",
-                        message: "Não foi possível buscar detalhes da ficha!",
-                        color: "red"
+                        message: t('characterSheet.notFound'),
+                        ...NotificationKeys.ErrorFichaNotFound
                     });
                 });
             }).catch(err => {
+                let key = err.statusCode === 404 ? NotificationKeys.ErrorFichaNotFound : NotificationKeys.ErrorNoPermission
                 notifications.show({
-                    id: err.statusCode === 404 ? "error_ficha_not_found" : "error_no_permission",
-                    message: err.statusCode === 404 ? "Não foi possível buscar detalhes da ficha!" : "Você não tem permissão para ver essa mesa!",
-                    color: "red"
+                    message: t(err.statusCode === 404 ? 'characterSheet.notFound' : 'noPermission'),
+                    ...key
                 });
                 navigate("/me/sheets");
             })
         } else {
             notifications.show({
-                id: "error_ficha_not_found",
-                message: "Não foi possível buscar detalhes da ficha!",
-                color: "red"
+                message: t('characterSheet.notFound'),
+                ...NotificationKeys.ErrorFichaNotFound
             });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps

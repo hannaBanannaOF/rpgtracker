@@ -4,7 +4,8 @@ import { useAuth } from "../providers/AuthProvider";
 import { useState } from "react";
 import { IconKey } from "@tabler/icons-react";
 import { Button, Title, Box, createStyles, rem } from '@mantine/core';
-import { useEffectOnce } from '../utils/UseEffectOnce';
+import { useEffectOnce } from '../hooks/UseEffectOnce';
+import { useTranslation } from 'react-i18next';
 
 export interface LoginProps {
 }
@@ -43,6 +44,8 @@ export function Login(props: LoginProps) {
     let from = (location.state as any)?.from?.pathname || "/";
     let [authent, setAuthent] = useState(false);
 
+    const { t } = useTranslation('login');
+
     function redirectOAuth(redirect: string) {
         setAuthent(true);
         window.location.replace(redirect);
@@ -58,7 +61,7 @@ export function Login(props: LoginProps) {
         <div className={classes.wrapper}>
             <Box className={classes.form} p={30}>
                 <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
-                    Welcome back to RPGTracker!
+                    {t('welcome')}
                 </Title>
 
                 <Button fullWidth 

@@ -8,6 +8,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
 import { Form, InlineFormProps } from "./Form";
 import { useDisclosure } from "@mantine/hooks";
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../Constants";
 
 export interface ListingProps {
     title?: string | ReactNode;
@@ -35,6 +37,8 @@ export function Listing(props: ListingProps) {
     let navigate = useNavigate();
     let location = useLocation();
 
+    const { t } = useTranslation(['general', 'notifications']);
+
     const getItems = () => {
         setLoading(true);
         props.dataFetch(page).then((res) => {
@@ -47,9 +51,8 @@ export function Listing(props: ListingProps) {
                 props.dataFetchError();
             } else {
                 notifications.show({
-                    message: "Erro ao buscar dados!",
-                    id: "error_data_unexpected",
-                    color: 'red'
+                    message: t('dataFetchError', { ns: 'notifications'}),
+                    ...NotificationKeys.ErrorDataFetch
                   });
             }
         });
@@ -68,7 +71,7 @@ export function Listing(props: ListingProps) {
                 <Button onClick={() => {
                     setAdding(true);
                     open();
-                }}>Adicionar</Button>
+                }}>{t('buttons.add')}</Button>
             </Group>}
             <DefaultEmpty visible={(data.length ?? 0) === 0} add={() => {
                 setAdding(true);
@@ -79,16 +82,14 @@ export function Listing(props: ListingProps) {
                         return props.dataMap(i, props.onDelete ? (uuid: string) => {
                             props.onDelete!(uuid).then((_) => {
                                 notifications.show({
-                                    message: "Excluído com sucesso!",
-                                    id: 'success_delete_item',
-                                    color: 'green'
+                                    message: t('delete.success', { ns: 'notifications' }),
+                                    ...NotificationKeys.SuccessDataDelete
                                 });
                                 getItems();
                             }).catch((err) => {
                                 notifications.show({
-                                    message: "Não foi possível excluír item!",
-                                    id: 'error_delete_item',
-                                    color: 'red'
+                                    message: t('delete.error', { ns: 'notifications' }),
+                                    ...NotificationKeys.ErrorDataDelete
                                 });
                             })
                         } : undefined, () => {
@@ -110,6 +111,7 @@ export function Listing(props: ListingProps) {
                 setAdding(false);
             }} title={adding ? props.modalTitleAdd : props.modalTitleUpdate} scrollAreaComponent={ScrollArea.Autosize}>
                 <Form
+                    lookupClient={props.formProps.lookupClient}
                     selectedUuid={(selected ?? {id: ''}).id}
                     dataFetch={props.formProps.dataFetch}
                     update={props.formProps.update}

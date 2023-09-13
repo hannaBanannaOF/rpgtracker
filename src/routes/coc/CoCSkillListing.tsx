@@ -1,15 +1,19 @@
 import { IconList, IconPencil } from "@tabler/icons-react";
 import { TitleDividerWithIcon } from "../../ui/TitleDividerWithIcon";
-import { CoCService } from "../../services/CoCService";
 import { ClickablePaper } from "../../ui/ClickablePaper";
 import { Listing } from "../../ui/Listing";
 import { isNotEmpty } from "@mantine/form";
+import { CoCSkillService } from "../../services/coc/CoCSkillService";
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../../Constants";
 
 export function CoCSkillListing() {
 
+    const { t } = useTranslation('listings', { keyPrefix: 'coc.skill' })
+
     return <Listing
-        dataFetch={CoCService.getSkillListing}
-        title={<TitleDividerWithIcon icon={<IconList /> } label="Call of Cthulhu - Perícias" />}
+        dataFetch={CoCSkillService.getSkillListing}
+        title={<TitleDividerWithIcon icon={<IconList /> } label={t('title')} />}
         dataMap={(item: any, onDelete, onClick) => {
             return <ClickablePaper key={item.id} onClick={() => {
                 if (onClick) {
@@ -21,37 +25,38 @@ export function CoCSkillListing() {
                 }
             }}/>
         }}
-        onDelete={CoCService.deleteSkill}
-        modalTitleUpdate="Editar perícia"
-        modalTitleAdd="Adicionar perícia"
+        onDelete={CoCSkillService.deleteSkill}
+        modalTitleUpdate={t('form.edit')}
+        modalTitleAdd={t('form.add')}
         formProps={{
-            dataFetch: CoCService.getSkill,
-            update: CoCService.updateSkill,
-            add: CoCService.addSkill,
+            lookupClient: 'coc',
+            dataFetch: CoCSkillService.getSkill,
+            update: CoCSkillService.updateSkill,
+            add: CoCSkillService.addSkill,
             formMapping: [
                 {
                     key: 'name',
-                    label: 'Nome',
+                    label: t('form.mappings.name.label'),
                     dataType: 'string',
                     notNull: true,
                     span: 8
                 },
                 {
                     key: 'baseValue',
-                    label: 'Valor base',
+                    label: t('form.mappings.baseValue.label'),
                     dataType: 'number',
                     span: 4
                 },
                 {
                     key: 'usable',
-                    label: 'Utilizável em ficha',
+                    label: t('form.mappings.usable.label'),
                     dataType: 'boolean',
                     span: 12,
                     defaultValue: true
                 },
                 {
                     key: 'rarity',
-                    label: 'Raridade',
+                    label: t('form.mappings.rarity.label'),
                     dataType: 'select',
                     notNull: true,
                     lookupClass: 'skillRarity',
@@ -59,7 +64,7 @@ export function CoCSkillListing() {
                 },
                 {
                     key: 'kind',
-                    label: 'Tipo',
+                    label: t('form.mappings.kind.label'),
                     dataType: 'select',
                     notNull: true,
                     lookupClass: 'skillKind',
@@ -67,21 +72,20 @@ export function CoCSkillListing() {
                 },
                 {
                     key: 'parentSkillId',
-                    label: 'Skill pai',
+                    label: t('form.mappings.parentSkillId.label'),
                     dataType: 'select',
                     lookupClass: 'notUsableSkill',
                     span: 12
                 }
             ],
             validate: {
-                name: isNotEmpty("Nome não pode ser vazio!"),
-                rarity: isNotEmpty("Raridade não pode ser vazio!"),
-                kind: isNotEmpty("Tipo não pode ser vazio!")
+                name: isNotEmpty(t('form.mappings.name.notNullMessage')),
+                rarity: isNotEmpty(t('form.mappings.rarity.notNullMessage')),
+                kind: isNotEmpty(t('form.mappings.kind.notNullMessage'))
             },
             saveMessage: {
-                message: "Perícia salva com sucesso!",
-                id: "success_coc_skill_saved",
-                color: 'green'
+                message: t('form.saveMessage'),
+                ...NotificationKeys.SuccessCoCSkillSave
             }
         }}
     />

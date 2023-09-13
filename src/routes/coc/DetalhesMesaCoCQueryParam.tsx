@@ -8,6 +8,8 @@ import { DetalhesMesaCoC } from "../../ui/DetalhesMesaCoC";
 import { StompSessionProvider } from 'react-stomp-hooks';
 import { AccountService } from '../../services/AccountService';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { NotificationKeys } from '../../Constants';
 export function DetalhesMesaCoCQueryParam() {
     const query = useQuery();
 
@@ -16,6 +18,8 @@ export function DetalhesMesaCoCQueryParam() {
     const [loading, setLoading] = useState(true);
     const [mesa, setMesa] = useState<SessionBase | null>(null);
     const mesaId = query.get("uuid");    
+
+    const { t } = useTranslation('notifications');
     
     useEffect(() => {
         setLoading(true);
@@ -26,24 +30,22 @@ export function DetalhesMesaCoCQueryParam() {
                     setLoading(false);
                 }).catch(err => {
                     notifications.show({
-                        id: "error_mesa_not_found",
-                        message: "Não foi possível buscar detalhes da mesa!",
-                        color: "red"
+                        message: t('session.notFound'),
+                        ...NotificationKeys.ErrorMesaNotFound
                     });
                 });
             }).catch(err => {
+                let key = err.statusCode === 404 ? NotificationKeys.ErrorMesaNotFound : NotificationKeys.ErrorNoPermission
                 notifications.show({
-                    id: err.statusCode === 404 ? "error_mesa_not_found" : "error_no_permission",
-                    message: err.statusCode === 404 ? "Não foi possível buscar detalhes da mesa!" : "Você não tem permissão para ver essa mesa!",
-                    color: "red"
+                    message: t(err.statusCode === 404 ? 'session.notFound' : 'noPermission'),
+                    ...key
                 });
                 navigate("/me/sessions");
             })
         } else {
             notifications.show({
-                id: "error_mesa_not_found",
-                message: "Não foi possível buscar detalhes da mesa!",
-                color: "red"
+                message: t('session.notFound'),
+                ...NotificationKeys.ErrorMesaNotFound
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,14 +1,19 @@
 import { IconList, IconPencil } from "@tabler/icons-react";
 import { TitleDividerWithIcon } from "../../ui/TitleDividerWithIcon";
-import { CoCService } from "../../services/CoCService";
 import { ClickablePaper } from "../../ui/ClickablePaper";
 import { Listing } from "../../ui/Listing";
 import { isNotEmpty } from "@mantine/form";
+import { CoCAmmoService } from "../../services/coc/CoCAmmoService";
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../../Constants";
 
 export function CoCAmmoListing() {
+
+    const { t } = useTranslation('listings', { keyPrefix: 'coc.ammo' });
+
     return<Listing
-        dataFetch={CoCService.getAmmoListing}
-        title={<TitleDividerWithIcon icon={<IconList /> } label="Call of Cthulhu - Munição" />}
+        dataFetch={CoCAmmoService.getAmmoListing}
+        title={<TitleDividerWithIcon icon={<IconList /> } label={t('title')} />}
         dataMap={(item: any, onDelete, onClick) => {
             return <ClickablePaper key={item.id} onClick={() => {
                 if (onClick) {
@@ -20,37 +25,37 @@ export function CoCAmmoListing() {
                 }
             }}/>
         }}
-        onDelete={CoCService.deleteAmmo}
-        modalTitleUpdate="Editar munição"
-        modalTitleAdd="Adicionar munição"
+        onDelete={CoCAmmoService.deleteAmmo}
+        modalTitleUpdate={t('form.edit')}
+        modalTitleAdd={t('form.add')}
         formProps={{
-            dataFetch: CoCService.getAmmo,
-            update: CoCService.updateAmmo,
-            add: CoCService.addAmmo,
+            lookupClient: 'coc',
+            dataFetch: CoCAmmoService.getAmmo,
+            update: CoCAmmoService.updateAmmo,
+            add: CoCAmmoService.addAmmo,
             formMapping: [
                 {
                     key: 'name',
-                    label: 'Nome',
+                    label: t('form.mappings.name.label'),
                     dataType: 'string',
                     notNull: true,
-                    span: 8
+                    span: 7
                 },
                 {
                     key: 'roundsShotWithEach',
-                    label: 'Tiros dados',
+                    label: t('form.mappings.roundsShot.label'),
                     dataType: 'number',
                     notNull: true,
-                    span: 4
+                    span: 5
                 }
             ],
             validate: {
-                name: isNotEmpty("Nome não pode ser vazio!"),
-                roundsShotWithEach: isNotEmpty("Tiros dados não pode ser vazio!")
+                name: isNotEmpty(t('form.mappings.name.notNullMessage')),
+                roundsShotWithEach: isNotEmpty(t('form.mappings.roundsShot.notNullMessage'))
             },
             saveMessage: {
-                message: "Munição salva com sucesso!",
-                id: "success_coc_ammo_saved",
-                color: 'green'
+                message: t('form.saveMessage'),
+                ...NotificationKeys.SuccessCoCAmmoSave
             }
         }}
     />

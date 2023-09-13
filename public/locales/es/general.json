@@ -1,0 +1,19 @@
+{
+    "defaultEmpty": {
+        "message": "Nada aquí"
+    },
+    "buttons": {
+        "add": "Añadir",
+        "save": "Guardar",
+        "saving": "Guardando..."
+    },
+    "form": {
+        "messages": {
+            "saved": "Datos guardados correctamente!",
+            "saveError": "Error al guardar los datos!"
+        }
+    },
+    "slider": {
+        "current": "Actual"
+    }
+}

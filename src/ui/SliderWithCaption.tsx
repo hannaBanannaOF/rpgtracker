@@ -1,5 +1,6 @@
 import { Group, Slider, Title, rem } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export interface SliderWithCaptionProps {
     thumbChildren? : React.ReactNode,
@@ -18,10 +19,12 @@ export function SliderWithCaption(props: SliderWithCaptionProps) {
         setCurrentValue(props.value)
     }, [props])
 
+    const { t } = useTranslation('general');
+
     return <>
         <Group position="apart" mb={6}>
             <Group>
-                <Title order={5}>Current: </Title>
+                <Title order={5}>{t('slider.current')}: </Title>
                 {currentValue.toString()}
             </Group>
             {props.endBadge}

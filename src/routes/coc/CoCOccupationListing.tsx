@@ -1,16 +1,20 @@
 import { IconList, IconPencil } from "@tabler/icons-react";
 import { TitleDividerWithIcon } from "../../ui/TitleDividerWithIcon";
-import { CoCService } from "../../services/CoCService";
 import { ClickablePaper } from "../../ui/ClickablePaper";
 import { Listing } from "../../ui/Listing";
 import { isNotEmpty } from "@mantine/form";
+import { CoCOccupationService } from "../../services/coc/CoCOccupationService";
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../../Constants";
 
 export function CoCOccupationListing() {
 
+    const { t } = useTranslation('listings', { keyPrefix: 'coc.occupation' });
+
     return <Listing 
-        dataFetch={CoCService.getOccupationsListing}
+        dataFetch={CoCOccupationService.getOccupationsListing}
         dataMap={(item: any, onDelete, onClick) => {
-            return <ClickablePaper onClick={() => {
+            return <ClickablePaper key={item.id} onClick={() => {
                 if (onClick) {
                     onClick!();
                 }
@@ -20,32 +24,33 @@ export function CoCOccupationListing() {
                 }
             }} />
         }}
-        title={<TitleDividerWithIcon icon={<IconList /> } label="Call of Cthulhu - Ocupações" />}
-        onDelete={CoCService.deleteOccupation}
-        modalTitleUpdate="Editar arma"
-        modalTitleAdd="Adicionar arma"
+        title={<TitleDividerWithIcon icon={<IconList /> } label={t('title')} />}
+        onDelete={CoCOccupationService.deleteOccupation}
+        modalTitleUpdate={t('form.edit')}
+        modalTitleAdd={t('form.add')}
         formProps={{
-            dataFetch: CoCService.getOccupation,
-            update: CoCService.updateOccupation,
-            add: CoCService.addOccupation,
+            lookupClient: 'coc',
+            dataFetch: CoCOccupationService.getOccupation,
+            update: CoCOccupationService.updateOccupation,
+            add: CoCOccupationService.addOccupation,
             formMapping: [
                 {
                     key: 'name',
-                    label: 'Nome',
+                    label: t('form.mappings.name.label'),
                     dataType: 'string',
                     notNull: true,
                     span: 12
                 },
                 {
                     key: 'description',
-                    label: 'Descrição',
+                    label: t('form.mappings.description.label'),
                     dataType: 'text',
                     notNull: true,
                     span: 12
                 },
                 {
                     key: 'skillPointCalculationRule',
-                    label: 'Regra de cálculo de pontos de ocupação',
+                    label: t('form.mappings.skillPointCalculationRule.label'),
                     dataType: 'select',
                     lookupClass: 'skillPointCalculationRule',
                     notNull: true,
@@ -53,55 +58,54 @@ export function CoCOccupationListing() {
                 },
                 {
                     key: 'minimumCreditRating',
-                    label: 'Rank de crédito mínimo',
+                    label: t('form.mappings.minimumCreditRating.label'),
                     dataType: 'number',
                     notNull: true,
                     span: 6
                 },
                 {
                     key: 'maximumCreditRating',
-                    label: 'Rank de crédito máximo',
+                    label: t('form.mappings.maximumCreditRating.label'),
                     dataType: 'number',
                     notNull: true,
                     span: 6
                 },
                 {
                     key: 'suggestedContacts',
-                    label: 'Contatos sugeridos',
+                    label: t('form.mappings.suggestedContacts.label'),
                     dataType: 'text',
                     span: 12
                 },
                 {
                     key: 'epochPersonalSkillChoices',
-                    label: 'Escolha de skills - Época ou Pessoal',
+                    label: t('form.mappings.epochPersonalSkillChoices.label'),
                     dataType: 'number',
                     span: 12
                 },
                 {
                     key: 'typedSkillChoices',
-                    label: 'Escolha de skills - Por tipo',
+                    label: t('form.mappings.typedSkillChoices.label'),
                     dataType: 'number',
                     span: 6
                 },
                 {
                     key: 'typedSkillChoicesKind',
-                    label: 'Tipo da skill',
+                    label: t('form.mappings.typedSkillChoicesKind.label'),
                     dataType: 'select',
                     lookupClass: 'skillKind',
                     span: 6
                 },
             ],
             validate: {
-                name: isNotEmpty("Nome não pode ser vazio!"),
-                description: isNotEmpty("Descrição não pode ser vazio!"),
-                skillPointCalculationRule: isNotEmpty("Regra de cálculo de pontos de ocupação não pode ser vazio!"),
-                minimumCreditRating: isNotEmpty("Rank de crédito mínimo não pode ser vazio!"),
-                maximumCreditRating: isNotEmpty("Rank de crédito máximo não pode ser vazio!"),
+                name: isNotEmpty(t('form.mappings.name.notNullMessage')),
+                description: isNotEmpty(t('form.mappings.description.notNullMessage')),
+                skillPointCalculationRule: isNotEmpty(t('form.mappings.skillPointCalculationRule.notNullMessage')),
+                minimumCreditRating: isNotEmpty(t('form.mappings.minimumCreditRating.notNullMessage')),
+                maximumCreditRating: isNotEmpty(t('form.mappings.maximumCreditRating.label')),
             },
             saveMessage: {
-                message: "Arma salva com sucesso!",
-                id: "success_coc_weapon_saved",
-                color: 'green'
+                message: t('form.saveMessage'),
+                ...NotificationKeys.SuccessCoCOccupationSave
             }
         }}  
     />

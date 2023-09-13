@@ -11,6 +11,7 @@ import { useSubscription } from 'react-stomp-hooks';
 import { useAuth } from '../providers/AuthProvider';
 import { useState } from 'react';
 import { GoBack } from './GoBack';
+import { useTranslation } from 'react-i18next';
 
 export interface DetalhesFichaCoCProps {
     ficha?: COCCharacterSheet | null;
@@ -22,12 +23,13 @@ export interface DetalhesFichaCoCProps {
 export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
 
     const [ocupationOpened, { open, close }] = useDisclosure(false);
+    const { t } = useTranslation('characterSheet', { keyPrefix: "coc" });
 
     const _getHpEndBadge = () => {
         if ((props.ficha?.calculatedAttributes.healthPoints ?? 0) === 0/* && majorWound*/) {
-            return <Badge color='red'>Morrendo</Badge>
+            return <Badge color='red'>{t('healthPoints.dying')}</Badge>
         } else if ((props.ficha?.calculatedAttributes.healthPoints ?? 0) === 0) {
-            return <Badge color='grey'>Inconsciente</Badge>
+            return <Badge color='grey'>{t('healthPoints.unconscious')}</Badge>
         }
         return null;
     }
@@ -39,35 +41,35 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
         {/* Basic info */}
         <Grid.Col sm={10} md={8} lg={3} order={1} orderLg={1} orderSm={2}>
             <Card padding="lg">
-                <TitleDividerWithIcon icon={<IconUser />} label={(props.ficha?.basicInfo.pulpCthulhu ?? false) ? "Herói (PCoC)" : "Investigador"} />
+                <TitleDividerWithIcon icon={<IconUser />} label={t((props.ficha?.basicInfo.pulpCthulhu ?? false) ? "hero" : "investigator   ")} />
                 <Skeleton visible={props.characterName == null}>
                     <Group position='left'>
-                        <Text td="underline">Nome:</Text>
+                        <Text td="underline">{t('characterName')}:</Text>
                         {props.characterName}
                     </Group>
                 </Skeleton>
                 <Skeleton visible={props.playerName == null}>
                     <Group position='left'>
-                        <Text td="underline" display="inline">Jogador:</Text>
+                        <Text td="underline" display="inline">{t('playerName')}:</Text>
                         {props.playerName}
                     </Group>
                 </Skeleton>
                 <Group position='left'>
-                    <Text td="underline" display="inline">Idade:</Text>
+                    <Text td="underline" display="inline">{t('age')}:</Text>
                     {props.ficha?.basicInfo.age ?? 0}
                 </Group>
                 <Group position='left'>
-                    <Text td="underline" display="inline">Residência:</Text>
+                    <Text td="underline" display="inline">{t('residency')}:</Text>
                     {props.ficha?.basicInfo.residence ?? ""}
                 </Group>
                 <Group position='left'>
-                    <Text td="underline" display="inline">Naturalidade:</Text>
+                    <Text td="underline" display="inline">{t('birthplace')}:</Text>
                     {props.ficha?.basicInfo.birthplace ?? ""}
                 </Group>
                 <Group position='apart'>
                     <Group position='left'>
-                        <Text td="underline" display="inline">Ocupação:</Text>
-                        {props.ficha?.occupation?.name ?? "Unoccupied"}
+                        <Text td="underline" display="inline">{t('occupation.title')}:</Text>
+                        {props.ficha?.occupation?.name ?? t('occupation.unoccupied')}
                     </Group>
                     {props.ficha?.occupation && props.ficha?.occupation!.description && 
                     <>
@@ -75,30 +77,30 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
                                 <IconInfoCircle />
                             </ActionIcon>
                             <Modal opened={ocupationOpened} onClose={close} title={props.ficha?.occupation?.name}>
-                            <TitleDividerWithIcon icon={<IconInfoCircle />} label='Descrição' />
+                            <TitleDividerWithIcon icon={<IconInfoCircle />} label={t('occupation.description')} />
                             {props.ficha?.occupation?.description ?? ""}
-                            <TitleDividerWithIcon icon={<IconAddressBook />} label='Contatos sugeridos' />
+                            <TitleDividerWithIcon icon={<IconAddressBook />} label={t('occupation.suggestedContacts')} />
                             {props.ficha?.occupation?.suggestedContacts ?? ""}
                             </Modal>
                         </>}
                 </Group>
-                {(props.ficha?.basicInfo.pulpCthulhu ?? false) &&<Group position='left'><Text td="underline" display="inline">Arquétipo:</Text>{props.ficha?.basicInfo.pulpArchetype ?? ""}</Group>}
+                {(props.ficha?.basicInfo.pulpCthulhu ?? false) &&<Group position='left'><Text td="underline" display="inline">{t('archetype')}:</Text>{props.ficha?.basicInfo.pulpArchetype ?? ""}</Group>}
             </Card>
         </Grid.Col>
         {/* Basic characteristics */}
         <Grid.Col sm={12} md={12} lg={7} order={3} orderLg={2} orderSm={3}>
             <Card padding={"lg"}>
-                <TitleDividerWithIcon icon={<IconInfoCircle />} label='Características' />
+                <TitleDividerWithIcon icon={<IconInfoCircle />} label={t('characteristics.title')} />
                 <Grid align='center' justify='center'>
-                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.strength ?? "0"} stat="STR"/>
-                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.dexterity ?? "0"} stat="DEX"/>
-                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.power ?? "0"} stat="POW"/>
-                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.constitution ?? "0"} stat="CON"/>
-                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.appearance ?? "0"} stat="APP"/>
-                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.education ?? "0"} stat="EDU"/>
-                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.size ?? "0"} stat="SIZ"/>
-                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.intelligence ?? "0"} stat="INT"/>
-                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} fullRounded noShowFifth value={props.ficha?.calculatedAttributes.moveRate ?? "0"} stat="Move Rate"/>
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.strength ?? "0"} stat={t('characteristics.str')} />
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.dexterity ?? "0"} stat={t('characteristics.dex')} />
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.power ?? "0"} stat={t('characteristics.pow')} />
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.constitution ?? "0"} stat={t('characteristics.con')} />
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.appearance ?? "0"} stat={t('characteristics.app')} />
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.education ?? "0"} stat={t('characteristics.edu')} />
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.size ?? "0"} stat={t('characteristics.siz')} />
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} value={props.ficha?.basicAttributes.intelligence ?? "0"} stat={t('characteristics.int')} />
+                    <CoCStats span={{ xl: 4, lg: 4, md: 4, sm: 6, xs: 6 }} fullRounded noShowFifth value={props.ficha?.calculatedAttributes.moveRate ?? "0"} stat={t('characteristics.moveRate')} />
                 </Grid>
             </Card>
         </Grid.Col>
@@ -113,7 +115,7 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
         {/* Lifepoints */}
         <Grid.Col sm={12} md={4} lg={4} order={4}>
             <Card padding={"lg"}>
-                <TitleDividerWithIcon icon={<IconHeart />} label='Pontos de Vida' />
+                <TitleDividerWithIcon icon={<IconHeart />} label={t('healthPoints.title')} />
                 <SliderWithCaption 
                     color="red"
                     value={props.ficha?.calculatedAttributes.healthPoints ?? 0}
@@ -124,12 +126,12 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
                 />
                 <Space h={"md"} />
                 <Group>
-                    <Title order={5}>Max HP:</Title>
+                    <Title order={5}>{t('healthPoints.maxHp')}:</Title>
                     <Text>{props.ficha?.calculatedAttributes.maximumHealthPoints ?? "0"}</Text>
                 </Group>
                 <Space h={"md"}/>
                 <Checkbox
-                    label="Major wound"
+                    label={t('healthPoints.majorWound')}
                     disabled
                 />
             </Card>
@@ -137,32 +139,32 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
         {/* Sanity */}
         <Grid.Col sm={12} md={8} lg={8} order={5}>
             <Card padding={"lg"}>
-                <TitleDividerWithIcon icon={<IconBrain />} label='Sanidade' />
+                <TitleDividerWithIcon icon={<IconBrain />} label={t('sanity.title')} />
                 <SliderWithCaption 
                     color="blue"
                     value={props.ficha?.calculatedAttributes.sanity ?? 0} 
                     thumbChildren={<IconBrain size="1rem" />}
                     max={props.ficha?.calculatedAttributes.maximumSanity ?? 0}
                     disabled
-                    endBadge={(props.ficha?.calculatedAttributes.sanity ?? 0) === 0 ? <Badge color='grey'>Insano</Badge> : null}
+                    endBadge={(props.ficha?.calculatedAttributes.sanity ?? 0) === 0 ? <Badge color='grey'>{t('sanity.insane')}</Badge> : null}
                 />
                 <Space h={"md"} />
                 <Group>
-                    <Title order={5}>Max SAN:</Title>
+                    <Title order={5}>{t('sanity.maxSan')}:</Title>
                     <Text>{props.ficha?.calculatedAttributes.maximumSanity ?? "0"}</Text>
                 </Group>
                 <Group>
-                    <Title order={5}>SAN inicial:</Title>
+                    <Title order={5}>{t('sanity.initialSan')}:</Title>
                     <Text>{props.ficha?.calculatedAttributes.startingSanity ?? "0"}</Text>
                 </Group>
                 <Space h={"md"} />
                 <>
                     <Checkbox
-                        label="Insanidade temporária"
+                        label={t('sanity.tempInsanity')}
                         disabled
                     />
                     <Checkbox
-                        label="Insanidade indefinida"
+                        label={t('sanity.indefInsanity')}
                         disabled
                     />
                 </>
@@ -171,18 +173,18 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
         {/* Luck */}
         <Grid.Col sm={12} md={8} lg={8} order={6}>
             <Card padding={"lg"}>
-                <TitleDividerWithIcon icon={<IconClover2 />} label='Sorte' />
+                <TitleDividerWithIcon icon={<IconClover2 />} label={t('luck.title')} />
                 <SliderWithCaption 
                     value={props.ficha?.basicAttributes.luck ?? 0} 
                     thumbChildren={<IconClover2 size="1rem" />}
                     disabled
-                    endBadge={(props.ficha?.basicAttributes.luck ?? 0) === 0 ? <Badge color='grey'>Sem sorte</Badge> : null}
+                    endBadge={(props.ficha?.basicAttributes.luck ?? 0) === 0 ? <Badge color='grey'>{t('luck.outOfLuck')}</Badge> : null}
                 />
             </Card>
         </Grid.Col>
         <Grid.Col sm={12} md={4} lg={4} order={7}>
             <Card padding={"lg"}>
-                <TitleDividerWithIcon icon={<IconWand />} label="Pontos de magia" />
+                <TitleDividerWithIcon icon={<IconWand />} label={t('magicPoints.title')} />
                 <SliderWithCaption 
                     color="grape"
                     value={props.ficha?.calculatedAttributes.magicPoints ?? 0}
@@ -192,14 +194,14 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
                 />
                 <Space h={"md"} />
                 <Group>
-                    <Title order={5}>Max MP:</Title>
+                    <Title order={5}>{t('magicPoints.maxMp')}:</Title>
                     <Text>{props.ficha?.calculatedAttributes.maximumMagicPoints ?? "0"}</Text>
                 </Group>
             </Card>
         </Grid.Col>
         <Grid.Col sm={12} md={12} lg={12} order={8}>
             <Card>
-                <TitleDividerWithIcon icon={<IconBookmark />} label='Perícias' />
+                <TitleDividerWithIcon icon={<IconBookmark />} label={t('skills')} />
                 <Grid>
                     {(props.ficha?.skills ?? []).map((skill: SkillCoC) => {
                         return <CoCStats key={skill.skillID ?? skill.skillName} span={{ xl: 3, lg: 3, md: 4, sm: 6, xs: 12 }} value={skill.value} stat={skill.skillName} improvcheck improvedCheck={skill.improvementCheck}/>
@@ -210,26 +212,26 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
         {/* Weapons */}
         <Grid.Col sm={12} md={12} lg={9} order={9}>
             <Card>
-                <TitleDividerWithIcon icon={<IconSwords />} label='Armas' />
+                <TitleDividerWithIcon icon={<IconSwords />} label={t('weapons.title')} />
                 <DefaultEmpty visible={(props.ficha?.weapons.length ?? 0) === 0} emptyIcon={<IconSwordOff />}>
                     <Stack>
                     {(props.ficha?.weapons ?? []).map((item: CoCWeaponsInSheet) => {
                         return <ModalListItem key={item.weapon.id} listItemText={item.nickname ?? item.weapon.name} dialogTitle={item.nickname ?? item.weapon.name}>
                             <>
-                                <TitleDividerWithIcon icon={<IconInfoCircle />} label='Informações básicas'/>
+                                <TitleDividerWithIcon icon={<IconInfoCircle />} label={t('weapons.basicInfo.title')} />
                                 <Stack spacing={"xs"}>
-                                    <Text>Dano: {item.weapon.damage}</Text>
-                                    <Text>Ataques: {item.weapon.attacksPerRound > 1 ? `1(${item.weapon.attacksPerRound})` : 1}</Text>
+                                    <Text>{t('weapons.basicInfo.damage')}: {item.weapon.damage}</Text>
+                                    <Text>{t('weapons.basicInfo.attacks')}: {item.weapon.attacksPerRound > 1 ? `1(${item.weapon.attacksPerRound})` : 1}</Text>
                                 </Stack>
-                                <TitleDividerWithIcon icon={<IconCornerDownRight />} label='Informações avançadas' />
+                                <TitleDividerWithIcon icon={<IconCornerDownRight />} label={t('weapons.advancedInfo.title')} />
                                 <Group position='apart' align='flex-start'>
                                     <Stack spacing={"xs"}>
-                                        <Text>Acerto normal: {item.successValue}</Text>
-                                        <Text>Acerto bom: {Math.floor(item.successValue/2)}</Text>
-                                        <Text>Acerto extremo: {Math.floor(item.successValue/5)}</Text>
-                                        {!item.weapon.isMelee && <Text>Munição disponível: {`${item.roundsLeft} (${item.totalAmmoLeft})`}</Text>}
+                                        <Text>{t('weapons.advancedInfo.normalSuccess')}: {item.successValue}</Text>
+                                        <Text>{t('weapons.advancedInfo.goodSuccess')}: {Math.floor(item.successValue/2)}</Text>
+                                        <Text>{t('weapons.advancedInfo.extremeSuccess')}: {Math.floor(item.successValue/5)}</Text>
+                                        {!item.weapon.isMelee && <Text>{t('weapons.advancedInfo.availableAmmo')}: {`${item.roundsLeft} (${item.totalAmmoLeft})`}</Text>}
                                     </Stack>
-                                    {item.weapon.isMelee &&<Badge>Arma mano-a-mano</Badge>}
+                                    {item.weapon.isMelee &&<Badge>{t('weapons.advancedInfo.meleeWeapon')}</Badge>}
                                 </Group>
                             </>
                         </ModalListItem>
@@ -238,25 +240,26 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
                 </DefaultEmpty>
             </Card>
         </Grid.Col>
+        {/* Combat */}
         <Grid.Col sm={12} md={12} lg={3} order={10}>
             <Card>
-                <TitleDividerWithIcon icon={<IconSword />} label='Combate' />
+                <TitleDividerWithIcon icon={<IconSword />} label={t('combat.title')} />
                 <Grid>
-                    <CoCStats fullRounded noShowFifth value={props.ficha?.calculatedAttributes.bonusDamage ?? "0"} stat="Bonus Damage"/>
-                    <CoCStats fullRounded noShowFifth value={props.ficha?.calculatedAttributes.build ?? "0"} stat="Build"/>
-                    <CoCStats value={props.ficha?.calculatedAttributes.dodge ?? "0"} stat="Dodge"/>
+                    <CoCStats fullRounded noShowFifth value={props.ficha?.calculatedAttributes.bonusDamage ?? "0"} stat={t('combat.bonusDamage')} />
+                    <CoCStats fullRounded noShowFifth value={props.ficha?.calculatedAttributes.build ?? "0"} stat={t('combat.build')} />
+                    <CoCStats value={props.ficha?.calculatedAttributes.dodge ?? "0"} stat={t('combat.dodge')} />
                 </Grid>
             </Card>
         </Grid.Col>
         {/* Pulp Talents */}
         <Grid.Col order={11}>
             <Card>
-                <TitleDividerWithIcon icon={<IconCards />} label='Talentos (PCoC)' />
+                <TitleDividerWithIcon icon={<IconCards />} label={t('pulpTalent.title')} />
                 <DefaultEmpty visible={(props.ficha?.pulpTalents?.length ?? 0) === 0} emptyIcon={<IconCards />}>
                     <Stack>
                         {(props.ficha?.pulpTalents ?? []).map((item: PulpTalents) => {
                             return <ModalListItem key={item.id} listItemText={item.name} dialogTitle={item.name}>
-                                <TitleDividerWithIcon icon={<IconInfoCircle />} label='Descrição' />
+                                <TitleDividerWithIcon icon={<IconInfoCircle />} label={t('pulpTalent.description')} />
                                 {item.description}
                             </ModalListItem>
                         })}

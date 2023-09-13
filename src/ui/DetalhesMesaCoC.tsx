@@ -11,6 +11,8 @@ import { notifications } from "@mantine/notifications";
 import { DetalhesFichaCoC } from "./DetalhesFichaCoC";
 import { GoBack } from "./GoBack";
 import { IconInfoCircle } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../Constants";
 
 export interface DetalhesMesaCoCProps {
     mesa?: SessionBase | null;
@@ -24,6 +26,8 @@ export function DetalhesMesaCoC(props: DetalhesMesaCoCProps) {
     const [ selectedSheetId, setSelectedSheetId ] = useState<string | undefined>(undefined);
     const [ mesaWithFullInfo, setMesaWithFullInfo ] = useState<SessionWithSheets | null>(null);
     const [ loading, setLoading ] = useState(false);
+
+    const { t } = useTranslation(['session', 'notifications'])
 
     const auth = useAuth();
 
@@ -58,9 +62,8 @@ export function DetalhesMesaCoC(props: DetalhesMesaCoCProps) {
                 setLoading(false);
             }).catch(err => {
                 notifications.show({
-                    id: "error_ficha_not_found",
-                    message: "Não foi possível buscar detalhes da ficha!",
-                    color: "red"
+                    message: t('characterSheet.notFound', { ns: 'notifications' }),
+                    ...NotificationKeys.ErrorFichaNotFound
                 });
                 setSelectedSheetId(undefined);
                 setSelectedSheet(null);
@@ -80,14 +83,14 @@ export function DetalhesMesaCoC(props: DetalhesMesaCoCProps) {
                 </Center>
             </Skeleton>
             {props.mesa?.pulpCthulhu && <>
-                <TitleDividerWithIcon icon={<IconInfoCircle size={20}/>} label="Informações básicas"/>
+                <TitleDividerWithIcon icon={<IconInfoCircle size={20}/>} label={t('coc.basicInfo')} />
                 <Card mb={"lg"}>
                     <Flex justify={'flex-end'}>
-                        <Badge>Pulp Cthulhu</Badge>
+                        <Badge>{t('coc.pulpCthulhu')}</Badge>
                     </Flex>
                 </Card>
             </>}
-            <TitleDividerWithIcon icon={<GiArchiveResearch size={20}/>} label="Fichas da mesa"/>
+            <TitleDividerWithIcon icon={<GiArchiveResearch size={20}/>} label={t('coc.sessionSheets')} />
             <Skeleton visible={mesaWithFullInfo == null}>
                 <Card>
                     <Center>
@@ -101,7 +104,7 @@ export function DetalhesMesaCoC(props: DetalhesMesaCoCProps) {
                     </Center>
                 </Card>
                 {selectedSheetId && <Skeleton visible={loading}>
-                    <TitleDividerWithIcon label="Detalhes da ficha" />
+                    <TitleDividerWithIcon label={t('characterSheetDetails')} />
                     <DetalhesFichaCoC ficha={selectedSheet} fromSession playerName={playerName} characterName={characterName} />
                 </Skeleton>}
             </Skeleton>

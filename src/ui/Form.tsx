@@ -4,8 +4,12 @@ import { Button, Checkbox, Grid, Group, NumberInput, TextInput, Textarea } from 
 import { FormValidateInput } from "@mantine/form/lib/types";
 import { NotificationProps, notifications } from "@mantine/notifications";
 import { FetchDataSelect } from "./FetchDataSelect";
+import { LookupClass, LookupClient } from "../services/LookupService";
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../Constants";
 
 export interface InlineFormProps {
+    lookupClient: LookupClient;
     dataFetch? : (uuid: string) => Promise<any>;
     formMapping?: FormMapping[];
     validate?: FormValidateInput<{}>;
@@ -23,7 +27,7 @@ export interface FormMapping {
     notNull?: boolean;
     span?: number;
     defaultValue?: any;
-    lookupClass?: 'skillRarity' | 'skillKind' | 'notUsableSkill' | 'usableSkill' | 'ammo' | 'skillPointCalculationRule';
+    lookupClass?: LookupClass;
 }
 
 export interface FormProps extends InlineFormProps{
@@ -39,6 +43,8 @@ export function Form(props: FormProps) {
         validate: props.validate,
         validateInputOnChange: true
     });
+
+    const { t } = useTranslation('general');
 
     useEffect(() => {
         let formData = {} as any;
@@ -82,15 +88,13 @@ export function Form(props: FormProps) {
                     updatedValues[key] = val;
                 }
             });
-            console.log(updatedValues);
-            if (data && props.update) {
+            let func = data && props.update ? props.update : (!data && props.add ? props.add : null);
+            if (func) {
                 setSaving(true);
-                console.log(values);
-                props.update(updatedValues).then((res) => {
+                func(updatedValues).then((res) => {
                     notifications.show(props.saveMessage ?? {
-                        message: "Dados salvos com sucesso!",
-                        id: "success_data_saved",
-                        color: 'green'
+                        message: t('form.messages.saved'),
+                        ...NotificationKeys.SuccessGenericSave
                     });
                     if (props.onSaveSucess) {
                         props.onSaveSucess();
@@ -100,32 +104,8 @@ export function Form(props: FormProps) {
                         props.onSaveError(err);
                     } else {
                         notifications.show({
-                            message: "Erro ao salvar dados!",
-                            id: "error_data_save_unexpected",
-                            color: 'red'
-                        });
-                    }
-                    setSaving(false);
-                });
-            } else if (!data && props.add) {
-                setSaving(true);
-                props.add(updatedValues).then((res) => {
-                    notifications.show(props.saveMessage ?? {
-                        message: "Dados salvos com sucesso!",
-                        id: "success_data_saved",
-                        color: 'green'
-                    });
-                    if (props.onSaveSucess) {
-                        props.onSaveSucess();
-                    }
-                }).catch((err) => {
-                    if (props.onSaveError) {
-                        props.onSaveError(err);
-                    } else {
-                        notifications.show({
-                            message: "Erro ao salvar dados!",
-                            id: "error_data_save_unexpected",
-                            color: 'red'
+                            message: t('form.messages.saveError'),
+                            ...NotificationKeys.ErrorGenericSave
                         });
                     }
                     setSaving(false);
@@ -142,7 +122,7 @@ export function Form(props: FormProps) {
                             case 'number': field = <NumberInput withAsterisk={entry.notNull} label={entry.label} {...form.getInputProps(key)} />; break;
                             case 'text': field = <Textarea withAsterisk={entry.notNull} label={entry.label} {... form.getInputProps(key)} />; break;
                             case 'boolean': field = <Checkbox label={entry.label} {...form.getInputProps(key, { type: 'checkbox' })} />; break;
-                            case 'select': field = <FetchDataSelect lookupClass={entry.lookupClass} label={entry.label} notNull={entry.notNull} form={form} formKey={entry.key} />; break;
+                            case 'select': field = <FetchDataSelect lookupClient={props.lookupClient} lookupClass={entry.lookupClass!} label={entry.label} notNull={entry.notNull} form={form} formKey={entry.key} />; break;
                             default: field = undefined;
                         }
                     }
@@ -155,7 +135,7 @@ export function Form(props: FormProps) {
                 })}
                 <Grid.Col>
                     <Group position="right" mt="md">
-                        <Button type="submit" disabled={!form.isValid()} loading={saving}>Salvar</Button>
+                        <Button type="submit" disabled={!form.isValid()} loading={saving}>{t(saving ? 'buttons.saving' : 'buttons.save')}</Button>
                     </Group>
                 </Grid.Col>
             </Grid>

@@ -1,16 +1,20 @@
 import { IconList, IconPencil } from "@tabler/icons-react";
 import { TitleDividerWithIcon } from "../../ui/TitleDividerWithIcon";
-import { CoCService } from "../../services/CoCService";
 import { ClickablePaper } from "../../ui/ClickablePaper";
 import { Listing } from "../../ui/Listing";
 import { isNotEmpty } from "@mantine/form";
+import { CoCWeaponService } from "../../services/coc/CoCWeaponService";
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../../Constants";
 
 export function CoCWeaponListing() {
 
+    const { t } = useTranslation('listings', { keyPrefix: 'coc.weapon' });
+
     return <Listing 
-        dataFetch={CoCService.getWeaponsListing}
+        dataFetch={CoCWeaponService.getWeaponsListing}
         dataMap={(item: any, onDelete, onClick) => {
-            return <ClickablePaper onClick={() => {
+            return <ClickablePaper key={item.id} onClick={() => {
                 if (onClick) {
                     onClick!();
                 }
@@ -20,38 +24,39 @@ export function CoCWeaponListing() {
                 }
             }} />
         }}
-        title={<TitleDividerWithIcon icon={<IconList /> } label="Call of Cthulhu - Armas" />}
-        onDelete={CoCService.deleteWeapon}
-        modalTitleUpdate="Editar arma"
-        modalTitleAdd="Adicionar arma"
+        title={<TitleDividerWithIcon icon={<IconList /> } label={t('title')} />}
+        onDelete={CoCWeaponService.deleteWeapon}
+        modalTitleUpdate={t('form.edit')}
+        modalTitleAdd={t('form.add')}
         formProps={{
-            dataFetch: CoCService.getWeapon,
-            update: CoCService.updateWeapon,
-            add: CoCService.addWeapon,
+            lookupClient: 'coc',
+            dataFetch: CoCWeaponService.getWeapon,
+            update: CoCWeaponService.updateWeapon,
+            add: CoCWeaponService.addWeapon,
             formMapping: [
                 {
                     key: 'name',
-                    label: 'Nome',
+                    label: t('form.mappings.name.label'),
                     dataType: 'string',
                     notNull: true,
                     span: 8
                 },
                 {
                     key: 'range',
-                    label: 'Alcance',
+                    label: t('form.mappings.range.label'),
                     dataType: 'string',
                     span: 4
                 },
                 {
                     key: 'damage',
-                    label: 'Dano',
+                    label: t('form.mappings.damage.label'),
                     dataType: 'string',
                     notNull: true,
                     span: 4
                 },
                 {
                     key: 'attacksPerRound',
-                    label: 'Ataques',
+                    label: t('form.mappings.attacksPerRound.label'),
                     dataType: 'number',
                     notNull: true,
                     defaultValue: 1,
@@ -59,13 +64,13 @@ export function CoCWeaponListing() {
                 },
                 {
                     key: 'malfunction',
-                    label: 'Defeito',
+                    label: t('form.mappings.malfunction.label'),
                     dataType: 'number',
                     span: 4
                 },
                 {
                     key: 'isMelee',
-                    label: 'Arma mano-a-mano',
+                    label: t('form.mappings.isMelee.label'),
                     dataType: 'boolean',
                     notNull: true,
                     defaultValue: false,
@@ -73,7 +78,7 @@ export function CoCWeaponListing() {
                 },
                 {
                     key: 'isThrowable',
-                    label: 'Arremessável',
+                    label: t('form.mappings.isThrowable.label'),
                     dataType: 'boolean',
                     notNull: true,
                     defaultValue: false,
@@ -81,7 +86,7 @@ export function CoCWeaponListing() {
                 },
                 {
                     key: 'isDualWield',
-                    label: 'Dual wielding',
+                    label: t('form.mappings.isDualWield.label'),
                     dataType: 'boolean',
                     notNull: true,
                     defaultValue: false,
@@ -89,7 +94,7 @@ export function CoCWeaponListing() {
                 },
                 {
                     key: 'skillUsedId',
-                    label: 'Skill utilizada',
+                    label: t('form.mappings.skillUsedId.label'),
                     dataType: 'select',
                     lookupClass: 'usableSkill',
                     notNull: true,
@@ -97,22 +102,21 @@ export function CoCWeaponListing() {
                 },
                 {
                     key: 'ammoId',
-                    label: 'Munição utilizada',
+                    label: t('form.mappings.ammoId.label'),
                     dataType: 'select',
                     lookupClass: 'ammo',
                     span: 6
                 }
             ],
             validate: {
-                name: isNotEmpty("Nome não pode ser vazio!"),
-                damage: isNotEmpty("Dano não pode ser vazio!"),
-                attacksPerRound: isNotEmpty("Ataques não pode ser vazio!"),
-                skillUsedId: isNotEmpty("Skill utilizada não pode ser vazio!"),
+                name: isNotEmpty(t('form.mappings.name.notNullMessage')),
+                damage: isNotEmpty(t('form.mappings.damage.notNullMessage')),
+                attacksPerRound: isNotEmpty(t('form.mappings.attacksPerRound.notNullMessage')),
+                skillUsedId: isNotEmpty(t('form.mappings.skillUsedId.notNullMessage')),
             },
             saveMessage: {
-                message: "Arma salva com sucesso!",
-                id: "success_coc_weapon_saved",
-                color: 'green'
+                message: t('form.saveMessage'),
+                ...NotificationKeys.SuccessCoCWeaponSave
             }
         }} 
     />

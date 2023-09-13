@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Rpgtrackerwebclient } from "../webclient/Rpgtrackerwebclient";
 import { notifications } from "@mantine/notifications";
 import { User } from "../models/User";
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../Constants";
 
 export interface CurrentUser {
   
@@ -23,6 +25,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [valid, setValid] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    const { t } = useTranslation('notifications');
+
     let loadPermissions = async (valid: boolean) => {
       if (valid) {
         return Rpgtrackerwebclient.get("core/api/v1/user-config").then((res) => {
@@ -38,9 +42,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         let isUser = (user?.resource_access?.rpgtracker?.roles?.find((e: string) => e === 'user') ?? false);
         if (!isUser) {
           notifications.show({
-            message: `Você não tem permissão para acessar esse recurso!!`,
-            color: "red",
-            id: "error_no_permission"
+            message: t('noPermission'),
+            ...NotificationKeys.ErrorNoPermission
           });
           setCurrentUser(undefined);
           setValid(false);

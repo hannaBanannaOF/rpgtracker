@@ -1,16 +1,20 @@
 import { IconList, IconPencil } from "@tabler/icons-react";
 import { TitleDividerWithIcon } from "../../ui/TitleDividerWithIcon";
-import { CoCService } from "../../services/CoCService";
 import { ClickablePaper } from "../../ui/ClickablePaper";
 import { Listing } from "../../ui/Listing";
 import { isNotEmpty } from "@mantine/form";
+import { CoCPulpTalentService } from "../../services/coc/CoCPulpTalentService";
+import { useTranslation } from "react-i18next";
+import { NotificationKeys } from "../../Constants";
 
 export function COCPulpTalentListing() {
 
+    const { t } = useTranslation('listings', { keyPrefix: 'coc.pulpTalent' })
+
     return <Listing 
-        dataFetch={CoCService.getPulpTalentsListing}
+        dataFetch={CoCPulpTalentService.getPulpTalentsListing}
         dataMap={(item: any, onDelete, onClick) => {
-            return <ClickablePaper onClick={() => {
+            return <ClickablePaper key={item.id} onClick={() => {
                 if (onClick) {
                     onClick!();
                 }
@@ -20,36 +24,36 @@ export function COCPulpTalentListing() {
                 }
             }}/>
         }} 
-        onDelete={CoCService.deletePulpTalent}
-        title={<TitleDividerWithIcon icon={<IconList /> } label="Call of Cthulhu - Talentos (PCoC)" />} 
-        modalTitleUpdate="Editar talento (PCoC)"
-        modalTitleAdd="Adicionar talento (PCoC)"
+        onDelete={CoCPulpTalentService.deletePulpTalent}
+        title={<TitleDividerWithIcon icon={<IconList /> } label={t('title')} />} 
+        modalTitleUpdate={t('form.edit')}
+        modalTitleAdd={t('form.add')}
         formProps={{
-            dataFetch: CoCService.getPulpTalent,
-            add: CoCService.addPulpTalent,
-            update: CoCService.updatePulpTalent,
+            lookupClient: 'coc',
+            dataFetch: CoCPulpTalentService.getPulpTalent,
+            add: CoCPulpTalentService.addPulpTalent,
+            update: CoCPulpTalentService.updatePulpTalent,
             formMapping: [
                 {
                     key: 'name',
-                    label: 'Nome',
+                    label: t('form.mappings.name.label'),
                     dataType: 'string',
                     notNull: true,
                 },
                 {
                     key: 'description',
-                    label: 'Descrição',
+                    label: t('form.mappings.description.label'),
                     dataType: 'text',
                     notNull: true,
                 }
             ],
             validate: {
-                name: isNotEmpty("Nome não pode ser vazio!"),
-                description: isNotEmpty("Descrição não pode ser vazio!")
+                name: isNotEmpty(t('form.mappings.name.notNullMessage')),
+                description: isNotEmpty(t('form.mappings.description.notNullMessage'))
             },
             saveMessage: {
-                message: "Talento salva com sucesso!",
-                id: "success_coc_pulp_talent_saved",
-                color: 'green'
+                message: t('form.saveMessage'),
+                ...NotificationKeys.SuccessCoCPulpTalentSave
             }
         }}
     />

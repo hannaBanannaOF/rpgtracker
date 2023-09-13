@@ -2,6 +2,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../providers/AuthProvider';
 import { notifications } from '@mantine/notifications';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { NotificationKeys } from '../Constants';
 
 export interface Permissions {
   mestrePerm? :boolean
@@ -12,6 +14,7 @@ export function RequireAuth(props: Permissions) {
     let auth = useAuth();
     let location = useLocation();
     let navigate = useNavigate();
+    const { t } = useTranslation('notifications');
 
     useEffect(() => {
       if (auth.loading) return;
@@ -22,9 +25,8 @@ export function RequireAuth(props: Permissions) {
       if ((props.mestrePerm ?? false) && !(auth.currentUser?.permissions.isCocDm ?? false)) {
         let from = (location.state as any)?.from?.pathname || "/";
         notifications.show({
-          message: "Você não tem permissão para acessar esse recurso!",
-          id: "error_no_permission",
-          color: 'red'
+          message: t('noPermission'),
+          ...NotificationKeys.ErrorNoPermission
         });
         navigate(from, {replace: true})
       }
