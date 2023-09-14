@@ -41,7 +41,7 @@ export function FetchDataSelect(props: FetchDataSelectProps) {
             setLoading(false);
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.form, debouncedQuery])
+    }, [props.form.getInputProps(props.formKey).value, debouncedQuery])
 
     return <Select label={props.label} data={data ?? []} withAsterisk={props.notNull}
         nothingFound={data && <DefaultEmpty visible={true} />} 

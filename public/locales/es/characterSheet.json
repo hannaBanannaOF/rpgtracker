@@ -77,6 +77,14 @@
         "pulpTalent": {
             "title": "Talentos (PCoC)",
             "description": "Descripción"
+        },
+        "spells": {
+            "title": "Hechizos",
+            "cost": "Coste de lanzamiento",
+            "castingTime": "Tiempo de lanzamiento",
+            "description": "Descripción",
+            "oniric": "Onírico",
+            "folk": "Folclórico"
         }
     }
 }

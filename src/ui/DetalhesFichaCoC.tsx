@@ -1,9 +1,9 @@
-import { CoCWeaponsInSheet, COCCharacterSheet, SkillCoC, PulpTalents } from '../models/CharacterSheet';
+import { CoCWeaponsInSheet, COCCharacterSheet, SkillCoC, PulpTalents, CoCSpellInSheet } from '../models/CharacterSheet';
 import { DefaultEmpty } from './DefaultEmpty';
 import { CoCStats } from './StatsCOC';
 import { ModalListItem } from './ModalListItem';
 import { ActionIcon, Avatar, Badge, Card, Center, Checkbox, Grid, Group, Modal, Skeleton, Space, Stack, Text, Title } from '@mantine/core';
-import { IconAddressBook, IconBookmark, IconBrain, IconCards, IconClover2, IconCornerDownRight, IconHeart, IconInfoCircle, IconSword, IconSwordOff, IconSwords, IconUser, IconWand } from '@tabler/icons-react';
+import { IconAddressBook, IconBookmark, IconBrain, IconCards, IconClock, IconClover2, IconConfucius, IconCornerDownRight, IconHeart, IconInfoCircle, IconSword, IconSwordOff, IconSwords, IconUser, IconWand, IconWandOff } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { SliderWithCaption } from './SliderWithCaption';
 import { TitleDividerWithIcon } from './TitleDividerWithIcon';
@@ -32,6 +32,10 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
             return <Badge color='grey'>{t('healthPoints.unconscious')}</Badge>
         }
         return null;
+    }
+
+    const _getSpellTitle = (item: CoCSpellInSheet) => {
+        return `${item.spellChosenName}${item.onlyOniricLandscape ? ` (${t('spells.oniric')})` : ''}${item.folk ? ` (${t('spells.folk')})` : ''}${item.monsterKnowledge ? ` (${item.monsterKnowledge})` : ''}`
     }
 
     return <Grid grow>
@@ -251,8 +255,28 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
                 </Grid>
             </Card>
         </Grid.Col>
+        {/* Spells */}
+        <Grid.Col order={11} sm={12} md={props.ficha?.basicInfo.pulpCthulhu ? 6 : 12} lg={props.ficha?.basicInfo.pulpCthulhu ? 6 : 12}>
+            <Card>
+                <TitleDividerWithIcon icon={<IconWand />} label={t('spells.title')} />
+                <DefaultEmpty visible={(props.ficha?.spells?.length ?? 0) === 0} emptyIcon={<IconWandOff />}>
+                    <Stack>
+                        {(props.ficha?.spells ?? []).map((item: CoCSpellInSheet) => {
+                            return <ModalListItem key={item.spellID} listItemText={_getSpellTitle(item)} dialogTitle={_getSpellTitle(item)}>
+                                <TitleDividerWithIcon icon={<IconConfucius />} label={t('spells.cost')} />
+                                {item.cost}
+                                <TitleDividerWithIcon icon={<IconClock />} label={t('spells.castingTime')} />
+                                {item.conjuringTime}
+                                <TitleDividerWithIcon icon={<IconInfoCircle />} label={t('spells.description')} />
+                                {item.spellDescription}
+                            </ModalListItem>
+                        })}
+                    </Stack>
+                </DefaultEmpty>
+            </Card>
+        </Grid.Col>
         {/* Pulp Talents */}
-        <Grid.Col order={11}>
+        {props.ficha?.basicInfo.pulpCthulhu && <Grid.Col order={12} sm={12} md={6} lg={6}>
             <Card>
                 <TitleDividerWithIcon icon={<IconCards />} label={t('pulpTalent.title')} />
                 <DefaultEmpty visible={(props.ficha?.pulpTalents?.length ?? 0) === 0} emptyIcon={<IconCards />}>
@@ -266,7 +290,7 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
                     </Stack>
                 </DefaultEmpty>
             </Card>
-        </Grid.Col>
+        </Grid.Col>}
     </Grid>
 }
 

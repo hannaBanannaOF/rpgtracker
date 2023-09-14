@@ -77,6 +77,14 @@
         "pulpTalent": {
             "title": "Talents (PCoC)",
             "description": "Description"
+        },
+        "spells": {
+            "title": "Spells",
+            "cost": "Casting cost",
+            "castingTime": "Casting time",
+            "description": "Description",
+            "oniric": "Oniric",
+            "folk": "Folk"
         }
     }
 }

@@ -100,6 +100,17 @@ interface FichaCOCCalculatedAttributes {
     dodge: number
 }
 
+export interface CoCSpellInSheet {
+    spellID: string;
+    spellChosenName: string;
+    spellDescription: string;
+    onlyOniricLandscape: boolean;
+    folk: boolean;
+    monsterKnowledge?: string;
+    cost: string;
+    conjuringTime: string;
+}
+
 export interface COCCharacterSheet {
     id: string,
     coreId: string,
@@ -109,5 +120,6 @@ export interface COCCharacterSheet {
     skills: SkillCoC[],
     pulpTalents: PulpTalents[],
     weapons: CoCWeaponsInSheet[],
+    spells: CoCSpellInSheet[],
     occupation?: Occupation | null
 } 
