@@ -55,6 +55,9 @@
                     },
                     "typedSkillChoicesKind": {
                         "label": "Skill type"
+                    },
+                    "skills": {
+                        "label": "Skills"
                     }
                 },
                 "saveMessage": "Occupation saved successfully!"
@@ -151,6 +154,44 @@
                     }
                 },
                 "saveMessage": "Weapon saved successfully!"
+            }
+        },
+        "spell": {
+            "title": "Call of Cthulhu - Spells",
+            "form": {
+                "add": "Add spell",
+                "edit": "Edit spell",
+                "mappings": {
+                    "name": {
+                        "label": "Name",
+                        "notNullMessage": "$t(coc.spell.form.mappings.name.label) cant be null"
+                    },
+                    "cost": {
+                        "label": "Casting cost",
+                        "notNullMessage": "$t(coc.spell.form.mappings.cost.label) cant be null"
+                    },
+                    "conjuringTime": {
+                        "label": "Casting time",
+                        "notNullMessage": "$t(coc.spell.form.mappings.conjuringTime.label) cant be null"
+                    },
+                    "description": {
+                        "label": "Description",
+                        "notNullMessage": "$t(coc.spell.form.mappings.description.label) cant be null"
+                    },
+                    "visceralForm": {
+                        "label": "Visceral form"
+                    },
+                    "alternativeNames": {
+                        "label": "Alternative names"
+                    },
+                    "monsterKnowledge": {
+                        "label": "Monster knowledge"
+                    },
+                    "categories": {
+                        "label": "Categories"
+                    }
+                },
+                "saveMessage": "Spell saved successfully!"
             }
         }
     }

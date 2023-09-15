@@ -62,6 +62,10 @@ export const NotificationKeys = {
     SuccessDataDelete: {
         color: 'green',
         id: 'success_delete_item'
+    },
+    SuccessCoCSpellSave: {
+        color: 'green',
+        id: 'success_coc_spell_saved'
     }
   } as const
 

@@ -10,6 +10,7 @@ import { Form, InlineFormProps } from "./Form";
 import { useDisclosure } from "@mantine/hooks";
 import { useTranslation } from "react-i18next";
 import { NotificationKeys } from "../Constants";
+import { GoBack } from "./GoBack";
 
 export interface ListingProps {
     title?: string | ReactNode;
@@ -18,8 +19,8 @@ export interface ListingProps {
     dataMap: (e: any, onDelete?: (uuid: string) => void, onClick?: () => void) => ReactNode;
     onDelete?: (uuid: string) => Promise<any>;
     formProps?: InlineFormProps;
-    modalTitleUpdate?: string,
-    modalTitleAdd?: string,
+    modalTitleUpdate?: string;
+    modalTitleAdd?: string;
 }
 
 export function Listing(props: ListingProps) {
@@ -58,76 +59,97 @@ export function Listing(props: ListingProps) {
         });
     }
 
+    let form = props.formProps ? <Form
+        title={props.formProps?.hasSubregister ? <TitleDividerWithIcon icon={
+            <GoBack onBack={() => {
+                setSelected(undefined);
+                setAdding(false);
+            }} />
+        } label={(adding ? props.modalTitleAdd : props.modalTitleUpdate) ?? ''} /> : null}
+        lookupClient={props.formProps!.lookupClient}
+        selectedUuid={(selected ?? {id: ''}).id}
+        dataFetch={props.formProps!.dataFetch}
+        update={props.formProps!.update}
+        add={props.formProps!.add}
+        formMapping={props.formProps!.formMapping}
+        validate={props.formProps!.validate}
+        saveMessage={props.formProps!.saveMessage}
+        onSaveError={props.formProps!.onSaveError}
+        onSaveSucess={() => {
+            getItems();
+            close();
+            setSelected(undefined);
+            setAdding(false);
+        }}
+        onCancel={() => {
+            close();
+            setSelected(undefined);
+            setAdding(false);
+        }}
+    /> : <></>
+
     useEffect(() => {
         getItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
     return <>
-        {(typeof props.title === 'string') && <TitleDividerWithIcon icon={<IconList />} label={props.title}/>}
-        {(typeof props.title !== 'string') && props.title}
-        <Skeleton visible={loading}>
-            {props.formProps?.add && (data.length ?? 0) > 0 && <Group position={"right"}>
-                <Button onClick={() => {
+        {(!props.formProps?.hasSubregister || (selected === undefined && !adding)) && <>
+            {(typeof props.title === 'string') && <TitleDividerWithIcon icon={<IconList />} label={props.title}/>}
+            {(typeof props.title !== 'string') && props.title}
+            <Skeleton visible={loading}>
+                {props.formProps?.add && (data.length ?? 0) > 0 && <Group position={"right"}>
+                    <Button onClick={() => {
+                        setAdding(true);
+                        open();
+                    }}>{t('buttons.add')}</Button>
+                </Group>}
+                <DefaultEmpty visible={(data.length ?? 0) === 0} add={() => {
                     setAdding(true);
                     open();
-                }}>{t('buttons.add')}</Button>
-            </Group>}
-            <DefaultEmpty visible={(data.length ?? 0) === 0} add={() => {
-                setAdding(true);
-                open();
-            }}>
-                <Stack mt={25} mb={totalPages > 1 ? 10 : 0}>
-                    {data.map((i) => {
-                        return props.dataMap(i, props.onDelete ? (uuid: string) => {
-                            props.onDelete!(uuid).then((_) => {
-                                notifications.show({
-                                    message: t('delete.success', { ns: 'notifications' }),
-                                    ...NotificationKeys.SuccessDataDelete
-                                });
-                                getItems();
-                            }).catch((err) => {
-                                notifications.show({
-                                    message: t('delete.error', { ns: 'notifications' }),
-                                    ...NotificationKeys.ErrorDataDelete
-                                });
-                            })
-                        } : undefined, () => {
-                            setSelected(i);
-                            open();
-                        });
-                    })}
-                </Stack>
-                {totalPages > 1 && <Center>
-                    <Pagination value={page+1} total={totalPages ?? 0} onChange={(newPage) => {
-                        navigate(`${location.pathname}?page=${newPage-1}`)
-                    }}/>
-                </Center>}
-            </DefaultEmpty>
-            {props.formProps &&
-            <Modal opened={opened} onClose={() => {
-                close();
-                setSelected(undefined);
-                setAdding(false);
-            }} title={adding ? props.modalTitleAdd : props.modalTitleUpdate} scrollAreaComponent={ScrollArea.Autosize}>
-                <Form
-                    lookupClient={props.formProps.lookupClient}
-                    selectedUuid={(selected ?? {id: ''}).id}
-                    dataFetch={props.formProps.dataFetch}
-                    update={props.formProps.update}
-                    add={props.formProps.add}
-                    formMapping={props.formProps.formMapping}
-                    validate={props.formProps.validate}
-                    saveMessage={props.formProps.saveMessage}
-                    onSaveError={props.formProps.onSaveError}
-                    onSaveSucess={() => {
-                        getItems();
-                        close();
-                        setSelected(undefined);
-                        setAdding(false);
-                    }}
-                />
-            </Modal>}
-        </Skeleton>
+                }}>
+                    <Stack mt={25} mb={totalPages > 1 ? 10 : 0}>
+                        {data.map((i) => {
+                            return props.dataMap(i, props.onDelete ? (uuid: string) => {
+                                props.onDelete!(uuid).then((_) => {
+                                    notifications.show({
+                                        message: t('delete.success', { ns: 'notifications' }),
+                                        ...NotificationKeys.SuccessDataDelete
+                                    });
+                                    getItems();
+                                }).catch((err) => {
+                                    notifications.show({
+                                        message: t('delete.error', { ns: 'notifications' }),
+                                        ...NotificationKeys.ErrorDataDelete
+                                    });
+                                })
+                            } : undefined, () => {
+                                setSelected(i);
+                                open();
+                            });
+                        })}
+                    </Stack>
+                    {totalPages > 1 && <Center>
+                        <Pagination value={page+1} total={totalPages ?? 0} onChange={(newPage) => {
+                            navigate(`${location.pathname}?page=${newPage-1}`)
+                        }}/>
+                    </Center>}
+                </DefaultEmpty>
+            </Skeleton>
+        </>}
+        {props.formProps && (selected !== undefined || adding) &&
+            <>
+                {!props.formProps.hasSubregister && <Modal opened={opened} onClose={() => {
+                    close();
+                    setSelected(undefined);
+                    setAdding(false);
+                }} title={adding ? props.modalTitleAdd : props.modalTitleUpdate} scrollAreaComponent={ScrollArea.Autosize}>
+                    {form}
+                </Modal>}
+                {props.formProps.hasSubregister && <>
+                    {form}
+                </>}
+            </>
+        }
     </>
 }

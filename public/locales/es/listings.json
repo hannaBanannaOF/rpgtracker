@@ -55,6 +55,12 @@
                     },
                     "typedSkillChoicesKind": {
                         "label": "Tipo de competencias"
+                    },
+                    "skills": {
+                        "label": "Competencias"
+                    },
+                    "categories": {
+                        "label": "Categorias"
                     }
                 },
                 "saveMessage": "Ocupación guardada correctamente!"
@@ -151,6 +157,41 @@
                     }
                 },
                 "saveMessage": "Arma guardada correctamente!"
+            }
+        },
+        "spell": {
+            "title": "Call of Cthulhu - Hechizos",
+            "form": {
+                "add": "Añadir hechizo",
+                "edit": "Editar hechizo",
+                "mappings": {
+                    "name": {
+                        "label": "Nombre",
+                        "notNullMessage": "$t(coc.spell.form.mappings.name.label) no puede estar vacío"
+                    },
+                    "cost": {
+                        "label": "Coste de lanzamiento",
+                        "notNullMessage": "$t(coc.spell.form.mappings.cost.label) cant be nullno puede estar vacío"
+                    },
+                    "conjuringTime": {
+                        "label": "Tiempo de lanzamiento",
+                        "notNullMessage": "$t(coc.spell.form.mappings.conjuringTime.label) no puede estar vacío"
+                    },
+                    "description": {
+                        "label": "Descripción",
+                        "notNullMessage": "$t(coc.spell.form.mappings.description.label) no puede estar vacío"
+                    },
+                    "visceralForm": {
+                        "label": "Forma visceral"
+                    },
+                    "alternativeNames": {
+                        "label": "Nombres alternativos"
+                    },
+                    "monsterKnowledge": {
+                        "label": "Conocimientos de monstruos"
+                    }
+                },
+                "saveMessage": "Hechizo guardado correctamente!"
             }
         }
     }

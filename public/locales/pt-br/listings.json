@@ -55,6 +55,9 @@
                     },
                     "typedSkillChoicesKind": {
                         "label": "Tipo da perícia"
+                    },
+                    "skills": {
+                        "label": "Perícias"
                     }
                 },
                 "saveMessage": "Ocupação salva com sucesso!"
@@ -151,6 +154,44 @@
                     }
                 },
                 "saveMessage": "Arma salva com sucesso!"
+            }
+        },
+        "spell": {
+            "title": "Call of Cthulhu - Feitiços",
+            "form": {
+                "add": "Adicionar feitiço",
+                "edit": "Editar feitiço",
+                "mappings": {
+                    "name": {
+                        "label": "Nome",
+                        "notNullMessage": "$t(coc.spell.form.mappings.name.label) não pode ser vazio"
+                    },
+                    "cost": {
+                        "label": "Custo de conjuração",
+                        "notNullMessage": "$t(coc.spell.form.mappings.cost.label) não pode ser vazio"
+                    },
+                    "conjuringTime": {
+                        "label": "Tempo de conjuração",
+                        "notNullMessage": "$t(coc.spell.form.mappings.conjuringTime.label) não pode ser vazio"
+                    },
+                    "description": {
+                        "label": "Descrição",
+                        "notNullMessage": "$t(coc.spell.form.mappings.description.label) não pode ser vazio"
+                    },
+                    "visceralForm": {
+                        "label": "Forma visceral"
+                    },
+                    "alternativeNames": {
+                        "label": "Nomes alternativos"
+                    },
+                    "monsterKnowledge": {
+                        "label": "Conhecimento de montros"
+                    },
+                    "categories": {
+                        "label": "Categorias"
+                    }
+                },
+                "saveMessage": "Feitiço salvo com sucesso!"
             }
         }
     }

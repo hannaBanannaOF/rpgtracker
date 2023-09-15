@@ -17,6 +17,7 @@ import { CoCOccupationListing } from './routes/coc/CoCOccupationListing';
 import { COCPulpTalentListing } from './routes/coc/CoCPulpTalentsListing';
 import { CoCSkillListing } from './routes/coc/CoCSkillListing';
 import { CoCWeaponListing } from './routes/coc/CoCWeaponListing';
+import { CoCSpellListing } from './routes/coc/CoCSpellListing';
 
 export function App(){
 
@@ -93,6 +94,11 @@ export function App(){
 								<Route path='weapons' element={
 									<RequireAuth>
 										<CoCWeaponListing />
+									</RequireAuth>
+								}/>
+								<Route path='spells' element={
+									<RequireAuth>
+										<CoCSpellListing />
 									</RequireAuth>
 								}/>
 							</Route>

@@ -24,6 +24,7 @@ const cocOcupationsLink: NavbarLink = { label: 'coc.occupations', key: 'menu-coc
 const cocPulpTalentsLink: NavbarLink = { label: 'coc.pulpTalents', key: 'menu-coc-register-sub-pulp-talents', link: 'listing/coc/pulp-talents' };
 const cocSkillsLink: NavbarLink = { label: 'coc.skills', key: 'menu-coc-register-sub-skills', link: 'listing/coc/skills' }
 const cocWeaponsLink:NavbarLink = { label: 'coc.weapons', key: 'menu-coc-register-sub-weapons', link: 'listing/coc/weapons' }
+const cocSpellsLink: NavbarLink = { label: 'coc.spells', key: 'menu-coc-register-sub-spells', link: 'listing/coc/spells' }
 
 const homeLink: NavbarLink = { icon: IconHome, label: 'main.home', link: '/', key: 'menu-opt-home' };
 const characterSheetsLink: NavbarLink = { icon: GiArchiveResearch, label: 'main.myCHaracterSheets', link: '/me/sheets', key: 'menu-opt-my-sheets' };
@@ -33,7 +34,8 @@ const cocMainLinks: NavbarLink = { icon: GiOctopus, label: "main.coc", key: 'men
     cocOcupationsLink,
     cocPulpTalentsLink,
     cocSkillsLink,
-    cocWeaponsLink
+    cocWeaponsLink,
+    cocSpellsLink
 ]};
 
 const profileLink: NavbarLink = { icon: IconUser, label: 'main.profile', key: 'menu-opt-profile' };
@@ -202,6 +204,8 @@ export function LateralMenu(props: LateralMenuProps) {
             setActiveLink(cocSkillsLink.key);
           } else if (location.pathname.endsWith('weapons')) {
             setActiveLink(cocWeaponsLink.key);
+          } else if (location.pathname.endsWith('spells')) {
+            setActiveLink(cocSpellsLink.key);
           }
         } else {
           setActive(homeLink);

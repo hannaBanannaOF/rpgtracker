@@ -5,7 +5,8 @@
     "buttons": {
         "add": "Add",
         "save": "Save",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "cancel": "Cancel"
     },
     "form": {
         "messages": {

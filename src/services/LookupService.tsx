@@ -1,6 +1,6 @@
 import { Rpgtrackerwebclient } from "../webclient/Rpgtrackerwebclient";
 
-export type LookupClass = 'skillRarity' | 'skillKind' | 'notUsableSkill' | 'usableSkill' | 'ammo' | 'skillPointCalculationRule';
+export type LookupClass = 'skillRarity' | 'skillKind' | 'notUsableSkill' | 'usableSkill' | 'ammo' | 'skillPointCalculationRule' | 'spellCategory';
 export type LookupClient = 'coc';
 
 class LookupService {

@@ -11,7 +11,7 @@ export function CoCOccupationListing() {
 
     const { t } = useTranslation('listings', { keyPrefix: 'coc.occupation' });
 
-    return <Listing 
+    return <Listing
         dataFetch={CoCOccupationService.getOccupationsListing}
         dataMap={(item: any, onDelete, onClick) => {
             return <ClickablePaper key={item.id} onClick={() => {
@@ -29,6 +29,7 @@ export function CoCOccupationListing() {
         modalTitleUpdate={t('form.edit')}
         modalTitleAdd={t('form.add')}
         formProps={{
+            hasSubregister: true,
             lookupClient: 'coc',
             dataFetch: CoCOccupationService.getOccupation,
             update: CoCOccupationService.updateOccupation,
@@ -95,6 +96,18 @@ export function CoCOccupationListing() {
                     lookupClass: 'skillKind',
                     span: 6
                 },
+                {
+                    key: 'skills',
+                    label: t('form.mappings.skills.label'),
+                    dataType: 'array',
+                    arrayMapping: [
+                        {
+                            key: 'skillId',
+                            dataType: 'select',
+                            lookupClass: 'usableSkill'
+                        }
+                    ]
+                }
             ],
             validate: {
                 name: isNotEmpty(t('form.mappings.name.notNullMessage')),

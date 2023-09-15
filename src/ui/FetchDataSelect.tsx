@@ -1,5 +1,5 @@
 import { Loader, Select } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { UseFormReturnType } from "@mantine/form";
 import { LookupClass, LookupClient, LookupService } from "../services/LookupService";
@@ -11,7 +11,7 @@ import { NotificationKeys } from "../Constants";
 export interface FetchDataSelectProps {
     formKey: string;
     lookupClass: LookupClass,
-    label: string,
+    label?: string | ReactNode,
     notNull?: boolean,
     form: UseFormReturnType<any>,
     lookupClient: LookupClient
