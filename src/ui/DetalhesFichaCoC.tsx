@@ -2,7 +2,7 @@ import { CoCWeaponsInSheet, COCCharacterSheet, SkillCoC, PulpTalents, CoCSpellIn
 import { DefaultEmpty } from './DefaultEmpty';
 import { CoCStats } from './StatsCOC';
 import { ModalListItem } from './ModalListItem';
-import { ActionIcon, Avatar, Badge, Card, Center, Checkbox, Grid, Group, Modal, Skeleton, Space, Stack, Text, Title } from '@mantine/core';
+import { ActionIcon, Badge, Card, Center, Checkbox, Grid, Group, Image, Modal, Skeleton, Space, Stack, Text, Title } from '@mantine/core';
 import { IconAddressBook, IconBookmark, IconBrain, IconCards, IconClock, IconClover2, IconConfucius, IconCornerDownRight, IconHeart, IconInfoCircle, IconSword, IconSwordOff, IconSwords, IconUser, IconWand, IconWandOff } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { SliderWithCaption } from './SliderWithCaption';
@@ -45,7 +45,7 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
         {/* Basic info */}
         <Grid.Col sm={10} md={8} lg={3} order={1} orderLg={1} orderSm={2}>
             <Card padding="lg">
-                <TitleDividerWithIcon icon={<IconUser />} label={t((props.ficha?.basicInfo.pulpCthulhu ?? false) ? "hero" : "investigator   ")} />
+                <TitleDividerWithIcon icon={<IconUser />} label={t((props.ficha?.basicInfo.pulpCthulhu ?? false) ? "hero" : "investigator")} />
                 <Skeleton visible={props.characterName == null}>
                     <Group position='left'>
                         <Text td="underline">{t('characterName')}:</Text>
@@ -112,7 +112,10 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
         <Grid.Col sm={2} md={2} lg={2} order={2} orderLg={2} orderSm={1}>
             <Card padding={"lg"}>
                 <Center>
-                    <Avatar radius="xl"/>
+                    <Image
+                        height={120}
+                        src={null}
+                        withPlaceholder />
                 </Center>
             </Card>
         </Grid.Col>
@@ -186,6 +189,7 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
                 />
             </Card>
         </Grid.Col>
+        {/* Magic points */}
         <Grid.Col sm={12} md={4} lg={4} order={7}>
             <Card padding={"lg"}>
                 <TitleDividerWithIcon icon={<IconWand />} label={t('magicPoints.title')} />
@@ -203,6 +207,7 @@ export function DetalhesFichaCoC(props: DetalhesFichaCoCProps) {
                 </Group>
             </Card>
         </Grid.Col>
+        {/* Skills */}
         <Grid.Col sm={12} md={12} lg={12} order={8}>
             <Card>
                 <TitleDividerWithIcon icon={<IconBookmark />} label={t('skills')} />

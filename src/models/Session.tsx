@@ -1,5 +1,6 @@
 export interface SessionBase {
     uuid: string,
+    coreId: string,
     sessionName: string
     system: string,
     inPlay: boolean,

@@ -31,7 +31,7 @@ export function DetalhesMesaCoC(props: DetalhesMesaCoCProps) {
 
     const auth = useAuth();
 
-    useSubscription([`/topic/${auth.currentUser?.uuid}/sessions/${props.mesa?.uuid}`, `/topic/${auth.currentUser?.uuid}/character-sheet/${selectedSheetId}/infos`], (message) => {
+    useSubscription([`/topic/${auth.currentUser?.uuid}/sessions/${props.mesa?.coreId}`, `/topic/${auth.currentUser?.uuid}/character-sheet/${selectedSheetId}/infos`], (message) => {
         let data = JSON.parse(message.body);
         if (data['infos'] && data['session']) {
             setMesaWithFullInfo(data.infos[0]);

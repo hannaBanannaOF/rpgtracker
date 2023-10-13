@@ -54,7 +54,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setCurrentUser({
               isUser: isUser,
               name: user?.given_name ?? user?.preferred_username ?? "Anon",
-              //TODO verificar se é isso mesmo
               uuid: user?.sub ?? "",
               permissions: {
                 isCocDm: res.cocDm ?? false,
